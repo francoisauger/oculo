@@ -25,6 +25,7 @@
         <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
         <item name="cardDefaultBackground">@color/scheme_grey_card_background_dark</item>
         <item name="cardSelectedBackground">@color/oculo_turquoise</item>
+        <!-- Top-right badge: the "Oculo" wordmark (white letters), mipmap-nodpi/app_logo_semi_red.png -->
         <item name="appLogo">@mipmap/app_logo_semi_red</item>
         <item name="android:colorAccent" tools:targetApi="21">@color/oculo_turquoise</item>
     </style>
