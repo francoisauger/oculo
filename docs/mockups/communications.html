@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oculo communications</title>
+<style>
+  :root {
+    --turquoise: #22D3C8; --teal: #0B7F7D; --deep: #0F4A52; --deep-dark: #0B333A;
+    --bg: #0e0e12; --panel: #17171d; --panel2: #1e1e26; --line: rgba(255,255,255,.08);
+    --text: #f2f2f6; --muted: #9a9aa8;
+    --keep: #22D3C8; --opt: #7aa7ff; --redirect: #f5b14c; --remove: #ff6b6b; --none: #8a8a96;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f5f6f8; --panel: #ffffff; --panel2: #f0f2f5; --line: rgba(0,0,0,.09);
+      --text: #15161a; --muted: #5d6070;
+      --keep: #0B7F7D; --opt: #2f5fd0; --redirect: #a86300; --remove: #c62828; --none: #6b6b78;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f6f8; --panel: #ffffff; --panel2: #f0f2f5; --line: rgba(0,0,0,.09);
+    --text: #15161a; --muted: #5d6070;
+    --keep: #0B7F7D; --opt: #2f5fd0; --redirect: #a86300; --remove: #c62828; --none: #6b6b78;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 32px 16px 80px; }
+  h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -.01em; }
+  h1 span { color: var(--turquoise); }
+  p.lead { color: var(--muted); margin: 0 0 24px; max-width: 760px; }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 44px 0 6px; font-weight: 600; }
+  .catdesc { color: var(--muted); margin: 0 0 14px; font-size: 14px; max-width: 820px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .tile b { display: block; font-size: 26px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .tile span { color: var(--muted); font-size: 13px; }
+  .tile.k b { color: var(--keep); } .tile.o b { color: var(--opt); } .tile.r b { color: var(--redirect); } .tile.x b { color: var(--remove); }
+
+  .key { margin-top: 18px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--remove); border-radius: 14px; padding: 14px 18px; }
+  .key h3 { margin: 0 0 6px; font-size: 15px; }
+  .key ol { margin: 0; padding-left: 20px; }
+  .key li { margin: 4px 0; }
+  .key.good { border-left-color: var(--keep); }
+
+  .toolbar { position: sticky; top: 0; z-index: 5; margin: 22px -16px 0; padding: 10px 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); }
+  .toolbar .status { color: var(--muted); font-size: 13px; margin-right: auto; }
+  button { font: inherit; font-size: 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); padding: 7px 14px; cursor: pointer; }
+  button.primary { background: var(--teal); border-color: var(--teal); color: #fff; font-weight: 600; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--turquoise); outline-offset: 2px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .card.off { opacity: .62; }
+  .card.changed { box-shadow: 0 0 0 2px var(--redirect) inset; }
+  .top { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; }
+  .top h4 { margin: 0; font-size: 15.5px; line-height: 1.3; }
+  .top h4 small { color: var(--muted); font-weight: 500; margin-right: 4px; font-variant-numeric: tabular-nums; }
+  .badge { flex: none; font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 999px; white-space: nowrap; border: 1px solid currentColor; }
+  .b-garder { color: var(--keep); } .b-desactivable { color: var(--opt); } .b-rediriger { color: var(--redirect); } .b-retirer { color: var(--remove); } .b-rien { color: var(--none); }
+  .host { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; background: var(--panel2); border-radius: 8px; padding: 6px 8px; overflow-wrap: anywhere; }
+  dl { margin: 0; display: grid; grid-template-columns: 92px 1fr; gap: 4px 10px; font-size: 13.5px; }
+  dt { color: var(--muted); }
+  dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+  .act-yes { color: var(--remove); font-weight: 600; } .act-opt { color: var(--opt); font-weight: 600; } .act-no { color: var(--none); font-weight: 600; } .act-click { color: var(--keep); font-weight: 600; }
+  .why { font-size: 13.5px; border-top: 1px solid var(--line); padding-top: 8px; }
+  .why b { color: var(--text); }
+  .cost { font-size: 13px; color: var(--muted); }
+  .bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; border-top: 1px solid var(--line); padding-top: 8px; }
+  label.keep { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; cursor: pointer; }
+  label.keep input { width: 18px; height: 18px; accent-color: var(--teal); }
+  .src { font-size: 11px; color: var(--muted); font-family: ui-monospace, Menlo, monospace; text-align: right; overflow-wrap: anywhere; opacity: .8; }
+  .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--teal); color: #fff; padding: 9px 16px; border-radius: 10px; font-weight: 600; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.on { opacity: 1; }
+  footer { margin-top: 40px; color: var(--muted); font-size: 13px; }
+  @media (max-width: 420px) { dl { grid-template-columns: 1fr; } dt { margin-top: 4px; } .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1><span>Oculo</span> : toutes les communications réseau</h1>
+  <p class="lead">Audit du code de la saveur <code>oculo</code> (base F-Droid, sans Firebase), sous-modules compris, le 12 nov. 2026. Chaque carte = une destination que l'appli peut contacter. Coche « Garder » pour ce que tu veux conserver ; les cases sont préremplies selon ma recommandation. Rien n'a été changé dans l'appli.</p>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="key">
+    <h3>À retenir</h3>
+    <ol>
+      <li><b>Aucun rapport de plantage, aucun journal, aucune statistique d'usage</b> ne part vers yuliskov ni vers un service de rapports : Crashlytics n'existe que dans les versions officielles, le « journal dans un fichier » reste sur la télé.</li>
+      <li><b>Le code d'activation de ton compte YouTube part chez un tiers</b> : l'écran de connexion fabrique son code QR en envoyant l'adresse <code>youtube.com/qr/activate/&lt;code&gt;</code> à <code>api.qrserver.com</code>. Même chose pour « Partager le lien QR » (vidéo + minute) et les liens de l'écran À propos.</li>
+      <li><b>Un seul contact automatique vers yuliskov</b> : <code>constants.json</code> sur son GitHub, téléchargé seulement si tu utilises la sauvegarde Google Drive ou l'import de chaînes NewPipe. Il fournit les clés de <em>ses</em> projets Google (Drive et YouTube Data API). La connexion au compte YouTube n'en dépend pas : elle prend les clés de l'appli YouTube TV elle-même.</li>
+      <li><b>Deux services tiers sont actifs par défaut à chaque vidéo</b> : SponsorBlock et Return YouTube Dislike reçoivent l'identifiant de la vidéo et ton adresse IP. Les deux se coupent déjà dans les réglages.</li>
+    </ol>
+  </div>
+
+  <div class="toolbar">
+    <span class="status" id="status"></span>
+    <button type="button" id="reset">Revenir aux recommandations</button>
+    <button type="button" class="primary" id="copy">Copier mes choix</button>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>Méthode : recherche de toutes les adresses http(s) dans le code, les ressources et Gradle de tous les modules (dont MediaServiceCore, SharedModules, exoplayer-amzn), puis lecture des clients réseau (Retrofit, OkHttp, WebView, téléchargements, intents, sockets). Les démos et tests d'ExoPlayer sont exclus : ils ne font pas partie de l'APK. La note grise en bas de chaque carte indique où se trouve le code.</footer>
+</main>
+<div class="toast" id="toast">Copié</div>
+
+<script>
+const CATS = [
+  { id: 'need', title: 'Nécessaire', desc: "Sans ces échanges, la navigation, la lecture ou la connexion au compte ne fonctionnent pas. Tous vont chez Google/YouTube, comme l'appli YouTube officielle, sauf la mise à jour (ton dépôt GitHub)." },
+  { id: 'opt', title: 'Fonctionnalité optionnelle', desc: "Fonctions visibles que tu choisis d'utiliser. Plusieurs sont déjà coupées par défaut ; celles qui sont actives par défaut se désactivent dans les réglages." },
+  { id: 'third', title: "Vers un tiers ou vers l'auteur", desc: "Ce qui envoie quelque chose à un service tiers ou dépend de yuliskov. C'est ici que se trouvent les vraies décisions." },
+  { id: 'off', title: 'Inactif dans Oculo', desc: "Présent dans le code mais jamais exécuté dans la saveur oculo (réservé aux versions officielles, code mort ou remplacé par les ressources d'Oculo). Rien à faire." }
+];
+const RECO = {
+  garder: 'Garder',
+  desactivable: 'Garder mais désactivable',
+  rediriger: 'Rediriger vers ton dépôt',
+  retirer: 'Retirer',
+  rien: 'Rien à faire'
+};
+// act: yes = active by default, opt = only if a setting is turned on, click = only on a user action, no = never in Oculo
+const ITEMS = [
+  // ---------- Nécessaire ----------
+  { n: 1, cat: 'need', name: 'API YouTube (InnerTube)', host: 'www.youtube.com/youtubei/v1/* · youtubei.googleapis.com',
+    sent: "Requêtes de navigation (accueil, abonnements, recherche, chaînes, commentaires, chat en direct, notifications, j'aime), cookie visiteur, langue et pays, jeton du compte si connecté.",
+    when: 'En permanence', act: 'yes', actText: 'Oui', reco: 'garder',
+    why: "C'est l'appli elle-même : sans ça, aucun contenu.", cost: '—',
+    src: 'MediaServiceCore/youtubeapi · RetrofitHelper.java:45' },
+  { n: 2, cat: 'need', name: 'Page TV et configuration YouTube', host: 'www.youtube.com/tv · /tv_config · script du client TV',
+    sent: "Rien de personnel : l'appli lit l'identifiant visiteur, l'adresse du lecteur et les clés OAuth publiques de l'appli YouTube TV.",
+    when: 'Au démarrage, puis en cache', act: 'yes', actText: 'Oui', reco: 'garder',
+    why: 'Fournit les paramètres dont dépendent la lecture et la connexion.', cost: '—',
+    src: 'youtubeapi/app/AppApi.java:22-52 · AppServiceCore.java:116' },
+  { n: 3, cat: 'need', name: 'Script du lecteur YouTube', host: 'www.youtube.com/s/player/…/base.js',
+    sent: "Téléchargement simple ; le script est exécuté sur la télé (moteur V8) pour décoder les signatures des flux.",
+    when: 'À la lecture (mis en cache)', act: 'yes', actText: 'Oui', reco: 'garder',
+    why: 'Sans signature décodée, les vidéos ne jouent pas.', cost: '—',
+    src: 'youtubeapi/app/nsigsolver · AppServiceCore.java:48' },
+  { n: 4, cat: 'need', name: 'Jetons anti-robot (PO token / BotGuard)', host: 'jnn-pa.googleapis.com · www.youtube.com/api/jnn · /att/get · /visitor_id',
+    sent: "Défi BotGuard résolu dans une WebView cachée, identifiant visiteur, identifiant de la vidéo.",
+    when: 'À la lecture', act: 'yes', actText: 'Oui', reco: 'garder',
+    why: 'YouTube bloque les flux sans ce jeton.', cost: '—',
+    src: 'youtubeapi/app/potokennp2 · PoTokenApi.kt:10' },
+  { n: 5, cat: 'need', name: 'Flux vidéo et audio', host: '*.googlevideo.com',
+    sent: 'Adresse signée du flux, plages d’octets, jeton PO.',
+    when: 'Pendant la lecture', act: 'yes', actText: 'Oui', reco: 'garder',
+    why: 'La vidéo elle-même.', cost: '—',
+    src: 'exoplayer-amzn · common/exoplayer/ExoMediaSourceFactory.java' },
+  { n: 6, cat: 'need', name: 'Miniatures, avatars, aperçus du curseur', host: 'i.ytimg.com · yt3.ggpht.com · yt4.ggpht.com',
+    sent: 'Téléchargement d’images.',
+    when: 'En naviguant', act: 'yes', actText: 'Oui', reco: 'garder',
+    why: 'Les images des cartes.', cost: '—',
+    src: 'YouTubeHelper.java:191 · YouTubeStoryParser.java' },
+  { n: 7, cat: 'need', name: 'Connexion au compte YouTube', host: 'www.youtube.com/o/oauth2/device/code · /o/oauth2/token',
+    sent: "Clé publique de l'appli YouTube TV (pas celle de yuliskov), identifiant d'appareil généré, code d'activation, puis jeton de rafraîchissement.",
+    when: 'À la connexion, puis renouvellement du jeton', act: 'yes', actText: 'Oui (si connecté)', reco: 'garder',
+    why: 'Abonnements, historique et recommandations du compte.', cost: '—',
+    src: 'youtubeapi/auth/V2/AuthApi.java:16-28 · AuthApiHelper.java:20' },
+  { n: 8, cat: 'need', name: 'Test de connexion', host: 'www.youtube.com (requête HEAD)',
+    sent: 'Rien (requête vide).',
+    when: "Au retour sur l'accueil après 3 h", act: 'yes', actText: 'Oui', reco: 'garder',
+    why: "Vérifie le réseau avant d'actualiser l'accueil.", cost: '—',
+    src: 'common/.../BrowsePresenter.java:150' },
+  { n: 9, cat: 'need', name: 'Mise à jour intégrée d’Oculo', host: 'github.com/francoisauger/oculo/releases (+ objects.githubusercontent.com)',
+    sent: "Téléchargement du manifeste oculo_stable.json puis de l'APK. En-tête Chrome générique, aucune info sur la télé (le bon APK est choisi sur la télé).",
+    when: 'Au démarrage, et sur « Vérifier les mises à jour »', act: 'yes', actText: 'Oui (réglable dans À propos)', reco: 'garder',
+    why: "C'est ton dépôt (public) : seul GitHub voit l'adresse IP.", cost: '—',
+    src: 'smarttubetv/src/oculo/res/values/arrays.xml:5 · AppUpdatePresenter.java:34' },
+  { n: 10, cat: 'need', name: 'Résolveur yt-dlp en secours', host: 'github.com/yt-dlp/ejs/releases/download/0.0.1/*.min.js',
+    sent: 'Téléchargement simple.',
+    when: "Seulement si le résolveur intégré à l'APK ne se charge pas", act: 'opt', actText: 'En pratique non (secours)', reco: 'garder',
+    why: "Filet de sécurité du projet yt-dlp, pas de yuliskov ; ne sert jamais tant que l'APK est intact.", cost: "Retrait : fichier de MediaServiceCore, gain nul.",
+    src: 'youtubeapi/app/nsigsolver/runtime/JsRuntimeChalBaseJCP.kt:169' },
+
+  // ---------- Optionnelles ----------
+  { n: 11, cat: 'opt', name: 'Historique de visionnage YouTube', host: 'www.youtube.com/api/stats/playback · /api/stats/watchtime',
+    sent: 'Identifiant de la vidéo, position, durée, identifiants de session de lecture, jeton du compte.',
+    when: 'Pendant la lecture (toutes les 3 min, pause, fin)', act: 'yes', actText: 'Oui par défaut', reco: 'desactivable',
+    why: "Même chose que l'appli officielle : sert l'historique et la reprise sur tes autres appareils. Déjà réglable (Historique, mode incognito).", cost: 'Rien à coder.',
+    src: 'youtubeapi/track/TrackingApi.java:17-70 · VideoStateController.java:583' },
+  { n: 12, cat: 'opt', name: 'Suggestions de recherche', host: 'clients1.google.com/complete/search · suggestqueries-clients6.youtube.com',
+    sent: 'Le texte tapé, la langue.',
+    when: 'En tapant une recherche', act: 'yes', actText: 'Oui', reco: 'garder',
+    why: "Service de Google, comme dans l'appli officielle.", cost: '—',
+    src: 'youtubeapi/search/v2/SearchApi2.java:13' },
+  { n: 13, cat: 'opt', name: 'Recherche vocale', host: 'Reconnaissance vocale du système (Google)',
+    sent: "L'audio, traité par l'appli Google de la télé, pas par Oculo.",
+    when: 'Sur le bouton micro', act: 'click', actText: 'Sur clic', reco: 'garder',
+    why: 'Passe par Android ; Oculo ne reçoit que le texte.', cost: '—',
+    src: 'smarttubetv/build.gradle (net.gotev:speech)' },
+  { n: 14, cat: 'opt', name: 'SponsorBlock (sauter les commandites)', host: 'sponsor.ajay.app/api/skipSegments (secours api.sponsor.ajay.app)',
+    sent: "Identifiant complet de chaque vidéo lancée, adresse IP. Lecture seule : aucun vote envoyé.",
+    when: 'À chaque vidéo', act: 'yes', actText: 'Oui par défaut', reco: 'desactivable',
+    why: 'Service tiers utile, déjà coupable dans les réglages. Variante plus discrète possible (préfixe haché de l’identifiant) mais il faudrait toucher MediaServiceCore.', cost: 'Le couper : rien à coder.',
+    src: 'youtubeapi/block/SponsorBlockApiHelper.java:4-5 · SponsorBlockData.java:250' },
+  { n: 15, cat: 'opt', name: 'Return YouTube Dislike (compteur de « je n’aime pas »)', host: 'returnyoutubedislikeapi.com/votes',
+    sent: 'Identifiant de chaque vidéo ouverte, adresse IP.',
+    when: 'À chaque vidéo, si « compteur de j’aime » est activé', act: 'yes', actText: 'Oui par défaut', reco: 'desactivable',
+    why: 'Service tiers, déjà coupable (compteur de j’aime). À toi de voir si le chiffre vaut l’envoi.', cost: 'Le couper : rien à coder.',
+    src: 'youtubeapi/next/v2/WatchNextApi.kt:29 · SuggestionsController.java:864 · PlayerTweaksData.java:749' },
+  { n: 16, cat: 'opt', name: 'DeArrow (titres et miniatures corrigés)', host: 'sponsor.ajay.app/api/branding · dearrow-thumb.ajay.app',
+    sent: 'Identifiant de chaque vidéo affichée.',
+    when: 'En naviguant, si activé', act: 'opt', actText: 'Non par défaut', reco: 'desactivable',
+    why: 'Coupé par défaut.', cost: '—',
+    src: 'youtubeapi/dearrow/DeArrowApiHelper.kt:7-8 · DeArrowData.java:22' },
+  { n: 17, cat: 'opt', name: 'Lier avec un téléphone (code TV)', host: 'www.youtube.com/api/lounge/*',
+    sent: "Identifiant d'écran, code d'association, nom de la télé, commandes du téléphone.",
+    when: 'Si activé', act: 'opt', actText: 'Non par défaut', reco: 'desactivable',
+    why: "Protocole officiel de YouTube pour piloter la télé depuis le téléphone.", cost: '—',
+    src: 'youtubeapi/lounge/BindManager.java · RemoteControlData.java:129' },
+  { n: 18, cat: 'opt', name: 'Apparaître dans « Caster » (DIAL)', host: 'Réseau local seulement (multicast 239.255.255.250:1900, port 8090)',
+    sent: 'Nom de la télé annoncé aux téléphones du même réseau.',
+    when: 'Si activé', act: 'opt', actText: 'Non par défaut', reco: 'desactivable',
+    why: "Ne sort pas de la maison.", cost: '—',
+    src: 'common/.../misc/DialServer.java:45-49 · RemoteControlData.java:135' },
+  { n: 19, cat: 'opt', name: 'Sauvegarde Google Drive des réglages', host: 'www.googleapis.com/drive/v3 · oauth2.googleapis.com',
+    sent: 'Fichier de sauvegarde des réglages, compte Google (portée limitée aux fichiers de l’appli).',
+    when: 'Sur demande, ou périodique si tu l’actives', act: 'opt', actText: 'Non par défaut', reco: 'desactivable',
+    why: "Utile, mais dépend des clés de yuliskov (carte 28). La sauvegarde locale reste disponible sans réseau.", cost: '—',
+    src: 'googleapi/drive3/DriveApi.kt:30-71 · GDriveBackupWorker.java:50' },
+  { n: 20, cat: 'opt', name: 'Infos de chaînes (YouTube Data API)', host: 'www.googleapis.com/youtube/v3/channels',
+    sent: "Identifiants de chaînes, avec la clé d'API de yuliskov.",
+    when: 'Import d’abonnements NewPipe, ou groupe de chaînes sans titre ni icône', act: 'opt', actText: 'Rare', reco: 'desactivable',
+    why: 'Dépend aussi de constants.json (carte 28).', cost: '—',
+    src: 'googleapi/youtubedata3/YouTubeDataApi.kt:12-21 · NewPipeService.kt:47' },
+  { n: 21, cat: 'opt', name: 'Flux RSS des chaînes', host: 'www.youtube.com/feeds/videos.xml',
+    sent: 'Identifiants de chaînes.',
+    when: 'Groupes de chaînes', act: 'opt', actText: 'Si utilisé', reco: 'garder',
+    why: 'Toujours chez YouTube.', cost: '—',
+    src: 'youtubeapi/rss/RssService.kt:20' },
+  { n: 22, cat: 'opt', name: 'Drapeau de la langue', host: 'flagcdn.com/w160/<pays>.png',
+    sent: 'Code du pays choisi, adresse IP.',
+    when: 'Si le bouton Langue est affiché dans la barre du haut', act: 'opt', actText: 'Non par défaut', reco: 'desactivable',
+    why: 'Petit tiers, coupé par défaut.', cost: 'Retrait : 1 ligne dans un fichier amont.',
+    src: 'common/.../utils/Utils.java:814 · NavigateTitleView.java:309' },
+  { n: 23, cat: 'opt', name: 'Proxy personnalisé', host: 'Ton proxy, puis www.youtube.com et www.google.com (test)',
+    sent: 'Tout le trafic passe par le proxy choisi.',
+    when: 'Si tu configures un proxy', act: 'opt', actText: 'Non par défaut', reco: 'garder',
+    why: 'Réglage avancé, inoffensif tant qu’il est vide.', cost: '—',
+    src: 'common/.../proxy/WebProxyDialog.java:128' },
+  { n: 24, cat: 'opt', name: 'DNS Google forcé', host: '8.8.8.8 · 8.8.4.4',
+    sent: 'Les noms des sites contactés (requêtes DNS).',
+    when: 'Si le réglage DNS est mis sur Google', act: 'opt', actText: 'Non (défaut : DNS du système)', reco: 'desactivable',
+    why: 'Option de dépannage réseau.', cost: '—',
+    src: 'sharedutils/okhttp/OkHttpCommons.java:272-283 · GlobalPreferences.java:154' },
+  { n: 25, cat: 'opt', name: 'Lecteur externe et partage', host: 'Une autre appli de la télé (intent Android)',
+    sent: "Adresse de la vidéo ou du flux, transmise à l'appli que tu choisis.",
+    when: 'Sur clic', act: 'click', actText: 'Sur clic', reco: 'garder',
+    why: "Reste sur la télé ; c'est l'autre appli qui décide ensuite.", cost: '—',
+    src: 'common/.../utils/Utils.java:196' },
+  { n: 26, cat: 'opt', name: 'Liens ouverts sur clic', host: 'sponsor.ajay.app · status.sponsor.ajay.app · dearrow.ajay.app · github.com/yuliskov/SmartTube (crédit) · github.com/francoisauger/oculo',
+    sent: 'Ouverture d’une page dans le navigateur intégré.',
+    when: 'Sur clic dans les réglages ou À propos', act: 'click', actText: 'Sur clic', reco: 'garder',
+    why: "Rien ne part sans geste. Le lien de crédit vers SmartTube est voulu (licence).", cost: '—',
+    src: 'SponsorBlockSettingsPresenter.java:136 · DeArrowSettingsPresenter.java:91 · oculo/res/values/arrays.xml:10' },
+
+  // ---------- Tiers / auteur ----------
+  { n: 27, cat: 'third', name: 'Codes QR fabriqués par un service tiers', host: 'api.qrserver.com/v1/create-qr-code',
+    sent: "Le texte du code QR : code d'activation de ton compte YouTube (youtube.com/qr/activate/<code>), lien de la vidéo avec la minute (« Partager le lien QR »), liens de l'écran À propos et des dons. Plus ton adresse IP.",
+    when: "Automatiquement à l'écran de connexion ; sur clic ailleurs", act: 'yes', actText: 'Oui', reco: 'retirer',
+    why: "<b>Le seul envoi de donnée liée au compte vers un tiers.</b> Un code QR se fabrique très bien sur la télé, sans réseau.", cost: "Remplacer par un générateur local : modifier une fonction de common (Utils) et l'écran de connexion, ajouter une petite bibliothèque QR. Un petit commit sur des fichiers amont, risque de conflit faible.",
+    src: 'common/.../utils/Utils.java:138,512 · SignInFragment.java:74 · YTSignInPresenter.java:69 · AppDialogUtil.java:169' },
+  { n: 28, cat: 'third', name: 'Clés Google de yuliskov (constants.json)', host: 'github.com/yuliskov/SmartTube/releases/download/latest/constants.json',
+    sent: "Rien de personnel : simple téléchargement (GitHub voit l'IP, yuliskov voit un compteur de téléchargements). Le fichier renvoie l'identifiant et le secret OAuth de son projet Google (Drive) et sa clé YouTube Data API.",
+    when: 'Une fois par lancement, seulement si la sauvegarde Drive ou les infos de chaînes servent (cartes 19, 20)', act: 'opt', actText: 'Seulement avec ces fonctions', reco: 'rediriger',
+    why: "<b>Dépendance de confiance envers yuliskov</b> : il peut changer ces clés quand il veut, et tes appels Drive passent par son projet Google. La connexion YouTube n'en dépend pas. Options : 1) garder tel quel ; 2) copier le fichier dans les Releases d'Oculo (même clés, mais plus de contact chez lui) ; 3) mieux, créer ton propre projet Google Cloud et y mettre tes clés ; 4) ne pas utiliser Drive et l'import NewPipe.", cost: "Changer l'adresse touche MediaServiceCore (sous-module gardé intact jusqu'ici) : fork du sous-module ou petit correctif appliqué au build. Ou rien à coder si tu n'utilises pas ces deux fonctions.",
+    src: 'googlecommon/common/constants/ConstantsApi.kt:10 · OAuth2Service.java:97-105 · YouTubeDataApi.kt:21' },
+  { n: 29, cat: 'third', name: '« Installer le bridge » (APK de yuliskov)', host: 'github.com/yuliskov/SmartTubeNext/releases/download/latest/ATV_SYTV_Bridge.apk · Amazon_SYTV_Bridge.apk',
+    sent: "Téléchargement d'un APK de yuliskov, puis proposition de désinstaller l'appli YouTube officielle pour installer ce « bridge » (recherche vocale).",
+    when: 'Bouton dans À propos', act: 'click', actText: 'Sur clic', reco: 'retirer',
+    why: "Installe un APK compilé par yuliskov, hors de ton contrôle, et retire l'appli YouTube ; conçu pour le paquet de SmartTube, pas pour Oculo.", cost: "Masquer le bouton : 1 ligne dans un fichier amont de common (écran À propos).",
+    src: 'ATVBridgePresenter.java:9 · AmazonBridgePresenter.java:9 · AboutSettingsPresenter.java:55' },
+  { n: 30, cat: 'third', name: 'Dons à yuliskov', host: 'patreon.com/smarttube · PayPal firsthash@gmail.com · adresses crypto',
+    sent: "Rien tant qu'on ne clique pas ; au clic, code QR fabriqué par api.qrserver.com (carte 27).",
+    when: 'Affiché dans À propos', act: 'click', actText: 'Sur clic', reco: 'retirer',
+    why: "Dons au projet amont dans ton appli : à retirer (ou à remplacer par un simple lien vers SmartTube si tu veux le soutenir).", cost: "Le plus simple de la liste : vider la liste des dons dans les ressources d'Oculo. Aucun fichier amont touché.",
+    src: 'common/src/main/res/values/donations.xml · AboutSettingsPresenter.java:131' },
+  { n: 31, cat: 'third', name: 'Fond noir chargé depuis un service fermé', host: 'via.placeholder.com/1280x720/000000/000000',
+    sent: 'Adresse IP (le service ne répond plus).',
+    when: 'Vidéo illisible ou direct à venir sans image', act: 'yes', actText: 'Oui (rare)', reco: 'retirer',
+    why: 'Appel inutile vers un tiers pour afficher du noir.', cost: '1 ligne dans un fichier amont (Video.java) ; faible priorité.',
+    src: 'common/.../models/data/Video.java:42,605' },
+
+  // ---------- Inactif ----------
+  { n: 32, cat: 'off', name: 'Firebase Crashlytics (rapports de plantage)', host: 'firebase-settings.crashlytics.com · firebaseinstallations.googleapis.com',
+    sent: '—', when: 'Versions officielles seulement (stbeta, ststable)', act: 'no', actText: 'Non', reco: 'rien',
+    why: "Bibliothèque non incluse dans la saveur oculo, extension Gradle jamais appliquée, google-services.json retiré.", cost: '—',
+    src: 'smarttubetv/build.gradle:34-41,241-247' },
+  { n: 33, cat: 'off', name: 'Canal de mise à jour de yuliskov', host: 'github.com/yuliskov/SmartTubeNext/…/smarttube_stable2.json · smarttube_beta2.json',
+    sent: '—', when: 'Versions officielles seulement', act: 'no', actText: 'Non', reco: 'rien',
+    why: "Remplacé par ton manifeste (carte 9) ; aucune adresse de secours vers yuliskov.", cost: '—',
+    src: 'common/src/ststable/res/values/update_urls.xml:4 · common/src/main/res/values/update_urls.xml (vide)' },
+  { n: 34, cat: 'off', name: 'Réinstaller SmartTube stable', host: 'github.com/yuliskov/SmartTube/…/smarttube_stable*.apk',
+    sent: '—', when: 'Jamais (aucun écran ne l’appelle)', act: 'no', actText: 'Non', reco: 'rien',
+    why: 'Code mort.', cost: '—', src: 'common/.../dialogs/StableRestorePresenter.java:12-14' },
+  { n: 35, cat: 'off', name: 'Jetons PO « en nuage »', host: 'service1.com · service2.com · 192.168.31.61:4416',
+    sent: '—', when: 'Jamais', act: 'no', actText: 'Non', reco: 'rien',
+    why: 'Code mort (adresses fictives et serveur de test de l’auteur).', cost: '—',
+    src: 'youtubeapi/app/potokencloud/Constants.kt · potokencloud2/Constants.kt' },
+  { n: 36, cat: 'off', name: 'DNS chiffré (DNS-over-HTTPS)', host: 'dns.google · 1.1.1.1 · dns.cloudflare.com · doh.cleanbrowsing.org',
+    sent: '—', when: 'Jamais (fonction jamais appelée)', act: 'no', actText: 'Non', reco: 'rien',
+    why: 'Code présent, non branché.', cost: '—', src: 'sharedutils/okhttp/DohProviders.kt · OkHttpCommons.java:365' },
+  { n: 37, cat: 'off', name: 'DNS Google du module de mise à jour', host: '8.8.8.8',
+    sent: '—', when: 'Jamais', act: 'no', actText: 'Non', reco: 'rien',
+    why: 'Classe jamais utilisée.', cost: '—', src: 'appupdatechecker2/.../GoogleResolver.java:37' },
+  { n: 38, cat: 'off', name: 'Telegram, Discord et site de SmartTube', host: 't.me/SmartTubeEN · t.me/SmartTubeNewsEN · discord.gg/… · smarttubeapp.github.io',
+    sent: '—', when: 'Jamais dans Oculo', act: 'no', actText: 'Non', reco: 'rien',
+    why: "Liens d'écran seulement, déjà remplacés par tes ressources (crédit + ton dépôt) ou commentés.", cost: '—',
+    src: 'common/src/main/res/values/feedback.xml:4-5 · unlocalized-strings.xml:3-5' },
+  { n: 39, cat: 'off', name: 'Catalogue de démonstration Android TV', host: 'storage.googleapis.com/android-tv/…',
+    sent: '—', when: 'Jamais (texte jamais lu)', act: 'no', actText: 'Non', reco: 'rien',
+    why: 'Reste du modèle de projet Google.', cost: '—', src: 'smarttubetv/src/main/res/values/strings.xml:24' },
+  { n: 40, cat: 'off', name: 'Journal réseau détaillé', host: 'Aucun (logcat local)',
+    sent: '—', when: 'Versions de débogage seulement', act: 'no', actText: 'Non', reco: 'rien',
+    why: 'Absent de la version release.', cost: '—', src: 'sharedutils/okhttp/OkHttpCommons.java:320-340' },
+  { n: 41, cat: 'off', name: '« Journal dans un fichier »', host: 'Aucun (fichier sur la télé)',
+    sent: '—', when: 'Si tu l’actives dans les réglages de débogage', act: 'no', actText: 'Aucun envoi', reco: 'rien',
+    why: "Écrit un fichier local ; aucun envoi par courriel, Telegram ou serveur. Idem pour le gestionnaire de plantages, qui reste local.", cost: '—',
+    src: 'sharedutils/mylogger/FileLogger.java:83-153 · MainApplication.java:142' }
+];
+
+const KEY = 'oculo-communications-choices-v1';
+const defaultKeep = it => it.reco !== 'retirer';
+let choices = {};
+try { choices = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { choices = {}; }
+const isKept = it => (it.n in choices) ? !!choices[it.n] : defaultKeep(it);
+function save() { try { localStorage.setItem(KEY, JSON.stringify(choices)); } catch (e) { /* storage unavailable */ } }
+
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const actClass = { yes: 'act-yes', opt: 'act-opt', click: 'act-click', no: 'act-no' };
+
+function renderTiles() {
+  const by = c => ITEMS.filter(i => i.cat === c).length;
+  const removed = ITEMS.filter(i => !isKept(i)).length;
+  document.getElementById('tiles').innerHTML = [
+    ['', ITEMS.length, 'communications recensées'],
+    ['k', by('need'), 'nécessaires'],
+    ['o', by('opt'), 'fonctionnalités optionnelles'],
+    ['x', by('third'), "vers un tiers ou l'auteur"],
+    ['', by('off'), 'inactives dans Oculo'],
+    ['r', removed, 'à retirer selon tes choix']
+  ].map(([c, v, l]) => `<div class="tile ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
+}
+
+function renderStatus() {
+  const changed = ITEMS.filter(i => isKept(i) !== defaultKeep(i)).length;
+  document.getElementById('status').textContent = changed
+    ? `${changed} choix différent${changed > 1 ? 's' : ''} de la recommandation`
+    : 'Choix = recommandations';
+}
+
+function card(it) {
+  const kept = isKept(it);
+  const changed = kept !== defaultKeep(it);
+  return `<article class="card${kept ? '' : ' off'}${changed ? ' changed' : ''}" id="c${it.n}">
+    <div class="top"><h4><small>${it.n}.</small>${esc(it.name)}</h4><span class="badge b-${it.reco}">${RECO[it.reco]}</span></div>
+    <div class="host">${esc(it.host)}</div>
+    <dl>
+      <dt>Envoyé</dt><dd>${esc(it.sent)}</dd>
+      <dt>Quand</dt><dd>${esc(it.when)}</dd>
+      <dt>Actif ?</dt><dd class="${actClass[it.act]}">${esc(it.actText)}</dd>
+    </dl>
+    <div class="why">${it.why}</div>
+    ${it.cost && it.cost !== '—' ? `<div class="cost">Coût : ${esc(it.cost)}</div>` : ''}
+    <div class="bottom">
+      <label class="keep"><input type="checkbox" data-n="${it.n}" ${kept ? 'checked' : ''}> Garder</label>
+      <span class="src">source : ${esc(it.src)}</span>
+    </div>
+  </article>`;
+}
+
+function render() {
+  document.getElementById('sections').innerHTML = CATS.map(c => {
+    const items = ITEMS.filter(i => i.cat === c.id);
+    return `<h2>${c.title} · ${items.length}</h2><p class="catdesc">${c.desc}</p><div class="grid">${items.map(card).join('')}</div>`;
+  }).join('');
+  renderTiles(); renderStatus();
+}
+
+document.getElementById('sections').addEventListener('change', e => {
+  const n = e.target.dataset && e.target.dataset.n;
+  if (!n) return;
+  const it = ITEMS.find(i => i.n === +n);
+  choices[it.n] = e.target.checked;
+  if (choices[it.n] === defaultKeep(it)) delete choices[it.n];
+  save();
+  const el = document.getElementById('c' + it.n);
+  el.classList.toggle('off', !e.target.checked);
+  el.classList.toggle('changed', e.target.checked !== defaultKeep(it));
+  renderTiles(); renderStatus();
+});
+
+document.getElementById('reset').addEventListener('click', () => { choices = {}; save(); render(); });
+
+function summary() {
+  const fmt = i => `${i.n}. ${i.name}`;
+  const removed = ITEMS.filter(i => !isKept(i));
+  const diff = ITEMS.filter(i => isKept(i) !== defaultKeep(i));
+  const lines = ['Oculo, communications : mes choix'];
+  lines.push('À retirer : ' + (removed.length ? removed.map(fmt).join(' ; ') : 'rien'));
+  lines.push('Différent de ta recommandation : ' + (diff.length
+    ? diff.map(i => `${fmt(i)} (${isKept(i) ? 'garder' : 'retirer'})`).join(' ; ')
+    : 'aucun, je suis tes recommandations'));
+  lines.push('Tout le reste : garder.');
+  return lines.join('\n');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 1600);
+}
+
+document.getElementById('copy').addEventListener('click', async () => {
+  const text = summary();
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('Choix copiés');
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e2) { ok = false; }
+    ta.remove();
+    if (ok) toast('Choix copiés'); else window.prompt('Copie ce texte :', text);
+  }
+});
+
+render();
+</script>
+</body>
+</html>
