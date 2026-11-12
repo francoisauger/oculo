@@ -1,0 +1,84 @@
+{
+  "name": "Oculo",
+  "source": "Measured from the approved logo (docs/mockups/logos-v3); teal scale built in OKLCH around the logo hue",
+  "brand": {
+    "frame": { "hex": "#0F4A52", "role": "Dark frame of the icon" },
+    "ink": { "hex": "#0B333A", "role": "Frame shadow, text on turquoise" },
+    "cyan": { "hex": "#2FE3F0", "role": "Screen gradient, start" },
+    "turquoise": { "hex": "#22D3C8", "role": "Screen gradient, middle; main accent" },
+    "mint": { "hex": "#78F5BE", "role": "Screen gradient, end" },
+    "frost": { "hex": "#D4F1F1", "role": "White frame, bottom (icon on dark)" },
+    "reflection": { "start": "rgba(255,255,255,0.34)", "end": "rgba(255,255,255,0.06)", "role": "Highlight across the screen" },
+    "gradientOnLight": ["#1FD2E0", "#16BFB4", "#5EE6A8"]
+  },
+  "teal": {
+    "50":  { "hex": "#E1FEFA", "onWhite": 1.06, "onDark": 17.63 },
+    "100": { "hex": "#C6FBF4", "onWhite": 1.13, "onDark": 16.51 },
+    "200": { "hex": "#98F5EB", "onWhite": 1.27, "onDark": 14.80 },
+    "300": { "hex": "#58EADD", "onWhite": 1.48, "onDark": 12.69 },
+    "400": { "hex": "#22D3C8", "onWhite": 1.87, "onDark": 10.01 },
+    "500": { "hex": "#02B6AE", "onWhite": 2.53, "onDark": 7.41 },
+    "600": { "hex": "#028481", "onWhite": 4.55, "onDark": 4.12 },
+    "700": { "hex": "#026F71", "onWhite": 5.97, "onDark": 3.14 },
+    "800": { "hex": "#02575D", "onWhite": 8.32, "onDark": 2.25 },
+    "900": { "hex": "#0F4A52", "onWhite": 9.90, "onDark": 1.89 },
+    "950": { "hex": "#0B333A", "onWhite": 13.56, "onDark": 1.38 }
+  },
+  "contrastNote": "onDark is measured against #121212",
+  "safe": {
+    "fillUnderWhiteText": ["600", "700", "800", "900", "950"],
+    "accentOnDark": ["50", "100", "200", "300", "400", "500", "600", "700"],
+    "textOnWhite": ["600", "700", "800", "900", "950"]
+  },
+  "neutralsDark": {
+    "black": "#000000",
+    "dark900": "#121212",
+    "dark850": "#131313",
+    "dark800": "#181818",
+    "dark700": "#282828",
+    "dark600": "#343434",
+    "text": "#FFFFFF",
+    "text2": "#E4E4E4",
+    "textMuted": "#A1A1A6",
+    "textFaint": "#7A7A7A"
+  },
+  "neutralsLight": {
+    "light0": "#FFFFFF",
+    "light50": "#F4F8F8",
+    "light100": "#E6EEEE",
+    "light200": "#C9D6D7",
+    "text": "#0B1C1F",
+    "textMuted": "#5C6B6D",
+    "siteDark": "#0B1C1F",
+    "siteDarkSurface": "#12282C",
+    "textOnSiteDarkMuted": "#9FB3B5"
+  },
+  "roles": {
+    "app": {
+      "accent": "#22D3C8",
+      "seekPlayed": "#22D3C8",
+      "seekBuffered": "#026F71",
+      "seekTrack": "rgba(255,255,255,0.22)",
+      "cardFocusBackground": "#22D3C8",
+      "cardFocusText": "#0B333A",
+      "switchOnThumb": "#22D3C8",
+      "switchOnTrack": "#026F71",
+      "badgeBackground": "#028481",
+      "badgeText": "#FFFFFF"
+    },
+    "website": {
+      "backgroundLight": "#F4F8F8",
+      "backgroundDark": "#0B1C1F",
+      "linkOnLight": "#026F71",
+      "linkOnDark": "#58EADD",
+      "buttonBackground": "#026F71",
+      "buttonBackgroundHover": "#02575D",
+      "buttonText": "#FFFFFF",
+      "buttonBackgroundOnDark": "#22D3C8",
+      "buttonTextOnDark": "#0B333A",
+      "buttonSecondaryOnLight": "#026F71",
+      "buttonSecondaryOnDark": "#58EADD",
+      "gradientBrand": "linear-gradient(135deg, #2FE3F0 0%, #22D3C8 55%, #78F5BE 100%)"
+    }
+  }
+}

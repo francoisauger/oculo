@@ -1,0 +1,80 @@
+/* Oculo palette. Brand colors measured from the approved logo (logos-v3), teal scale built in OKLCH
+   around the logo hue (400 = logo turquoise, 900 = logo frame, 950 = ink). */
+:root {
+  /* Brand colors (logo) */
+  --oculo-frame: #0F4A52;        /* dark frame of the icon */
+  --oculo-ink: #0B333A;          /* frame shadow, text on turquoise */
+  --oculo-cyan: #2FE3F0;         /* screen gradient, start */
+  --oculo-turquoise: #22D3C8;    /* screen gradient, middle: main accent */
+  --oculo-mint: #78F5BE;         /* screen gradient, end */
+  --oculo-frost: #D4F1F1;        /* white frame, bottom (icon on dark) */
+  --oculo-reflection-start: rgba(255, 255, 255, .34);
+  --oculo-reflection-end: rgba(255, 255, 255, .06);
+
+  /* Screen gradient, variant for light backgrounds (deeper) */
+  --oculo-cyan-deep: #1FD2E0;
+  --oculo-turquoise-deep: #16BFB4;
+  --oculo-mint-deep: #5EE6A8;
+
+  /* Teal scale */
+  --oculo-teal-50: #E1FEFA;
+  --oculo-teal-100: #C6FBF4;
+  --oculo-teal-200: #98F5EB;
+  --oculo-teal-300: #58EADD;
+  --oculo-teal-400: #22D3C8;
+  --oculo-teal-500: #02B6AE;
+  --oculo-teal-600: #028481;     /* lightest fill that carries white text (4.55:1) */
+  --oculo-teal-700: #026F71;
+  --oculo-teal-800: #02575D;
+  --oculo-teal-900: #0F4A52;
+  --oculo-teal-950: #0B333A;
+
+  /* Dark neutrals (app, SmartTube defaults) */
+  --oculo-black: #000000;        /* player */
+  --oculo-dark-900: #121212;     /* cards, grey scheme */
+  --oculo-dark-850: #131313;     /* default background */
+  --oculo-dark-800: #181818;     /* grey scheme background */
+  --oculo-dark-700: #282828;     /* rows, surfaces */
+  --oculo-dark-600: #343434;     /* raised surface */
+  --oculo-text-on-dark: #FFFFFF;
+  --oculo-text-on-dark-2: #E4E4E4;
+  --oculo-text-on-dark-muted: #A1A1A6;
+  --oculo-text-on-dark-faint: #7A7A7A;
+
+  /* Light neutrals (website), tinted with the brand hue */
+  --oculo-light-0: #FFFFFF;
+  --oculo-light-50: #F4F8F8;
+  --oculo-light-100: #E6EEEE;
+  --oculo-light-200: #C9D6D7;
+  --oculo-text-on-light: #0B1C1F;
+  --oculo-text-on-light-muted: #5C6B6D;
+  --oculo-site-dark: #0B1C1F;
+  --oculo-site-dark-surface: #12282C;
+  --oculo-text-on-site-dark-muted: #9FB3B5;
+
+  /* Roles: app */
+  --oculo-accent: var(--oculo-teal-400);
+  --oculo-seek-played: var(--oculo-teal-400);
+  --oculo-seek-buffered: var(--oculo-teal-700);
+  --oculo-seek-track: rgba(255, 255, 255, .22);
+  --oculo-card-focus-bg: var(--oculo-teal-400);
+  --oculo-card-focus-text: var(--oculo-teal-950);
+  --oculo-switch-on-thumb: var(--oculo-teal-400);
+  --oculo-switch-on-track: var(--oculo-teal-700);
+  --oculo-badge-bg: var(--oculo-teal-600);
+  --oculo-badge-text: #FFFFFF;
+
+  /* Roles: website */
+  --oculo-site-bg-light: var(--oculo-light-50);
+  --oculo-site-bg-dark: var(--oculo-site-dark);
+  --oculo-link-on-light: var(--oculo-teal-700);
+  --oculo-link-on-dark: var(--oculo-teal-300);
+  --oculo-button-bg: var(--oculo-teal-700);
+  --oculo-button-bg-hover: var(--oculo-teal-800);
+  --oculo-button-text: #FFFFFF;
+  --oculo-button-bg-on-dark: var(--oculo-teal-400);
+  --oculo-button-text-on-dark: var(--oculo-teal-950);
+  --oculo-button-secondary-on-light: var(--oculo-teal-700);
+  --oculo-button-secondary-on-dark: var(--oculo-teal-300);
+  --oculo-gradient-brand: linear-gradient(135deg, #2FE3F0 0%, #22D3C8 55%, #78F5BE 100%);
+}

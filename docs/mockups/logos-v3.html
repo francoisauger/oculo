@@ -66,6 +66,77 @@
   .slot.fen { background: linear-gradient(135deg, #2a1f8a, #160f52); display: grid; place-items: center; }
   .slot.fen img { width: 96px; height: 96px; }
   .tv .under { margin: 6px 0 0 290px; font: 700 15px/1 var(--round); color: #fff; }
+  .pal h3 { font: 800 18px/1.2 var(--round); margin: 30px 0 4px; }
+  .pal h3:first-of-type { margin-top: 8px; }
+  .pal .why { margin-bottom: 14px; }
+  .sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .sw { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); min-width: 0; }
+  .sw .chip { height: 84px; }
+  .sw .meta { padding: 10px 12px 12px; font-size: 12px; color: var(--muted); }
+  .sw .meta b { display: block; font: 700 14px/1.3 var(--round); color: var(--text); }
+  .sw .meta code { font: 600 12px/1.4 ui-monospace, "SF Mono", Menlo, monospace; color: var(--text); }
+  .scale { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+  .scale div { padding: 12px 6px 10px; min-height: 118px; display: flex; flex-direction: column; justify-content: space-between; font-size: 11px; }
+  .scale .n { font: 800 14px/1 var(--round); }
+  .scale code { font: 600 10.5px/1.3 ui-monospace, "SF Mono", Menlo, monospace; word-break: break-all; }
+  .scale .k { display: flex; gap: 3px; flex-wrap: wrap; }
+  .scale .k span { font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 999px; background: rgba(255,255,255,.75); color: #0B333A; }
+  .scale .on-light .k span { background: rgba(11,51,58,.85); color: #fff; }
+  @media (max-width: 760px) { .scale { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .keys { font-size: 12px; color: var(--muted); margin-top: 8px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .keys b { color: var(--text); font-weight: 700; }
+  .neu { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .neu { grid-template-columns: 1fr; } }
+  .neu-col { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+  .neu-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 11px 14px; font-size: 13px; align-items: center; }
+  .neu-row code { font: 600 12px/1 ui-monospace, "SF Mono", Menlo, monospace; opacity: .85; }
+  .tbl-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--line); }
+  table.roles { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 560px; }
+  table.roles th, table.roles td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  table.roles th { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--surface-2); }
+  table.roles tr.grp td { font: 800 14px/1.2 var(--round); background: var(--surface-2); padding-top: 14px; }
+  table.roles tr:last-child td { border-bottom: 0; }
+  table.roles .dot { display: inline-block; width: 14px; height: 14px; border-radius: 5px; vertical-align: -2px; margin-right: 6px; border: 1px solid rgba(127,127,127,.35); }
+  table.roles code { font: 600 12px/1 ui-monospace, "SF Mono", Menlo, monospace; }
+  table.roles .cr { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .samples { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .samples { grid-template-columns: 1fr; } }
+  .smp { border-radius: 20px; padding: 24px; min-width: 0; }
+  .smp .label { margin-bottom: 14px; }
+  .smp.app { background: #131313; color: #fff; border: 1px solid rgba(255,255,255,.06); }
+  .smp.app .label, .smp.sdark .label { color: #9FB3B5; }
+  .smp.slight { background: #F4F8F8; color: #0B1C1F; border: 1px solid rgba(0,0,0,.06); }
+  .smp.slight .label { color: #5C6B6D; }
+  .smp.sdark { background: #0B1C1F; color: #fff; border: 1px solid rgba(255,255,255,.06); }
+  .seek { position: relative; height: 6px; border-radius: 3px; background: rgba(255,255,255,.22); margin: 26px 0 10px; }
+  .seek .buf { position: absolute; inset: 0 32% 0 0; border-radius: 3px; background: #026F71; }
+  .seek .played { position: absolute; inset: 0 58% 0 0; border-radius: 3px; background: #22D3C8; }
+  .seek .knob { position: absolute; left: 42%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: #22D3C8; box-shadow: 0 0 0 3px rgba(34,211,200,.25); }
+  .seek-meta { display: flex; justify-content: space-between; font-size: 12px; color: #A1A1A6; }
+  .seek-key { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11.5px; color: #A1A1A6; margin-top: 14px; }
+  .seek-key i { display: inline-block; width: 18px; height: 6px; border-radius: 3px; vertical-align: middle; margin-right: 6px; }
+  .cards { display: flex; gap: 14px; align-items: center; }
+  .card { flex: 1; min-width: 0; border-radius: 8px; overflow: hidden; background: #282828; }
+  .card .th { height: 70px; background: linear-gradient(135deg, #2a3138, #1a1e24); }
+  .card .tx { padding: 8px 10px 10px; font-size: 12px; line-height: 1.3; color: #E4E4E4; }
+  .card .tx small { display: block; color: #A1A1A6; font-size: 11px; }
+  .card.focus { flex: 1.15; background: #22D3C8; box-shadow: 0 0 0 2px #fff, 0 12px 28px rgba(0,0,0,.55); }
+  .card.focus .tx, .card.focus .tx small { color: #0B333A; }
+  .card.focus .tx { font-weight: 700; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 2px 7px; border-radius: 4px; background: #028481; color: #fff; margin: 8px 0 0 8px; }
+  .sw-switch { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: #E4E4E4; margin-top: 18px; }
+  .sw-switch .tr { width: 40px; height: 22px; border-radius: 11px; background: #026F71; position: relative; }
+  .sw-switch .tr::after { content: ""; position: absolute; right: 2px; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #22D3C8; }
+  .btns { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn { font: 700 14px/1 var(--round); padding: 12px 18px; border-radius: 999px; text-decoration: none; display: inline-block; }
+  .slight .btn.p { background: #026F71; color: #fff; } .slight .btn.s { border: 1.5px solid #026F71; color: #026F71; }
+  .sdark .btn.p { background: #22D3C8; color: #0B333A; } .sdark .btn.s { border: 1.5px solid #58EADD; color: #58EADD; }
+  .smp p.txt { margin: 16px 0 0; font-size: 14px; }
+  .slight p.txt { color: #5C6B6D; } .sdark p.txt { color: #9FB3B5; }
+  .slight p.txt a { color: #026F71; font-weight: 600; } .sdark p.txt a { color: #58EADD; font-weight: 600; }
+  .grad { height: 64px; border-radius: 16px; background: linear-gradient(135deg, #2FE3F0 0%, #22D3C8 55%, #78F5BE 100%); position: relative; overflow: hidden; }
+  .grad::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,.34), rgba(255,255,255,.06) 45%, transparent 46%); }
+  .grad-k { display: flex; justify-content: space-between; font: 600 12px/1 ui-monospace, "SF Mono", Menlo, monospace; color: var(--muted); margin-top: 8px; }
   footer { margin-top: 40px; color: var(--muted); font-size: 13px; text-align: center; }
 </style>
 </head>
@@ -144,6 +215,128 @@
       <div class="slot ghost"><span></span></div>
     </div>
     <div class="under">Oculo</div>
+  </section>
+
+  <section class="pal" id="palette">
+    <h2>Palette Oculo</h2>
+    <p class="why">Les couleurs tirées du logo, une gamme de sarcelles pour les accents, les neutres de l’app et du site, puis l’usage suggéré de chacune. Le contraste est indiqué en ratio (blanc = sur fond blanc, foncé = sur #121212).</p>
+
+    <h3>Couleurs de marque</h3>
+    <p class="why">Mesurées sur le logo approuvé.</p>
+    <div class="sw-grid">
+      <div class="sw"><div class="chip" style="background:#0F4A52"></div><div class="meta"><b>Cadre</b><code>#0F4A52</code><br>RGB 15, 74, 82<br>Cadre de l’icône, logotype sur fond clair</div></div>
+      <div class="sw"><div class="chip" style="background:#0B333A"></div><div class="meta"><b>Encre</b><code>#0B333A</code><br>RGB 11, 51, 58<br>Ombre du cadre, texte sur turquoise</div></div>
+      <div class="sw"><div class="chip" style="background:#2FE3F0"></div><div class="meta"><b>Cyan</b><code>#2FE3F0</code><br>RGB 47, 227, 240<br>Début du dégradé de l’écran</div></div>
+      <div class="sw"><div class="chip" style="background:#22D3C8"></div><div class="meta"><b>Turquoise</b><code>#22D3C8</code><br>RGB 34, 211, 200<br>Cœur du dégradé, accent principal</div></div>
+      <div class="sw"><div class="chip" style="background:#78F5BE"></div><div class="meta"><b>Menthe</b><code>#78F5BE</code><br>RGB 120, 245, 190<br>Fin du dégradé de l’écran</div></div>
+      <div class="sw"><div class="chip" style="background:linear-gradient(160deg, rgba(255,255,255,.34), rgba(255,255,255,.06)), #D4F1F1"></div><div class="meta"><b>Givre et reflet</b><code>#D4F1F1</code><br>RGB 212, 241, 241<br>Bas du cadre blanc ; reflet blanc 34 % → 6 %</div></div>
+    </div>
+
+    <h3>Gamme sarcelle</h3>
+    <p class="why">Construite sur la teinte du logo : 400 est le turquoise du logo, 900 le cadre, 950 l’encre. Les pas 500 à 700 donnent des sarcelles franches et plus profondes, bien distinctes du blanc.</p>
+    <div class="scale">
+      <div class="on-light" style="background:#E1FEFA;color:#0B333A"><span class="n">50</span><code>#E1FEFA</code><span class="k"><span>S</span></span></div>
+      <div class="on-light" style="background:#C6FBF4;color:#0B333A"><span class="n">100</span><code>#C6FBF4</code><span class="k"><span>S</span></span></div>
+      <div class="on-light" style="background:#98F5EB;color:#0B333A"><span class="n">200</span><code>#98F5EB</code><span class="k"><span>S</span></span></div>
+      <div class="on-light" style="background:#58EADD;color:#0B333A"><span class="n">300</span><code>#58EADD</code><span class="k"><span>S</span></span></div>
+      <div class="on-light" style="background:#22D3C8;color:#0B333A"><span class="n">400</span><code>#22D3C8</code><span class="k"><span>S</span></span></div>
+      <div class="on-light" style="background:#02B6AE;color:#0B333A"><span class="n">500</span><code>#02B6AE</code><span class="k"><span>S</span></span></div>
+      <div style="background:#028481;color:#fff"><span class="n">600</span><code>#028481</code><span class="k"><span>B</span><span>S</span><span>C</span></span></div>
+      <div style="background:#026F71;color:#fff"><span class="n">700</span><code>#026F71</code><span class="k"><span>B</span><span>S</span><span>C</span></span></div>
+      <div style="background:#02575D;color:#fff"><span class="n">800</span><code>#02575D</code><span class="k"><span>B</span><span>C</span></span></div>
+      <div style="background:#0F4A52;color:#fff"><span class="n">900</span><code>#0F4A52</code><span class="k"><span>B</span><span>C</span></span></div>
+      <div style="background:#0B333A;color:#fff"><span class="n">950</span><code>#0B333A</code><span class="k"><span>B</span><span>C</span></span></div>
+    </div>
+    <div class="keys"><span><b>B</b> fond sous texte ou icône blancs (4,5 : 1 ou plus, dès 600 : 4,55)</span><span><b>S</b> accent sur fond foncé (3 : 1 ou plus sur #121212, jusqu’à 700 : 3,14)</span><span><b>C</b> texte ou accent sur fond blanc (4,5 : 1 ou plus, dès 600)</span></div>
+
+    <h3>Neutres</h3>
+    <p class="why">À gauche, les gris foncés de SmartTube, gardés tels quels dans l’app. À droite, les neutres du site, légèrement teintés de sarcelle.</p>
+    <div class="neu">
+      <div class="neu-col">
+        <div class="neu-row" style="background:#000000;color:#fff"><span>Lecteur</span><code>#000000</code></div>
+        <div class="neu-row" style="background:#121212;color:#fff"><span>Fond des cartes</span><code>#121212</code></div>
+        <div class="neu-row" style="background:#131313;color:#fff"><span>Fond de l’app</span><code>#131313</code></div>
+        <div class="neu-row" style="background:#181818;color:#fff"><span>Fond, thème gris</span><code>#181818</code></div>
+        <div class="neu-row" style="background:#282828;color:#fff"><span>Rangées, surfaces</span><code>#282828</code></div>
+        <div class="neu-row" style="background:#343434;color:#fff"><span>Surface relevée</span><code>#343434</code></div>
+        <div class="neu-row" style="background:#121212;color:#FFFFFF"><span>Texte principal · 18,7</span><code>#FFFFFF</code></div>
+        <div class="neu-row" style="background:#121212;color:#E4E4E4"><span>Texte · 14,7</span><code>#E4E4E4</code></div>
+        <div class="neu-row" style="background:#121212;color:#A1A1A6"><span>Texte secondaire · 7,3</span><code>#A1A1A6</code></div>
+        <div class="neu-row" style="background:#121212;color:#7A7A7A"><span>Texte discret · 4,4</span><code>#7A7A7A</code></div>
+      </div>
+      <div class="neu-col">
+        <div class="neu-row" style="background:#FFFFFF;color:#0B1C1F"><span>Blanc</span><code>#FFFFFF</code></div>
+        <div class="neu-row" style="background:#F4F8F8;color:#0B1C1F"><span>Fond clair du site</span><code>#F4F8F8</code></div>
+        <div class="neu-row" style="background:#E6EEEE;color:#0B1C1F"><span>Surface, zone alternée</span><code>#E6EEEE</code></div>
+        <div class="neu-row" style="background:#C9D6D7;color:#0B1C1F"><span>Bordures</span><code>#C9D6D7</code></div>
+        <div class="neu-row" style="background:#FFFFFF;color:#0B1C1F"><span>Texte principal · 17,5</span><code>#0B1C1F</code></div>
+        <div class="neu-row" style="background:#FFFFFF;color:#5C6B6D"><span>Texte secondaire · 5,6</span><code>#5C6B6D</code></div>
+        <div class="neu-row" style="background:#0B1C1F;color:#fff"><span>Fond foncé du site</span><code>#0B1C1F</code></div>
+        <div class="neu-row" style="background:#12282C;color:#fff"><span>Surface foncée du site</span><code>#12282C</code></div>
+        <div class="neu-row" style="background:#0B1C1F;color:#9FB3B5"><span>Texte secondaire sur foncé · 8,0</span><code>#9FB3B5</code></div>
+      </div>
+    </div>
+
+    <h3>Rôles suggérés</h3>
+    <div class="tbl-wrap">
+      <table class="roles">
+        <tr><th>Usage</th><th>Couleur</th><th>Contraste</th></tr>
+        <tr class="grp"><td colspan="3">App</td></tr>
+        <tr><td>Accent principal</td><td><span class="dot" style="background:#22D3C8"></span><code>#22D3C8</code> · 400</td><td class="cr">10,0 sur foncé</td></tr>
+        <tr><td>Barre de lecture : partie lue</td><td><span class="dot" style="background:#22D3C8"></span><code>#22D3C8</code> · 400</td><td class="cr">10,0 sur foncé</td></tr>
+        <tr><td>Barre de lecture : mise en mémoire</td><td><span class="dot" style="background:#026F71"></span><code>#026F71</code> · 700</td><td class="cr">3,1 sur foncé</td></tr>
+        <tr><td>Barre de lecture : reste</td><td><span class="dot" style="background:rgba(255,255,255,.22)"></span><code>blanc 22 %</code></td><td class="cr">piste neutre</td></tr>
+        <tr><td>Carte sélectionnée : fond et texte</td><td><span class="dot" style="background:#22D3C8"></span><code>#22D3C8</code> + <span class="dot" style="background:#0B333A"></span><code>#0B333A</code></td><td class="cr">7,2</td></tr>
+        <tr><td>Interrupteur activé : pastille et piste</td><td><span class="dot" style="background:#22D3C8"></span><code>#22D3C8</code> + <span class="dot" style="background:#026F71"></span><code>#026F71</code></td><td class="cr">10,0 / 3,1 sur foncé</td></tr>
+        <tr><td>Pastilles (EN DIRECT, NOUVEAU)</td><td><span class="dot" style="background:#028481"></span><code>#028481</code> · 600, texte blanc</td><td class="cr">4,55</td></tr>
+        <tr class="grp"><td colspan="3">Site web</td></tr>
+        <tr><td>Fond clair</td><td><span class="dot" style="background:#F4F8F8"></span><code>#F4F8F8</code>, texte <code>#0B1C1F</code></td><td class="cr">16,4</td></tr>
+        <tr><td>Fond foncé</td><td><span class="dot" style="background:#0B1C1F"></span><code>#0B1C1F</code>, texte blanc</td><td class="cr">17,5</td></tr>
+        <tr><td>Lien</td><td><span class="dot" style="background:#026F71"></span><code>#026F71</code> sur clair · <span class="dot" style="background:#58EADD"></span><code>#58EADD</code> sur foncé</td><td class="cr">6,0 / 11,9</td></tr>
+        <tr><td>Bouton principal sur clair</td><td><span class="dot" style="background:#026F71"></span><code>#026F71</code>, texte blanc ; survol <code>#02575D</code></td><td class="cr">6,0 / 8,3</td></tr>
+        <tr><td>Bouton principal sur foncé</td><td><span class="dot" style="background:#22D3C8"></span><code>#22D3C8</code>, texte <code>#0B333A</code></td><td class="cr">7,2</td></tr>
+        <tr><td>Bouton secondaire</td><td>contour et texte <code>#026F71</code> sur clair · <code>#58EADD</code> sur foncé</td><td class="cr">6,0 / 11,9</td></tr>
+        <tr><td>Dégradé de marque (bandeau d’accueil)</td><td><span class="dot" style="background:linear-gradient(135deg,#2FE3F0,#22D3C8 55%,#78F5BE)"></span><code>#2FE3F0 → #22D3C8 → #78F5BE</code>, texte <code>#0B333A</code></td><td class="cr">7,2 au minimum</td></tr>
+      </table>
+    </div>
+
+    <h3>Exemples</h3>
+    <div class="samples">
+      <div class="smp app">
+        <div class="label">Barre de lecture dans l’app</div>
+        <div class="seek"><div class="buf"></div><div class="played"></div><div class="knob"></div></div>
+        <div class="seek-meta"><span>4:12</span><span>9:58</span></div>
+        <div class="seek-key"><span><i style="background:#22D3C8"></i>lue</span><span><i style="background:#026F71"></i>mise en mémoire</span><span><i style="background:rgba(255,255,255,.22)"></i>reste</span></div>
+        <div class="sw-switch"><span class="tr"></span>Interrupteur activé</div>
+      </div>
+      <div class="smp app">
+        <div class="label">Carte sélectionnée dans l’app</div>
+        <div class="cards">
+          <div class="card"><div class="th"></div><div class="tx">Vidéo voisine<small>Il y a 2 jours</small></div></div>
+          <div class="card focus"><div class="th"><span class="pill">NOUVEAU</span></div><div class="tx">Vidéo sélectionnée<small>1,2 M de vues</small></div></div>
+          <div class="card"><div class="th"></div><div class="tx">Vidéo voisine<small>Il y a 1 semaine</small></div></div>
+        </div>
+      </div>
+      <div class="smp slight">
+        <div class="label">Site web, fond clair</div>
+        <div class="btns"><a class="btn p">Télécharger Oculo</a><a class="btn s">En savoir plus</a></div>
+        <p class="txt">Oculo s’installe sur votre télé Android. <a>Voir le guide d’installation</a>.</p>
+      </div>
+      <div class="smp sdark">
+        <div class="label">Site web, fond foncé</div>
+        <div class="btns"><a class="btn p">Télécharger Oculo</a><a class="btn s">En savoir plus</a></div>
+        <p class="txt">Oculo s’installe sur votre télé Android. <a>Voir le guide d’installation</a>.</p>
+      </div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="label">Dégradé de marque</div>
+      <div class="grad"></div>
+      <div class="grad-k"><span>#2FE3F0</span><span>#22D3C8</span><span>#78F5BE</span></div>
+    </div>
+    <div class="links">
+      <a href="logos-v3/oculo-palette.css" target="_blank">Palette en CSS</a>
+      <a href="logos-v3/oculo-palette.json" target="_blank">Palette en JSON</a>
+    </div>
   </section>
 
   <footer>Oculo · logo, troisième tour, 12 novembre 2026</footer>
