@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo palette, measured from the approved logo (docs/mockups/logos-v3/). Overrides colors from the app
+     module and from the library modules (common). Dark backgrounds stay upstream's; only accents change. -->
+<resources>
+    <!-- Logo screen gradient: cyan -> turquoise -> mint -->
+    <color name="oculo_cyan">#2FE3F0</color>
+    <color name="oculo_turquoise">#22D3C8</color>
+    <color name="oculo_mint">#78F5BE</color>
+    <!-- Buffered part of the seek bar (lighter than the played part) -->
+    <color name="oculo_turquoise_pale">#A6F0EA</color>
+    <!-- Mid teal for surfaces that carry white text or icons (badges, search orb): 4.8:1 with white -->
+    <color name="oculo_teal">#0B7F7D</color>
+    <!-- Logo frame: deep teal -->
+    <color name="oculo_deep">#0F4A52</color>
+    <color name="oculo_deep_dark">#0B333A</color>
+
+    <!-- "Teal" color scheme (upstream #0096a6 / #004B53) re-tinted to Oculo's teals -->
+    <color name="fastlane_background">@color/oculo_teal</color>
+    <color name="fastlane_background_dark">@color/oculo_deep</color>
+    <color name="card_default_background">@color/oculo_teal</color>
+    <color name="card_default_background_dark">@color/oculo_deep</color>
+    <color name="search_opaque">@color/oculo_teal</color>
+
+    <!-- Text on focused cards (turquoise or white background): deep teal, 7.2:1 on turquoise, 13.6:1 on white -->
+    <color name="card_selected_text_grey">@color/oculo_deep_dark</color>
+
+    <!-- Card badges (LIVE, NEW, upcoming) and "new content" channel cards: upstream dark red -> Oculo teal -->
+    <color name="dark_red">@color/oculo_teal</color>
+    <!-- Keep the "Red" color scheme red (it pointed at dark_red) -->
+    <color name="scheme_red_background_dark">#B31217</color>
+</resources>

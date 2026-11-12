@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oculo colors</title>
+<style>
+  :root {
+    --cyan: #2FE3F0; --turquoise: #22D3C8; --mint: #78F5BE; --pale: #A6F0EA;
+    --teal: #0B7F7D; --deep: #0F4A52; --deep-dark: #0B333A;
+    --shelf: #000000; --card: #121212; --headers: #181818;
+    --bg: #0e0e12; --text: #f2f2f6; --muted: #9a9aa8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 40px 0 14px; font-weight: 600; }
+  p.lead { color: var(--muted); margin: 0; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .sw { border-radius: 14px; overflow: hidden; background: #17171d; border: 1px solid rgba(255,255,255,.06); }
+  .sw .chip { height: 84px; display: flex; align-items: flex-end; padding: 8px 10px; font-weight: 600; font-size: 13px; }
+  .sw .meta { padding: 8px 10px 10px; font-size: 12px; color: var(--muted); }
+  .sw .meta b { color: var(--text); font-family: ui-monospace, Menlo, monospace; font-weight: 500; }
+  .gradient { height: 40px; border-radius: 12px; background: linear-gradient(90deg, var(--cyan), var(--turquoise) 55%, var(--mint)); margin-top: 12px; }
+  .tv { background: var(--shelf); border-radius: 20px; padding: 0; overflow: hidden; display: grid; grid-template-columns: 180px 1fr; border: 1px solid rgba(255,255,255,.06); }
+  .headers { background: var(--headers); padding: 20px 0; }
+  .headers .logo { display: flex; align-items: center; gap: 8px; padding: 0 18px 18px; font-weight: 700; font-size: 18px; }
+  .orb { width: 30px; height: 30px; border-radius: 50%; background: var(--teal); display: grid; place-items: center; }
+  .orb svg { width: 16px; height: 16px; }
+  .headers li { list-style: none; padding: 7px 18px; color: #8a8a8a; font-size: 14px; }
+  .headers li.on { color: #fff; font-weight: 600; }
+  .headers ul { margin: 0; padding: 0; }
+  .rows { padding: 22px 20px; min-width: 0; }
+  .row-title { font-size: 14px; color: #ddd; margin-bottom: 10px; }
+  .cards { display: flex; gap: 14px; align-items: flex-start; overflow: hidden; }
+  .vc { width: 210px; flex: none; background: var(--card); border-radius: 4px; overflow: hidden; }
+  .vc.focus { transform: scale(1.1); transform-origin: left center; margin-right: 22px; box-shadow: 0 8px 28px rgba(0,0,0,.6); }
+  .thumb { height: 118px; position: relative; background: linear-gradient(135deg, #2a3646, #151b24); }
+  .thumb.b { background: linear-gradient(135deg, #3c2f2a, #1c1714); }
+  .thumb.c { background: linear-gradient(135deg, #24382f, #111b16); }
+  .badge { position: absolute; right: 6px; bottom: 9px; background: #000; color: #fff; font-size: 11px; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
+  .badge.live { background: var(--teal); }
+  .prog { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(255,255,255,.2); }
+  .prog i { display: block; height: 100%; background: var(--turquoise); }
+  .info { padding: 8px 10px 10px; color: #fff; }
+  .info .t { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .info .s { font-size: 12px; opacity: .8; }
+  .vc.focus .info { background: var(--turquoise); color: var(--deep-dark); }
+  .vc.focus .info .s { opacity: 1; }
+  .player { margin-top: 18px; background: linear-gradient(180deg, #1c2a35, #05080b); border-radius: 20px; padding: 120px 28px 26px; position: relative; overflow: hidden; }
+  .player .title { font-size: 20px; font-weight: 600; }
+  .player .sub { color: #bbb; font-size: 13px; margin-bottom: 14px; }
+  .player .sub b { color: var(--turquoise); font-weight: 700; }
+  .seek { position: relative; height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); }
+  .seek .buf { position: absolute; inset: 0 auto 0 0; width: 62%; background: var(--pale); border-radius: 3px; }
+  .seek .played { position: absolute; inset: 0 auto 0 0; width: 38%; background: var(--turquoise); border-radius: 3px; }
+  .seek .knob { position: absolute; left: 38%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--turquoise); box-shadow: 0 0 0 4px rgba(34,211,200,.25); }
+  .times { display: flex; justify-content: space-between; color: #ccc; font-size: 12px; margin-top: 8px; }
+  .btns { display: flex; gap: 14px; margin-top: 14px; }
+  .btn { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff; }
+  .btn.f { background: rgba(238,238,238,.53); color: #111; }
+  .btn.hl { color: var(--turquoise); }
+  .settings { margin-top: 18px; background: #181818; border-radius: 20px; padding: 18px 0; max-width: 460px; }
+  .pref { display: flex; align-items: center; justify-content: space-between; padding: 12px 22px; font-size: 15px; }
+  .pref.f { background: rgba(255,255,255,.12); }
+  .sw-toggle { width: 40px; height: 22px; border-radius: 11px; background: #555; position: relative; flex: none; }
+  .sw-toggle::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #ddd; }
+  .sw-toggle.on { background: rgba(34,211,200,.5); }
+  .sw-toggle.on::after { left: 20px; background: var(--turquoise); }
+  .radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #aaa; flex: none; }
+  .radio.on { border-color: var(--turquoise); box-shadow: inset 0 0 0 3px #181818; background: var(--turquoise); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  td, th { text-align: left; padding: 7px 8px; border-bottom: 1px solid rgba(255,255,255,.08); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+  @media (max-width: 760px) {
+    .tv { grid-template-columns: 1fr; }
+    .headers { display: none; }
+    .grid2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Couleurs d'Oculo</h1>
+  <p class="lead">Accents tirés du logo approuvé (logos-v3), appliqués au thème par défaut « Gris foncé ». Les fonds sombres restent ceux de SmartTube. Version 32.74-2.</p>
+
+  <h2>Palette</h2>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#2FE3F0;color:#0B333A">Cyan</div><div class="meta"><b>#2FE3F0</b><br>haut de l'écran du logo</div></div>
+    <div class="sw"><div class="chip" style="background:#22D3C8;color:#0B333A">Turquoise</div><div class="meta"><b>#22D3C8</b><br>accent principal</div></div>
+    <div class="sw"><div class="chip" style="background:#78F5BE;color:#0B333A">Menthe</div><div class="meta"><b>#78F5BE</b><br>bas de l'écran du logo</div></div>
+    <div class="sw"><div class="chip" style="background:#A6F0EA;color:#0B333A">Turquoise pâle</div><div class="meta"><b>#A6F0EA</b><br>partie chargée de la barre</div></div>
+    <div class="sw"><div class="chip" style="background:#0B7F7D;color:#fff">Sarcelle</div><div class="meta"><b>#0B7F7D</b><br>pastilles, loupe (texte blanc 4,8:1)</div></div>
+    <div class="sw"><div class="chip" style="background:#0F4A52;color:#fff">Sarcelle foncée</div><div class="meta"><b>#0F4A52</b><br>cadre du logo</div></div>
+    <div class="sw"><div class="chip" style="background:#0B333A;color:#fff">Encre</div><div class="meta"><b>#0B333A</b><br>texte des cartes en focus (7,2:1)</div></div>
+  </div>
+  <div class="gradient" aria-hidden="true"></div>
+
+  <h2>Accueil</h2>
+  <div class="tv">
+    <div class="headers">
+      <div class="logo"><span class="orb"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></span>Oculo</div>
+      <ul><li>Accueil</li><li class="on">Abonnements</li><li>Historique</li><li>Playlists</li><li>Paramètres</li></ul>
+    </div>
+    <div class="rows">
+      <div class="row-title">Abonnements</div>
+      <div class="cards">
+        <div class="vc focus"><div class="thumb"><span class="badge">12:47</span><div class="prog"><i style="width:45%"></i></div></div><div class="info"><div class="t">Carte en focus : fond turquoise</div><div class="s">Texte encre · 1,2 k vues</div></div></div>
+        <div class="vc"><div class="thumb b"><span class="badge live">EN DIRECT</span></div><div class="info"><div class="t">Pastille en direct, sarcelle</div><div class="s">Chaîne · 3 k spectateurs</div></div></div>
+        <div class="vc"><div class="thumb c"><span class="badge">8:05</span><div class="prog"><i style="width:80%"></i></div></div><div class="info"><div class="t">Barre de visionnement turquoise</div><div class="s">Chaîne · il y a 2 jours</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Lecteur et paramètres</h2>
+  <div class="grid2">
+    <div class="player">
+      <div class="title">Titre de la vidéo</div>
+      <div class="sub">Chaîne · <b>EN DIRECT</b></div>
+      <div class="seek"><div class="buf"></div><div class="played"></div><div class="knob"></div></div>
+      <div class="times"><span>4:51</span><span>12:47</span></div>
+      <div class="btns">
+        <div class="btn f"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg></div>
+        <div class="btn hl"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21h4V9H2v12zm20-11a2 2 0 0 0-2-2h-6.3l1-4.6V3a1.5 1.5 0 0 0-.4-1L13 1 6.6 7.4A2 2 0 0 0 6 8.8V19a2 2 0 0 0 2 2h9a2 2 0 0 0 1.8-1.2l3-7.1c.1-.2.2-.5.2-.7v-2z"/></svg></div>
+        <div class="btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.7 1.7 1L11 21h4l.4-2.7c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></div>
+      </div>
+    </div>
+    <div class="settings">
+      <div class="pref f"><span>Lecture automatique</span><span class="sw-toggle on"></span></div>
+      <div class="pref"><span>Sous-titres</span><span class="sw-toggle"></span></div>
+      <div class="pref"><span>Qualité : auto</span><span class="radio on"></span></div>
+      <div class="pref"><span>Qualité : 1080p</span><span class="radio"></span></div>
+    </div>
+  </div>
+
+  <h2>Ressources remplacées (saveur oculo)</h2>
+  <table>
+    <tr><th>Ressource</th><th>SmartTube</th><th>Oculo</th></tr>
+    <tr><td><code>App.Theme.DarkGrey.Player</code> (barre de lecture, icône active, accent)</td><td>rouge #FF0000 / #E52D27</td><td>#22D3C8, chargé #A6F0EA</td></tr>
+    <tr><td><code>App.Theme.DarkGrey.Browse</code> (accent, loupe, carte en focus)</td><td>#E52D27, carte blanche</td><td>#22D3C8, loupe #0B7F7D, carte #22D3C8</td></tr>
+    <tr><td><code>App.Theme.DarkGrey.Preferences</code> (interrupteurs, boutons radio)</td><td>#E52D27</td><td>#22D3C8</td></tr>
+    <tr><td><code>ProgressBarHorizontal.Dark</code> (visionnement sur les cartes)</td><td>rouge</td><td><code>progress_bar_oculo</code> #22D3C8</td></tr>
+    <tr><td><code>dark_red</code> (pastilles EN DIRECT, NOUVEAU, à venir)</td><td>#B31217</td><td>#0B7F7D</td></tr>
+    <tr><td><code>card_selected_text_grey</code> (texte des cartes en focus)</td><td>#343434</td><td>#0B333A</td></tr>
+    <tr><td>Thème « Bleu sarcelle » : <code>fastlane_background(_dark)</code>, <code>card_default_background(_dark)</code></td><td>#0096A6 / #004B53</td><td>#0B7F7D / #0F4A52</td></tr>
+  </table>
+</main>
+</body>
+</html>
