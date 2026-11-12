@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oculo · logo</title>
+<style>
+  :root {
+    --bg: #0e0e12;
+    --surface: #17171d;
+    --surface-2: #1f1f27;
+    --line: rgba(255,255,255,.08);
+    --text: #f2f2f6;
+    --muted: #9a9aa8;
+    --light-tile: #f3f3f6;
+    --dark-tile: #0b0b0e;
+    --radius: 20px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f4f4f7;
+      --surface: #ffffff;
+      --surface-2: #f7f7fa;
+      --line: rgba(0,0,0,.08);
+      --text: #16161c;
+      --muted: #666673;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 56px 16px 80px; }
+  header h1 {
+    font: 700 44px/1.05 ui-rounded, "SF Pro Rounded", -apple-system, sans-serif;
+    letter-spacing: -.02em; margin: 0 0 8px;
+  }
+  header p { margin: 0; color: var(--muted); max-width: 640px; }
+  .family {
+    margin-top: 28px; display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end;
+    padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  }
+  .family figure { margin: 0; text-align: center; font-size: 12px; color: var(--muted); }
+  .family img { width: 72px; height: 72px; display: block; margin: 0 auto 6px; }
+  .family .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 6px; }
+
+  section.dir {
+    margin-top: 40px; padding: 28px; border-radius: 28px;
+    background: var(--surface); border: 1px solid var(--line);
+  }
+  .dir-head { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .tag {
+    font: 700 13px/1 ui-rounded, "SF Pro Rounded", sans-serif; letter-spacing: .08em;
+    padding: 6px 10px; border-radius: 999px; color: #0b0b0e; background: var(--accent);
+  }
+  .dir h2 { font: 700 28px/1.1 ui-rounded, "SF Pro Rounded", -apple-system, sans-serif; margin: 0; letter-spacing: -.01em; }
+  .dir .why { margin: 8px 0 0; color: var(--muted); max-width: 720px; }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 24px; margin-top: 24px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+
+  .hero {
+    border-radius: var(--radius); display: grid; place-items: center; padding: 28px;
+    background: radial-gradient(circle at 50% 40%, var(--glow), transparent 62%), #0b0b0e;
+    min-height: 360px;
+  }
+  .hero img { width: 100%; max-width: 340px; height: auto; display: block; }
+
+  .right { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+
+  .sizes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .size-box {
+    border-radius: 16px; padding: 18px; display: flex; gap: 22px; align-items: flex-end; justify-content: center;
+    min-height: 140px;
+  }
+  .size-box.dark { background: var(--dark-tile); border: 1px solid rgba(255,255,255,.06); }
+  .size-box.light { background: var(--light-tile); border: 1px solid rgba(0,0,0,.06); }
+  .size-box figure { margin: 0; text-align: center; font-size: 11px; }
+  .size-box.dark figure { color: #8c8c98; }
+  .size-box.light figure { color: #6c6c78; }
+  .size-box img { display: block; margin: 0 auto 6px; }
+
+  /* Android TV launcher banner, 320 x 180 */
+  .banner {
+    width: 320px; height: 180px; border-radius: 0; overflow: hidden; position: relative;
+    display: flex; align-items: center; gap: 4px; padding: 0 22px 0 14px;
+    background: var(--banner-bg);
+    font-family: ui-rounded, "SF Pro Rounded", -apple-system, sans-serif;
+    color: #fff; flex: none;
+  }
+  .banner::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 90% at 18% 50%, var(--glow), transparent 60%);
+    opacity: .55;
+  }
+  .banner img { width: 132px; height: 132px; position: relative; z-index: 1; margin-left: -10px; }
+  .banner .words { position: relative; z-index: 1; display: flex; flex-direction: column; line-height: 1; }
+  .banner .name { font-size: 52px; font-weight: 700; letter-spacing: -.02em; }
+  .banner .by { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; margin-top: 8px; color: var(--accent); }
+  .banner-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; }
+  .banner-big { transform-origin: top left; }
+  .scale2 { width: 640px; height: 360px; max-width: 100%; position: relative; overflow: hidden; border-radius: 10px; }
+  .scale2 .banner { transform: scale(2); transform-origin: top left; position: absolute; top: 0; left: 0; }
+  @media (max-width: 720px) {
+    .scale2 { width: 320px; height: 180px; }
+    .scale2 .banner { transform: none; }
+  }
+  .cap { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .scale1 { border-radius: 6px; overflow: hidden; display: inline-block; }
+
+  .links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .links a {
+    font-size: 13px; color: var(--text); text-decoration: none;
+    padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2);
+  }
+  .links a:hover { border-color: var(--accent); }
+
+  /* TV home row */
+  .tv {
+    margin-top: 48px; border-radius: 28px; padding: 32px 28px 36px;
+    background: linear-gradient(180deg, #121620, #07080b); color: #e9e9ef; overflow: hidden;
+  }
+  .tv h3 { margin: 0 0 4px; font: 700 22px/1.2 ui-rounded, "SF Pro Rounded", sans-serif; }
+  .tv p { margin: 0 0 22px; color: #8d93a3; font-size: 14px; }
+  .tv-row { display: flex; gap: 22px; overflow-x: auto; padding: 14px 6px 18px; }
+  .tv-row .slot { flex: none; width: 240px; height: 135px; position: relative; border-radius: 8px; overflow: hidden; transition: transform .2s; }
+  .tv-row .slot .banner { transform: scale(.75); transform-origin: top left; position: absolute; top: 0; left: 0; }
+  .tv-row .slot.focus { transform: scale(1.1); box-shadow: 0 0 0 3px #fff, 0 18px 40px rgba(0,0,0,.6); margin: 0 12px; }
+  .tv-row .slot.ghost { background: linear-gradient(135deg, #222838, #161a24); }
+
+  footer { margin-top: 40px; color: var(--muted); font-size: 13px; text-align: center; }
+
+  .A { --accent: #2fe9e2; --glow: rgba(47,233,226,.30); --banner-bg: linear-gradient(135deg, #0f6a72 0%, #0a3f48 55%, #062a31 100%); }
+  .B { --accent: #ffbe5c; --glow: rgba(255,170,70,.32); --banner-bg: linear-gradient(135deg, #6b1f6e 0%, #3d1652 55%, #1f0d38 100%); }
+  .C { --accent: #44e59c; --glow: rgba(68,229,156,.28); --banner-bg: linear-gradient(135deg, #136b4b 0%, #0b4a35 55%, #062d21 100%); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Oculo</h1>
+    <p>Trois pistes de logo pour le client vidéo Android TV. <em>Oculus</em>, c'est l'œil en latin. Deuxième app de la famille « by Arix », à côté de Fenestro : même tuile, même verre dépoli, même lueur, chacune sa couleur.</p>
+    <div class="family">
+      <figure><img src="logos/ref-fenestro.png" alt="Fenestro">Fenestro</figure>
+      <span class="sep"></span>
+      <figure><img src="logos/oculo-a-icon.png" alt="Oculo A">A</figure>
+      <figure><img src="logos/oculo-b-icon.png" alt="Oculo B">B</figure>
+      <figure><img src="logos/oculo-c-icon.png" alt="Oculo C">C</figure>
+    </div>
+  </header>
+
+  <!-- A -->
+  <section class="dir A" id="a">
+    <div class="dir-head"><span class="tag">A</span><h2>Iris-écran</h2></div>
+    <p class="why">Géométrique et minimal : un œil en amande de verre dépoli dont la pupille est un petit écran 16:9. Symétrique, calme, lisible à toute taille.</p>
+    <div class="grid">
+      <div class="hero"><img src="logos/oculo-a-icon.png" alt="Icône Oculo, piste A"></div>
+      <div class="right">
+        <div>
+          <p class="label">Petites tailles</p>
+          <div class="sizes">
+            <div class="size-box dark">
+              <figure><img src="logos/oculo-a-icon.png" width="96" height="96" alt="">96 px</figure>
+              <figure><img src="logos/oculo-a-icon.png" width="48" height="48" alt="">48 px</figure>
+            </div>
+            <div class="size-box light">
+              <figure><img src="logos/oculo-a-icon.png" width="96" height="96" alt="">96 px</figure>
+              <figure><img src="logos/oculo-a-icon.png" width="48" height="48" alt="">48 px</figure>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="label">Bannière Android TV</p>
+          <div class="scale2"><div class="banner"><img src="logos/oculo-a-icon.png" alt=""><div class="words"><span class="name">Oculo</span><span class="by">by Arix</span></div></div></div>
+          <div class="cap">Agrandie 2×. Taille réelle, 320 × 180 :</div>
+          <div class="scale1" style="margin-top:8px"><div class="banner"><img src="logos/oculo-a-icon.png" alt=""><div class="words"><span class="name">Oculo</span><span class="by">by Arix</span></div></div></div>
+        </div>
+        <div class="links">
+          <a href="logos/oculo-a-original.png" target="_blank">Original PNG 1024 px</a>
+          <a href="logos/oculo-a-icon.png" target="_blank">Version détourée</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="dir B" id="b">
+    <div class="dir-head"><span class="tag">B</span><h2>Aube chaude</h2></div>
+    <p class="why">Doux et chaleureux : un iris en anneaux de lumière ambrée qui entoure un téléviseur, sur un prune profond. L'ambiance d'un film le soir, la plus « télé » des trois.</p>
+    <div class="grid">
+      <div class="hero"><img src="logos/oculo-b-icon.png" alt="Icône Oculo, piste B"></div>
+      <div class="right">
+        <div>
+          <p class="label">Petites tailles</p>
+          <div class="sizes">
+            <div class="size-box dark">
+              <figure><img src="logos/oculo-b-icon.png" width="96" height="96" alt="">96 px</figure>
+              <figure><img src="logos/oculo-b-icon.png" width="48" height="48" alt="">48 px</figure>
+            </div>
+            <div class="size-box light">
+              <figure><img src="logos/oculo-b-icon.png" width="96" height="96" alt="">96 px</figure>
+              <figure><img src="logos/oculo-b-icon.png" width="48" height="48" alt="">48 px</figure>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="label">Bannière Android TV</p>
+          <div class="scale2"><div class="banner"><img src="logos/oculo-b-icon.png" alt=""><div class="words"><span class="name">Oculo</span><span class="by">by Arix</span></div></div></div>
+          <div class="cap">Agrandie 2×. Taille réelle, 320 × 180 :</div>
+          <div class="scale1" style="margin-top:8px"><div class="banner"><img src="logos/oculo-b-icon.png" alt=""><div class="words"><span class="name">Oculo</span><span class="by">by Arix</span></div></div></div>
+        </div>
+        <div class="links">
+          <a href="logos/oculo-b-original.png" target="_blank">Original PNG 1024 px</a>
+          <a href="logos/oculo-b-icon.png" target="_blank">Version détourée</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="dir C" id="c">
+    <div class="dir-head"><span class="tag">C</span><h2>Le O qui regarde</h2></div>
+    <p class="why">Monogramme audacieux : un O épais en verre dépoli dont le centre est un œil qui jette un regard. Graphique et ludique, le plus reconnaissable en tout petit.</p>
+    <div class="grid">
+      <div class="hero"><img src="logos/oculo-c-icon.png" alt="Icône Oculo, piste C"></div>
+      <div class="right">
+        <div>
+          <p class="label">Petites tailles</p>
+          <div class="sizes">
+            <div class="size-box dark">
+              <figure><img src="logos/oculo-c-icon.png" width="96" height="96" alt="">96 px</figure>
+              <figure><img src="logos/oculo-c-icon.png" width="48" height="48" alt="">48 px</figure>
+            </div>
+            <div class="size-box light">
+              <figure><img src="logos/oculo-c-icon.png" width="96" height="96" alt="">96 px</figure>
+              <figure><img src="logos/oculo-c-icon.png" width="48" height="48" alt="">48 px</figure>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="label">Bannière Android TV</p>
+          <div class="scale2"><div class="banner"><img src="logos/oculo-c-icon.png" alt=""><div class="words"><span class="name">Oculo</span><span class="by">by Arix</span></div></div></div>
+          <div class="cap">Agrandie 2×. Taille réelle, 320 × 180 :</div>
+          <div class="scale1" style="margin-top:8px"><div class="banner"><img src="logos/oculo-c-icon.png" alt=""><div class="words"><span class="name">Oculo</span><span class="by">by Arix</span></div></div></div>
+        </div>
+        <div class="links">
+          <a href="logos/oculo-c-original.png" target="_blank">Original PNG 1024 px</a>
+          <a href="logos/oculo-c-icon.png" target="_blank">Version détourée</a>
+          <a href="logos/oculo-c-original-take1.png" target="_blank">Première version</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TV home row -->
+  <section class="tv">
+    <h3>Sur l'écran d'accueil de la télé</h3>
+    <p>Les trois bannières dans une rangée d'apps, à la taille du lanceur, la piste A sélectionnée.</p>
+    <div class="tv-row">
+      <div class="slot ghost"></div>
+      <div class="slot focus A"><div class="banner"><img src="logos/oculo-a-icon.png" alt=""><div class="words"><span class="name">Oculo</span><span class="by">by Arix</span></div></div></div>
+      <div class="slot B"><div class="banner"><img src="logos/oculo-b-icon.png" alt=""><div class="words"><span class="name">Oculo</span><span class="by">by Arix</span></div></div></div>
+      <div class="slot C"><div class="banner"><img src="logos/oculo-c-icon.png" alt=""><div class="words"><span class="name">Oculo</span><span class="by">by Arix</span></div></div></div>
+      <div class="slot ghost"></div>
+    </div>
+  </section>
+
+  <footer>Oculo · by Arix · pistes de logo, 12 novembre 2026</footer>
+</div>
+</body>
+</html>

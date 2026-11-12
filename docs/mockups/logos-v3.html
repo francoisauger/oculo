@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oculo · le O-écran</title>
+<style>
+  @font-face { font-family: "Nunito Oculo"; font-weight: 800; src: url(logos-v3/fonts/nunito-latin-800-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Nunito Oculo"; font-weight: 700; src: url(logos-v3/fonts/nunito-latin-700-normal.woff2) format("woff2"); }
+  :root {
+    --bg: #0e0e12; --surface: #17171d; --surface-2: #1f1f27; --line: rgba(255,255,255,.08);
+    --text: #f2f2f6; --muted: #9a9aa8; --light-tile: #f3f3f6; --dark-tile: #0b0b0e; --accent: #4ff0d8;
+    --round: "Nunito Oculo", ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) { --bg: #f4f4f7; --surface: #ffffff; --surface-2: #f7f7fa; --line: rgba(0,0,0,.08); --text: #16161c; --muted: #666673; --accent: #0f8f86; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 15px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 56px 16px 80px; }
+  header h1 { font: 800 44px/1.05 var(--round); margin: 0 0 8px; }
+  header p { margin: 0; color: var(--muted); max-width: 720px; }
+  ul.changes { margin: 14px 0 0; padding-left: 20px; color: var(--muted); max-width: 760px; }
+  ul.changes b { color: var(--text); font-weight: 600; }
+  section { margin-top: 36px; padding: 28px; border-radius: 28px; background: var(--surface); border: 1px solid var(--line); }
+  @media (max-width: 600px) { section { padding: 18px; } }
+  h2 { font: 800 26px/1.1 var(--round); margin: 0 0 6px; }
+  .why { margin: 0 0 20px; color: var(--muted); max-width: 720px; }
+  .label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .two { grid-template-columns: 1fr; } }
+  .tile { border-radius: 20px; display: grid; place-items: center; padding: 28px; min-width: 0; }
+  .tile.dark { background: radial-gradient(circle at 50% 42%, rgba(50,230,220,.20), transparent 64%), var(--dark-tile); border: 1px solid rgba(255,255,255,.06); }
+  .tile.light { background: var(--light-tile); border: 1px solid rgba(0,0,0,.06); }
+  .hero img { width: 100%; max-width: 380px; height: auto; display: block; }
+  .sizes { margin-top: 16px; }
+  .sizes .tile { display: flex; gap: 28px; align-items: flex-end; justify-content: center; min-height: 150px; }
+  .sizes figure { margin: 0; text-align: center; font-size: 11px; }
+  .tile.dark figure { color: #8c8c98; } .tile.light figure { color: #6c6c78; }
+  .sizes img { display: block; margin: 0 auto 6px; }
+  .wm { display: block; width: 100%; height: auto; }
+  .wm-big .tile { padding: 44px 36px; }
+  .wm-big .wm { max-width: 520px; }
+  .guide { margin-top: 16px; }
+  .guide .tile { padding: 22px 26px; }
+  .guide .wm { max-width: 440px; }
+  .legend { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid #ff4d8d; vertical-align: middle; margin-right: 6px; }
+  .legend i.d { border-top: 2px dashed rgba(255,77,141,.6); margin-left: 12px; }
+  .banners { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .banners img { display: block; border-radius: 10px; max-width: 100%; height: auto; }
+  .cap { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+  .links a { font-size: 13px; color: var(--text); text-decoration: none; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); }
+  .links a:hover { border-color: var(--accent); }
+  .tv { margin-top: 36px; border-radius: 28px; padding: 32px 28px 36px; background: linear-gradient(180deg, #121620, #07080b); color: #e9e9ef; overflow: hidden; }
+  .tv h3 { margin: 0 0 4px; font: 800 22px/1.2 var(--round); }
+  .tv p { margin: 0 0 22px; color: #8d93a3; font-size: 14px; }
+  .tv-row { display: flex; gap: 22px; overflow-x: auto; padding: 18px 16px 22px; }
+  .slot { flex: none; width: 240px; height: 135px; border-radius: 8px; overflow: hidden; position: relative; }
+  .slot img.b { width: 100%; height: 100%; display: block; }
+  .slot.focus { transform: scale(1.1); box-shadow: 0 0 0 3px #fff, 0 18px 40px rgba(0,0,0,.6); margin: 0 12px; }
+  .slot.ghost { background: linear-gradient(135deg, #222838, #161a24); }
+  .slot.ghost span { position: absolute; left: 16px; bottom: 14px; width: 90px; height: 10px; border-radius: 5px; background: rgba(255,255,255,.08); }
+  .slot.fen { background: linear-gradient(135deg, #2a1f8a, #160f52); display: grid; place-items: center; }
+  .slot.fen img { width: 96px; height: 96px; }
+  .tv .under { margin: 6px 0 0 290px; font: 700 15px/1 var(--round); color: #fff; }
+  footer { margin-top: 40px; color: var(--muted); font-size: 13px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Oculo</h1>
+    <p>Troisième tour, piste 1 « Le O-écran » seulement. Ce qui a changé depuis le deuxième tour :</p>
+    <ul class="changes">
+      <li><b>Logotype aligné :</b> le bas de l’écran et le bas de toutes les lettres de « culo » sont sur une seule ligne, rien ne passe dessous ; le haut de l’écran est à la hauteur du haut du « l » : il se lit comme un O majuscule. L’épaisseur du cadre reprend celle des lettres, et l’espace entre l’écran et le « c » reprend celui que la police met entre un O et un c.</li>
+      <li><b>Juste « Oculo » :</b> la signature sous le nom est retirée partout (bannière, logotype, page).</li>
+      <li><b>Icône nettoyée :</b> les petites taches et le bord irrégulier autour de la tuile (surtout en haut) sont partis ; le contour est maintenant un arrondi net et lisse.</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2>L’icône</h2>
+    <p class="why">La tuile seule, sur fond sombre et sur fond clair, puis aux petites tailles.</p>
+    <div class="two hero">
+      <div class="tile dark"><img src="logos-v3/oculo-icon.png" alt="Icône Oculo sur fond sombre"></div>
+      <div class="tile light"><img src="logos-v3/oculo-icon.png" alt="Icône Oculo sur fond clair"></div>
+    </div>
+    <div class="two sizes">
+      <div class="tile dark">
+        <figure><img src="logos-v3/oculo-icon.png" width="96" height="96" alt="">96 px</figure>
+        <figure><img src="logos-v3/oculo-icon.png" width="48" height="48" alt="">48 px</figure>
+      </div>
+      <div class="tile light">
+        <figure><img src="logos-v3/oculo-icon.png" width="96" height="96" alt="">96 px</figure>
+        <figure><img src="logos-v3/oculo-icon.png" width="48" height="48" alt="">48 px</figure>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le logotype</h2>
+    <p class="why">Le O de « Oculo » est l’écran : blanc sur fond sombre, sarcelle foncé sur fond clair.</p>
+    <div class="two wm-big">
+      <div class="tile dark"><svg class="wm" viewBox="-40 -765 2945 805" role="img" aria-label="Oculo"><defs><linearGradient id="a1f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d4f1f1"/></linearGradient><linearGradient id="a1s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2fe3f0"/><stop offset=".55" stop-color="#22d3c8"/><stop offset="1" stop-color="#78f5be"/></linearGradient><linearGradient id="a1g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient></defs><rect x="0" y="-725" width="860" height="725" rx="275" fill="url(#a1f)"/><rect x="150" y="-607" width="560" height="489" rx="145" fill="url(#a1s)"/><clipPath id="a1c"><rect x="150" y="-607" width="560" height="489" rx="145"/></clipPath><path clip-path="url(#a1c)" d="M150 -607 H710 V-558.1 Q458.0 -460.3 150 -225.57999999999998 Z" fill="url(#a1g)"/><path d="M1211 0Q1131 0 1071.5 -31.5Q1012 -63 980.0 -121.0Q948 -179 948 -258Q948 -317 966.0 -364.0Q984 -411 1018.5 -444.0Q1053 -477 1102.0 -494.5Q1151 -512 1211 -512Q1242 -512 1277.0 -504.5Q1312 -497 1346 -479Q1366 -470 1373.5 -453.5Q1381 -437 1379.0 -419.5Q1377 -402 1366.5 -388.5Q1356 -375 1340.0 -370.5Q1324 -366 1304 -376Q1285 -387 1264.5 -392.0Q1244 -397 1226 -397Q1196 -397 1173.0 -387.5Q1150 -378 1134.5 -360.5Q1119 -343 1110.5 -317.0Q1102 -291 1102 -257Q1102 -191 1134.5 -153.5Q1167 -116 1226 -116Q1244 -116 1264.0 -120.5Q1284 -125 1304 -136Q1324 -146 1340.0 -141.0Q1356 -136 1365.5 -122.5Q1375 -109 1376.5 -91.5Q1378 -74 1370.5 -57.5Q1363 -41 1344 -32Q1310 -15 1276.0 -7.5Q1242 0 1211 0ZM1631 0Q1569 0 1528.0 -23.0Q1487 -46 1467.5 -92.5Q1448 -139 1448 -208V-434Q1448 -472 1467.5 -491.0Q1487 -510 1523 -510Q1559 -510 1579.0 -491.0Q1599 -472 1599 -434V-204Q1599 -160 1617.0 -138.5Q1635 -117 1674 -117Q1717 -117 1744.5 -147.5Q1772 -178 1772 -228V-434Q1772 -472 1791.5 -491.0Q1811 -510 1847 -510Q1884 -510 1903.5 -491.0Q1923 -472 1923 -434V-79Q1923 -2 1850 -2Q1814 -2 1795.0 -22.0Q1776 -42 1776 -79V-146L1791 -107Q1769 -56 1728.0 -28.0Q1687 0 1631 0ZM2217 0Q2128 0 2084.0 -49.5Q2040 -99 2040 -197V-648Q2040 -686 2059.5 -705.5Q2079 -725 2116 -725Q2152 -725 2171.5 -705.5Q2191 -686 2191 -648V-203Q2191 -162 2208.5 -142.5Q2226 -123 2255 -123Q2263 -123 2270.0 -124.0Q2277 -125 2285 -125Q2301 -127 2307.5 -115.5Q2314 -104 2314 -70Q2314 -40 2302.0 -24.5Q2290 -9 2265 -4Q2255 -3 2242.0 -1.5Q2229 0 2217 0ZM2604 0Q2525 0 2466.5 -31.0Q2408 -62 2376.0 -120.0Q2344 -178 2344 -257Q2344 -316 2362.0 -363.0Q2380 -410 2414.5 -443.5Q2449 -477 2497.0 -494.5Q2545 -512 2604 -512Q2683 -512 2741.5 -481.0Q2800 -450 2832.5 -393.0Q2865 -336 2865 -257Q2865 -197 2846.5 -150.0Q2828 -103 2794.0 -69.0Q2760 -35 2711.5 -17.5Q2663 0 2604 0ZM2604 -113Q2637 -113 2661.0 -129.0Q2685 -145 2699.0 -176.5Q2713 -208 2713 -257Q2713 -330 2683.0 -364.5Q2653 -399 2604 -399Q2572 -399 2547.5 -384.0Q2523 -369 2509.5 -337.5Q2496 -306 2496 -257Q2496 -184 2526.0 -148.5Q2556 -113 2604 -113Z" fill="#ffffff"/></svg></div>
+      <div class="tile light"><svg class="wm" viewBox="-40 -765 2945 805" role="img" aria-label="Oculo"><defs><linearGradient id="a2f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f4a52"/><stop offset="1" stop-color="#0b333a"/></linearGradient><linearGradient id="a2s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1fd2e0"/><stop offset=".55" stop-color="#16bfb4"/><stop offset="1" stop-color="#5ee6a8"/></linearGradient><linearGradient id="a2g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient></defs><rect x="0" y="-725" width="860" height="725" rx="275" fill="url(#a2f)"/><rect x="150" y="-607" width="560" height="489" rx="145" fill="url(#a2s)"/><clipPath id="a2c"><rect x="150" y="-607" width="560" height="489" rx="145"/></clipPath><path clip-path="url(#a2c)" d="M150 -607 H710 V-558.1 Q458.0 -460.3 150 -225.57999999999998 Z" fill="url(#a2g)"/><path d="M1211 0Q1131 0 1071.5 -31.5Q1012 -63 980.0 -121.0Q948 -179 948 -258Q948 -317 966.0 -364.0Q984 -411 1018.5 -444.0Q1053 -477 1102.0 -494.5Q1151 -512 1211 -512Q1242 -512 1277.0 -504.5Q1312 -497 1346 -479Q1366 -470 1373.5 -453.5Q1381 -437 1379.0 -419.5Q1377 -402 1366.5 -388.5Q1356 -375 1340.0 -370.5Q1324 -366 1304 -376Q1285 -387 1264.5 -392.0Q1244 -397 1226 -397Q1196 -397 1173.0 -387.5Q1150 -378 1134.5 -360.5Q1119 -343 1110.5 -317.0Q1102 -291 1102 -257Q1102 -191 1134.5 -153.5Q1167 -116 1226 -116Q1244 -116 1264.0 -120.5Q1284 -125 1304 -136Q1324 -146 1340.0 -141.0Q1356 -136 1365.5 -122.5Q1375 -109 1376.5 -91.5Q1378 -74 1370.5 -57.5Q1363 -41 1344 -32Q1310 -15 1276.0 -7.5Q1242 0 1211 0ZM1631 0Q1569 0 1528.0 -23.0Q1487 -46 1467.5 -92.5Q1448 -139 1448 -208V-434Q1448 -472 1467.5 -491.0Q1487 -510 1523 -510Q1559 -510 1579.0 -491.0Q1599 -472 1599 -434V-204Q1599 -160 1617.0 -138.5Q1635 -117 1674 -117Q1717 -117 1744.5 -147.5Q1772 -178 1772 -228V-434Q1772 -472 1791.5 -491.0Q1811 -510 1847 -510Q1884 -510 1903.5 -491.0Q1923 -472 1923 -434V-79Q1923 -2 1850 -2Q1814 -2 1795.0 -22.0Q1776 -42 1776 -79V-146L1791 -107Q1769 -56 1728.0 -28.0Q1687 0 1631 0ZM2217 0Q2128 0 2084.0 -49.5Q2040 -99 2040 -197V-648Q2040 -686 2059.5 -705.5Q2079 -725 2116 -725Q2152 -725 2171.5 -705.5Q2191 -686 2191 -648V-203Q2191 -162 2208.5 -142.5Q2226 -123 2255 -123Q2263 -123 2270.0 -124.0Q2277 -125 2285 -125Q2301 -127 2307.5 -115.5Q2314 -104 2314 -70Q2314 -40 2302.0 -24.5Q2290 -9 2265 -4Q2255 -3 2242.0 -1.5Q2229 0 2217 0ZM2604 0Q2525 0 2466.5 -31.0Q2408 -62 2376.0 -120.0Q2344 -178 2344 -257Q2344 -316 2362.0 -363.0Q2380 -410 2414.5 -443.5Q2449 -477 2497.0 -494.5Q2545 -512 2604 -512Q2683 -512 2741.5 -481.0Q2800 -450 2832.5 -393.0Q2865 -336 2865 -257Q2865 -197 2846.5 -150.0Q2828 -103 2794.0 -69.0Q2760 -35 2711.5 -17.5Q2663 0 2604 0ZM2604 -113Q2637 -113 2661.0 -129.0Q2685 -145 2699.0 -176.5Q2713 -208 2713 -257Q2713 -330 2683.0 -364.5Q2653 -399 2604 -399Q2572 -399 2547.5 -384.0Q2523 -369 2509.5 -337.5Q2496 -306 2496 -257Q2496 -184 2526.0 -148.5Q2556 -113 2604 -113Z" fill="#0d3b42"/></svg></div>
+    </div>
+    <div class="guide">
+      <p class="label">Vérification de l’alignement</p>
+      <div class="two">
+        <div class="tile dark"><svg class="wm" viewBox="-40 -765 2945 805" role="img" aria-label="Oculo"><defs><linearGradient id="a3f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d4f1f1"/></linearGradient><linearGradient id="a3s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2fe3f0"/><stop offset=".55" stop-color="#22d3c8"/><stop offset="1" stop-color="#78f5be"/></linearGradient><linearGradient id="a3g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient></defs><rect x="0" y="-725" width="860" height="725" rx="275" fill="url(#a3f)"/><rect x="150" y="-607" width="560" height="489" rx="145" fill="url(#a3s)"/><clipPath id="a3c"><rect x="150" y="-607" width="560" height="489" rx="145"/></clipPath><path clip-path="url(#a3c)" d="M150 -607 H710 V-558.1 Q458.0 -460.3 150 -225.57999999999998 Z" fill="url(#a3g)"/><path d="M1211 0Q1131 0 1071.5 -31.5Q1012 -63 980.0 -121.0Q948 -179 948 -258Q948 -317 966.0 -364.0Q984 -411 1018.5 -444.0Q1053 -477 1102.0 -494.5Q1151 -512 1211 -512Q1242 -512 1277.0 -504.5Q1312 -497 1346 -479Q1366 -470 1373.5 -453.5Q1381 -437 1379.0 -419.5Q1377 -402 1366.5 -388.5Q1356 -375 1340.0 -370.5Q1324 -366 1304 -376Q1285 -387 1264.5 -392.0Q1244 -397 1226 -397Q1196 -397 1173.0 -387.5Q1150 -378 1134.5 -360.5Q1119 -343 1110.5 -317.0Q1102 -291 1102 -257Q1102 -191 1134.5 -153.5Q1167 -116 1226 -116Q1244 -116 1264.0 -120.5Q1284 -125 1304 -136Q1324 -146 1340.0 -141.0Q1356 -136 1365.5 -122.5Q1375 -109 1376.5 -91.5Q1378 -74 1370.5 -57.5Q1363 -41 1344 -32Q1310 -15 1276.0 -7.5Q1242 0 1211 0ZM1631 0Q1569 0 1528.0 -23.0Q1487 -46 1467.5 -92.5Q1448 -139 1448 -208V-434Q1448 -472 1467.5 -491.0Q1487 -510 1523 -510Q1559 -510 1579.0 -491.0Q1599 -472 1599 -434V-204Q1599 -160 1617.0 -138.5Q1635 -117 1674 -117Q1717 -117 1744.5 -147.5Q1772 -178 1772 -228V-434Q1772 -472 1791.5 -491.0Q1811 -510 1847 -510Q1884 -510 1903.5 -491.0Q1923 -472 1923 -434V-79Q1923 -2 1850 -2Q1814 -2 1795.0 -22.0Q1776 -42 1776 -79V-146L1791 -107Q1769 -56 1728.0 -28.0Q1687 0 1631 0ZM2217 0Q2128 0 2084.0 -49.5Q2040 -99 2040 -197V-648Q2040 -686 2059.5 -705.5Q2079 -725 2116 -725Q2152 -725 2171.5 -705.5Q2191 -686 2191 -648V-203Q2191 -162 2208.5 -142.5Q2226 -123 2255 -123Q2263 -123 2270.0 -124.0Q2277 -125 2285 -125Q2301 -127 2307.5 -115.5Q2314 -104 2314 -70Q2314 -40 2302.0 -24.5Q2290 -9 2265 -4Q2255 -3 2242.0 -1.5Q2229 0 2217 0ZM2604 0Q2525 0 2466.5 -31.0Q2408 -62 2376.0 -120.0Q2344 -178 2344 -257Q2344 -316 2362.0 -363.0Q2380 -410 2414.5 -443.5Q2449 -477 2497.0 -494.5Q2545 -512 2604 -512Q2683 -512 2741.5 -481.0Q2800 -450 2832.5 -393.0Q2865 -336 2865 -257Q2865 -197 2846.5 -150.0Q2828 -103 2794.0 -69.0Q2760 -35 2711.5 -17.5Q2663 0 2604 0ZM2604 -113Q2637 -113 2661.0 -129.0Q2685 -145 2699.0 -176.5Q2713 -208 2713 -257Q2713 -330 2683.0 -364.5Q2653 -399 2604 -399Q2572 -399 2547.5 -384.0Q2523 -369 2509.5 -337.5Q2496 -306 2496 -257Q2496 -184 2526.0 -148.5Q2556 -113 2604 -113Z" fill="#ffffff"/><g stroke="#ff4d8d" stroke-width="9" opacity=".95"><line x1="-40" y1="4.5" x2="2905" y2="4.5"/><line x1="-40" y1="-729.5" x2="2905" y2="-729.5"/></g><g stroke="#ff4d8d" stroke-width="7" stroke-dasharray="22 16" opacity=".6"><line x1="-40" y1="-512" x2="2905" y2="-512"/></g></svg></div>
+        <div class="tile light"><svg class="wm" viewBox="-40 -765 2945 805" role="img" aria-label="Oculo"><defs><linearGradient id="a4f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f4a52"/><stop offset="1" stop-color="#0b333a"/></linearGradient><linearGradient id="a4s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1fd2e0"/><stop offset=".55" stop-color="#16bfb4"/><stop offset="1" stop-color="#5ee6a8"/></linearGradient><linearGradient id="a4g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient></defs><rect x="0" y="-725" width="860" height="725" rx="275" fill="url(#a4f)"/><rect x="150" y="-607" width="560" height="489" rx="145" fill="url(#a4s)"/><clipPath id="a4c"><rect x="150" y="-607" width="560" height="489" rx="145"/></clipPath><path clip-path="url(#a4c)" d="M150 -607 H710 V-558.1 Q458.0 -460.3 150 -225.57999999999998 Z" fill="url(#a4g)"/><path d="M1211 0Q1131 0 1071.5 -31.5Q1012 -63 980.0 -121.0Q948 -179 948 -258Q948 -317 966.0 -364.0Q984 -411 1018.5 -444.0Q1053 -477 1102.0 -494.5Q1151 -512 1211 -512Q1242 -512 1277.0 -504.5Q1312 -497 1346 -479Q1366 -470 1373.5 -453.5Q1381 -437 1379.0 -419.5Q1377 -402 1366.5 -388.5Q1356 -375 1340.0 -370.5Q1324 -366 1304 -376Q1285 -387 1264.5 -392.0Q1244 -397 1226 -397Q1196 -397 1173.0 -387.5Q1150 -378 1134.5 -360.5Q1119 -343 1110.5 -317.0Q1102 -291 1102 -257Q1102 -191 1134.5 -153.5Q1167 -116 1226 -116Q1244 -116 1264.0 -120.5Q1284 -125 1304 -136Q1324 -146 1340.0 -141.0Q1356 -136 1365.5 -122.5Q1375 -109 1376.5 -91.5Q1378 -74 1370.5 -57.5Q1363 -41 1344 -32Q1310 -15 1276.0 -7.5Q1242 0 1211 0ZM1631 0Q1569 0 1528.0 -23.0Q1487 -46 1467.5 -92.5Q1448 -139 1448 -208V-434Q1448 -472 1467.5 -491.0Q1487 -510 1523 -510Q1559 -510 1579.0 -491.0Q1599 -472 1599 -434V-204Q1599 -160 1617.0 -138.5Q1635 -117 1674 -117Q1717 -117 1744.5 -147.5Q1772 -178 1772 -228V-434Q1772 -472 1791.5 -491.0Q1811 -510 1847 -510Q1884 -510 1903.5 -491.0Q1923 -472 1923 -434V-79Q1923 -2 1850 -2Q1814 -2 1795.0 -22.0Q1776 -42 1776 -79V-146L1791 -107Q1769 -56 1728.0 -28.0Q1687 0 1631 0ZM2217 0Q2128 0 2084.0 -49.5Q2040 -99 2040 -197V-648Q2040 -686 2059.5 -705.5Q2079 -725 2116 -725Q2152 -725 2171.5 -705.5Q2191 -686 2191 -648V-203Q2191 -162 2208.5 -142.5Q2226 -123 2255 -123Q2263 -123 2270.0 -124.0Q2277 -125 2285 -125Q2301 -127 2307.5 -115.5Q2314 -104 2314 -70Q2314 -40 2302.0 -24.5Q2290 -9 2265 -4Q2255 -3 2242.0 -1.5Q2229 0 2217 0ZM2604 0Q2525 0 2466.5 -31.0Q2408 -62 2376.0 -120.0Q2344 -178 2344 -257Q2344 -316 2362.0 -363.0Q2380 -410 2414.5 -443.5Q2449 -477 2497.0 -494.5Q2545 -512 2604 -512Q2683 -512 2741.5 -481.0Q2800 -450 2832.5 -393.0Q2865 -336 2865 -257Q2865 -197 2846.5 -150.0Q2828 -103 2794.0 -69.0Q2760 -35 2711.5 -17.5Q2663 0 2604 0ZM2604 -113Q2637 -113 2661.0 -129.0Q2685 -145 2699.0 -176.5Q2713 -208 2713 -257Q2713 -330 2683.0 -364.5Q2653 -399 2604 -399Q2572 -399 2547.5 -384.0Q2523 -369 2509.5 -337.5Q2496 -306 2496 -257Q2496 -184 2526.0 -148.5Q2556 -113 2604 -113Z" fill="#0d3b42"/><g stroke="#ff4d8d" stroke-width="9" opacity=".95"><line x1="-40" y1="4.5" x2="2905" y2="4.5"/><line x1="-40" y1="-729.5" x2="2905" y2="-729.5"/></g><g stroke="#ff4d8d" stroke-width="7" stroke-dasharray="22 16" opacity=".6"><line x1="-40" y1="-512" x2="2905" y2="-512"/></g></svg></div>
+      </div>
+      <div class="legend"><i></i>ligne du bas et ligne du haut (haut du « l »)<i class="d"></i>hauteur des minuscules. Le bas de l’écran et le bas de chaque lettre touchent la ligne du bas ; aucun pixel ne passe dessous.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>La bannière Android TV</h2>
+    <p class="why">320 × 180, le logotype seul, centré.</p>
+    <div class="banners">
+      <div><img src="logos-v3/oculo-banner@2x.png" width="640" height="360" alt="Bannière Oculo agrandie 2×"><div class="cap">Agrandie 2× (640 × 360)</div></div>
+      <div><img src="logos-v3/oculo-banner.png" width="320" height="180" alt="Bannière Oculo taille réelle" style="border-radius:6px"><div class="cap">Taille réelle (320 × 180)</div></div>
+    </div>
+    <div class="links">
+      <a href="logos-v3/oculo-icon.png" target="_blank">Icône 1024 px</a>
+      <a href="logos-v3/oculo-wordmark-dark.png" target="_blank">Logotype pour fond sombre</a>
+      <a href="logos-v3/oculo-wordmark-light.png" target="_blank">Logotype pour fond clair</a>
+      <a href="logos-v3/oculo-banner.png" target="_blank">Bannière 320 × 180</a>
+      <a href="logos-v3/oculo-banner@2x.png" target="_blank">Bannière 640 × 360</a>
+    </div>
+  </section>
+
+  <section class="tv">
+    <h3>Sur l’écran d’accueil de la télé</h3>
+    <p>Une rangée d’apps à la taille du lanceur, Oculo sélectionnée.</p>
+    <div class="tv-row">
+      <div class="slot ghost"><span></span></div>
+      <div class="slot focus"><img class="b" src="logos-v3/oculo-banner@2x.png" alt="Oculo"></div>
+      <div class="slot fen"><img src="logos-v3/ref-fenestro.png" alt="Fenestro"></div>
+      <div class="slot ghost"><span></span></div>
+      <div class="slot ghost"><span></span></div>
+    </div>
+    <div class="under">Oculo</div>
+  </section>
+
+  <footer>Oculo · logo, troisième tour, 12 novembre 2026</footer>
+</div>
+</body>
+</html>
