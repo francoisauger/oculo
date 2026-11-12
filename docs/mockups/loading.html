@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oculo · chargement</title>
+<style>
+  @font-face { font-family: "Nunito Oculo"; font-weight: 800; src: url(logos-v3/fonts/nunito-latin-800-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Nunito Oculo"; font-weight: 700; src: url(logos-v3/fonts/nunito-latin-700-normal.woff2) format("woff2"); }
+  :root {
+    color-scheme: dark;
+    --bg: #0e0e12; --surface: #17171d; --surface-2: #1f1f27; --line: rgba(255,255,255,.08);
+    --text: #f2f2f6; --muted: #9a9aa8; --accent: #4ff0d8;
+    --round: "Nunito Oculo", ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+    --k: 1;            /* speed multiplier (4 = slowed down) */
+    --spin: 7.92%;     /* 76 dp on a 960 dp wide (1080p) TV screen */
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 15px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 56px 16px 80px; }
+  header h1 { font: 800 44px/1.05 var(--round); margin: 0 0 8px; }
+  header p { margin: 0; color: var(--muted); max-width: 760px; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 22px; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); padding: 3px; }
+  .seg button { appearance: none; border: 0; background: transparent; color: var(--muted); font: 600 13px/1 inherit; font-family: inherit; padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: #22d3c8; color: #0b333a; }
+  .ctl-label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-right: 8px; }
+
+  .today { display: flex; gap: 16px; align-items: center; margin-top: 26px; padding: 14px 18px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); max-width: 560px; }
+  .today .box { width: 64px; height: 64px; border-radius: 12px; background: #000; display: grid; place-items: center; flex: none; }
+  .today p { margin: 0; color: var(--muted); font-size: 14px; }
+  .today b { color: var(--text); }
+
+  section { margin-top: 36px; padding: 28px; border-radius: 28px; background: var(--surface); border: 1px solid var(--line); }
+  @media (max-width: 600px) { section { padding: 18px; } }
+  h2 { font: 800 28px/1.1 var(--round); margin: 0 0 6px; }
+  h2 .tag { display: inline-block; font: 700 13px/1 var(--round); color: #0b333a; background: #22d3c8; border-radius: 8px; padding: 6px 8px; margin-right: 10px; vertical-align: 5px; }
+  .why { margin: 0 0 22px; color: var(--muted); max-width: 760px; }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  figure { margin: 0; min-width: 0; }
+  figcaption { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+
+  .big { aspect-ratio: 1 / 1; border-radius: 20px; display: grid; place-items: center; background: radial-gradient(circle at 50% 46%, rgba(34,211,200,.10), transparent 62%), #000; border: 1px solid rgba(255,255,255,.06); }
+  .big svg { width: 62%; height: auto; display: block; }
+
+  /* Mock TV screens, 16:9, spinner at real proportion (76 dp of 960 dp) */
+  .screen { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,.06); background: #000; }
+  .screen .spot { position: absolute; left: 50%; top: 50%; width: var(--spin); transform: translate(-50%, -50%); }
+  .screen .spot svg { width: 100%; height: auto; display: block; }
+
+  /* Browse screen: header bar + ghost rows */
+  .browse .bar { position: absolute; left: 0; right: 0; top: 0; height: 13%; background: #181818; display: flex; align-items: center; gap: 2.4%; padding: 0 3.2%; }
+  .browse .bar i { display: block; height: 22%; border-radius: 99px; background: #2a2a2a; }
+  .browse .bar i:nth-child(1) { width: 9%; background: #2f3a3c; }
+  .browse .bar i:nth-child(2) { width: 7%; } .browse .bar i:nth-child(3) { width: 8%; } .browse .bar i:nth-child(4) { width: 6%; }
+  .browse .rows { position: absolute; left: 3.2%; right: 0; top: 20%; bottom: 0; display: grid; gap: 7% 0; align-content: start; }
+  .browse .row { display: flex; gap: 1.6%; }
+  .browse .row b { display: block; flex: none; width: 21%; aspect-ratio: 16/9; border-radius: 4px; background: #121212; }
+
+  /* Player: blurred dark video frame */
+  .player .frame { position: absolute; inset: -12%; filter: blur(18px) saturate(1.1); background:
+      radial-gradient(40% 50% at 28% 60%, rgba(214,120,60,.55), transparent 70%),
+      radial-gradient(35% 40% at 72% 35%, rgba(60,110,180,.55), transparent 70%),
+      radial-gradient(50% 45% at 60% 85%, rgba(30,70,60,.7), transparent 70%),
+      linear-gradient(160deg, #1b1f2a, #0c0d12 60%, #17110d); }
+  .player .scrim { position: absolute; inset: 0; background: rgba(0,0,0,.38); }
+  .player .hint { position: absolute; left: 3.2%; bottom: 6%; width: 34%; height: 3.2%; border-radius: 99px; background: rgba(255,255,255,.16); }
+
+  /* ---------- Logo paint ---------- */
+  .frame-fill { fill: url(#gFrameTeal); }
+  body.frost .frame-fill { fill: url(#gFrameFrost); }
+  .screen-fill { fill: url(#gScreen); }
+  .mint-fill { fill: url(#gMint); }
+  .gloss { fill: url(#gGloss); }
+  .off { fill: #062227; }
+
+  /* ---------- Current SmartTube spinner (reference) ---------- */
+  .holo-outer { transform-box: fill-box; transform-origin: center; animation: holo-cw calc(1.2s * var(--k)) linear infinite; }
+  .holo-inner { transform-box: fill-box; transform-origin: center; animation: holo-ccw calc(1.2s * var(--k)) linear infinite; }
+  @keyframes holo-cw { to { transform: rotate(1080deg); } }
+  @keyframes holo-ccw { from { transform: rotate(720deg); } to { transform: rotate(0deg); } }
+
+  /* ---------- A · Allumage ---------- */
+  .a .lit { transform-box: fill-box; transform-origin: center; animation: a-lit calc(1.5s * var(--k)) infinite; }
+  .a .band { animation: a-band calc(1.5s * var(--k)) infinite; }
+  @keyframes a-lit {
+    0%   { opacity: 0; transform: scale(.18, .04); animation-timing-function: cubic-bezier(.2,.7,.3,1); }
+    10%  { opacity: 1; transform: scale(1, .04);   animation-timing-function: cubic-bezier(.3,.0,.2,1); }
+    32%  { opacity: 1; transform: scale(1, 1); }
+    74%  { opacity: 1; transform: scale(1, 1);     animation-timing-function: ease-in; }
+    100% { opacity: 0; transform: scale(1, 1); }
+  }
+  @keyframes a-band {
+    0%, 30% { transform: translate(-260px, -440px); animation-timing-function: cubic-bezier(.45,0,.25,1); }
+    72%, 100% { transform: translate(260px, 440px); }
+  }
+
+  /* ---------- B · Balayage ---------- */
+  .b .track { fill: none; stroke: rgba(120,245,190,.10); stroke-width: 56; }
+  body.frost .b .track { stroke: rgba(11,127,125,.12); }
+  .b .head, .b .tail { fill: none; stroke: url(#gTrace); stroke-width: 56; stroke-linecap: round; }
+  body.frost .b .head, body.frost .b .tail { stroke: url(#gTraceDeep); }
+  .b .head { stroke-dasharray: 14 86; animation: b-head calc(1.2s * var(--k)) linear infinite; }
+  .b .tail { stroke-dasharray: 40 60; opacity: .32; animation: b-tail calc(1.2s * var(--k)) linear infinite; }
+  @keyframes b-head { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -100; } }
+  @keyframes b-tail { from { stroke-dashoffset: 26; } to { stroke-dashoffset: -74; } }
+
+  /* ---------- C · Respiration ---------- */
+  .c .o { transform-box: fill-box; transform-origin: center; animation: c-breathe calc(1.5s * var(--k)) ease-in-out infinite; }
+  .c .mint-fill { animation: c-mint calc(1.5s * var(--k)) ease-in-out infinite; }
+  .c .dot { fill: #0b333a; animation: c-dot calc(1.5s * var(--k)) ease-in-out infinite; }
+  .c .dot:nth-of-type(2) { animation-delay: calc(.2s * var(--k)); }
+  .c .dot:nth-of-type(3) { animation-delay: calc(.4s * var(--k)); }
+  @keyframes c-breathe { 0%, 100% { transform: scale(.93); } 50% { transform: scale(1); } }
+  @keyframes c-mint { 0%, 100% { opacity: 0; } 50% { opacity: .9; } }
+  @keyframes c-dot { 0%, 100% { opacity: .22; } 35% { opacity: .9; } 70% { opacity: .22; } }
+
+  .paused * { animation-play-state: paused !important; }
+</style>
+</head>
+<body>
+
+<!-- Shared paints, referenced by every instance below -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gFrameTeal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#145963"/><stop offset=".5" stop-color="#0f4a52"/><stop offset="1" stop-color="#0b3a41"/></linearGradient>
+    <linearGradient id="gFrameFrost" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d4f1f1"/></linearGradient>
+    <linearGradient id="gScreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2fe3f0"/><stop offset=".55" stop-color="#22d3c8"/><stop offset="1" stop-color="#78f5be"/></linearGradient>
+    <linearGradient id="gMint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3c8"/><stop offset=".5" stop-color="#78f5be"/><stop offset="1" stop-color="#a8fbd6"/></linearGradient>
+    <linearGradient id="gGloss" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+    <linearGradient id="gTrace" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2fe3f0"/><stop offset="1" stop-color="#78f5be"/></linearGradient>
+    <linearGradient id="gTraceDeep" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0b7f7d"/><stop offset="1" stop-color="#22d3c8"/></linearGradient>
+    <clipPath id="clipScreen"><rect x="150" y="118" width="560" height="489" rx="145"/></clipPath>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <h1>Animation de chargement</h1>
+    <p>Trois pistes pour remplacer la roue de SmartTube par le O-écran d’Oculo, pendant le chargement d’une vidéo comme d’une page. Chaque piste en grand, puis à sa vraie taille sur une télé 1080p : sur l’accueil et par-dessus le lecteur.</p>
+    <div class="controls">
+      <span><span class="ctl-label">Cadre</span><span class="seg" id="frameSeg"><button data-v="teal" aria-pressed="true">Sarcelle foncé</button><button data-v="frost" aria-pressed="false">Givré</button></span></span>
+      <span><span class="ctl-label">Vitesse</span><span class="seg" id="speedSeg"><button data-v="1" aria-pressed="true">Réelle</button><button data-v="4" aria-pressed="false">× 4 plus lent</button><button data-v="0" aria-pressed="false">Pause</button></span></span>
+    </div>
+    <div class="today">
+      <div class="box"><svg viewBox="0 0 100 100" width="46" height="46" aria-hidden="true">
+        <circle class="holo-outer" cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="6" stroke-dasharray="120 132" stroke-linecap="round"/>
+        <circle class="holo-inner" cx="50" cy="50" r="28" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="5" stroke-dasharray="60 116" stroke-linecap="round"/>
+      </svg></div>
+      <p><b>Aujourd’hui</b> : la double roue grise de SmartTube, partout dans l’app.</p>
+    </div>
+  </header>
+
+  <section class="a">
+    <h2><span class="tag">A</span>Allumage</h2>
+    <p class="why">L’écran s’allume comme un vieux téléviseur : une ligne, puis l’image, un reflet qui glisse, et il s’éteint doucement avant de recommencer.</p>
+    <div class="grid" data-concept="a"></div>
+  </section>
+
+  <section class="b">
+    <h2><span class="tag">B</span>Balayage</h2>
+    <p class="why">Une traînée de lumière fait le tour du cadre, comme une barre de progression qui suit l’arrondi ; l’écran reste allumé et calme.</p>
+    <div class="grid" data-concept="b"></div>
+  </section>
+
+  <section class="c">
+    <h2><span class="tag">C</span>Respiration</h2>
+    <p class="why">Le O-écran respire lentement, son dégradé glisse du cyan vers la menthe, et trois points s’allument tour à tour dans l’écran.</p>
+    <div class="grid" data-concept="c"></div>
+  </section>
+</div>
+
+<script>
+  const FRAME = '<rect class="frame-fill" x="0" y="0" width="860" height="725" rx="275"/>';
+  const SCREEN = '<rect x="150" y="118" width="560" height="489" rx="145"';
+  const GLOSS = '<path class="gloss" clip-path="url(#clipScreen)" d="M150 118 H710 V166.9 Q458 264.7 150 499.42 Z"/>';
+  const RING = 'M280 59 H580 A205 205 0 0 1 785 264 V461 A205 205 0 0 1 580 666 H280 A205 205 0 0 1 75 461 V264 A205 205 0 0 1 280 59 Z';
+
+  const body = {
+    a: FRAME
+      + SCREEN + ' class="off"/>'
+      + '<g class="lit">' + SCREEN + ' class="screen-fill"/>' + GLOSS
+      + '<g clip-path="url(#clipScreen)"><g class="band"><path fill="#fff" fill-opacity=".30" d="M-100 638 L960 13 L960 88 L-100 713 Z"/></g></g>'
+      + '</g>',
+    b: FRAME
+      + '<path class="track" d="' + RING + '"/>'
+      + '<path class="tail" pathLength="100" d="' + RING + '"/>'
+      + '<path class="head" pathLength="100" d="' + RING + '"/>'
+      + SCREEN + ' class="screen-fill"/>' + GLOSS,
+    c: '<g class="o">' + FRAME
+      + SCREEN + ' class="screen-fill"/>' + SCREEN + ' class="mint-fill"/>' + GLOSS
+      + '<circle class="dot" cx="340" cy="372" r="26"/><circle class="dot" cx="430" cy="372" r="26"/><circle class="dot" cx="520" cy="372" r="26"/>'
+      + '</g>',
+  };
+  const svg = (c) => '<svg viewBox="-60 -127.5 980 980" role="img" aria-label="Chargement">' + body[c] + '</svg>';
+
+  document.querySelectorAll('.grid[data-concept]').forEach((grid) => {
+    const c = grid.dataset.concept;
+    grid.innerHTML =
+      '<figure><p class="label">En grand</p><div class="big">' + svg(c) + '</div></figure>'
+      + '<figure><p class="label">Accueil, taille réelle</p><div class="screen browse">'
+      + '<div class="bar"><i></i><i></i><i></i><i></i></div>'
+      + '<div class="rows"><div class="row"><b></b><b></b><b></b><b></b><b></b></div><div class="row"><b></b><b></b><b></b><b></b><b></b></div></div>'
+      + '<div class="spot">' + svg(c) + '</div></div><figcaption>Liste en cours de chargement (76 dp sur un écran 1080p).</figcaption></figure>'
+      + '<figure><p class="label">Lecteur, taille réelle</p><div class="screen player"><div class="frame"></div><div class="scrim"></div><div class="hint"></div>'
+      + '<div class="spot">' + svg(c) + '</div></div><figcaption>Vidéo qui se charge, par-dessus l’image.</figcaption></figure>';
+  });
+
+  const seg = (id, fn) => {
+    const el = document.getElementById(id);
+    el.addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      el.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      fn(b.dataset.v);
+    });
+  };
+  seg('frameSeg', (v) => document.body.classList.toggle('frost', v === 'frost'));
+  seg('speedSeg', (v) => {
+    document.body.classList.toggle('paused', v === '0');
+    if (v !== '0') document.documentElement.style.setProperty('--k', v);
+  });
+</script>
+</body>
+</html>
