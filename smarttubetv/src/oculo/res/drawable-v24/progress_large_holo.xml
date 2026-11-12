@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo loading animation, concept B "Balayage" with the frosted frame (docs/mockups/loading.html):
+     a light trail runs around the frosted O-screen frame, 1.2 s per lap. Overrides the SmartTube spinner
+     (SharedModules/sharedutils progress_large_holo), used by ProgressBarManager and the flavor copies of
+     view_loading_card.xml and widget_preview_card.xml. API 24+ (gradients); drawable/ holds a solid-color
+     fallback for API 21-23. Geometry = the mockup's SVG (viewBox -60 -127.5 980 980). -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="76dp"
+            android:height="76dp"
+            android:viewportWidth="980"
+            android:viewportHeight="980">
+            <group
+                android:translateX="60"
+                android:translateY="127.5">
+                <!-- Frosted frame: white -> frost -->
+                <path android:pathData="M275,0 H585 A275,275 0 0 1 860,275 V450 A275,275 0 0 1 585,725 H275 A275,275 0 0 1 0,450 V275 A275,275 0 0 1 275,0 Z">
+                    <aapt:attr name="android:fillColor">
+                        <gradient
+                            android:type="linear"
+                            android:startX="0"
+                            android:startY="0"
+                            android:endX="0"
+                            android:endY="725">
+                            <item android:offset="0" android:color="#FFFFFFFF" />
+                            <item android:offset="1" android:color="#FFD4F1F1" />
+                        </gradient>
+                    </aapt:attr>
+                </path>
+                <!-- Track -->
+                <path
+                    android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
+                    android:strokeWidth="56"
+                    android:strokeColor="#1F0B7F7D" />
+                <!-- Tail: 40% of the lap behind the head's front, 32% opacity -->
+                <path
+                    android:name="tail"
+                    android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
+                    android:strokeWidth="56"
+                    android:strokeAlpha="0.32"
+                    android:strokeLineCap="round"
+                    android:trimPathStart="0"
+                    android:trimPathEnd="0.40"
+                    android:trimPathOffset="0.74">
+                    <aapt:attr name="android:strokeColor">
+                        <gradient
+                            android:type="linear"
+                            android:startX="75"
+                            android:startY="0"
+                            android:endX="785"
+                            android:endY="0">
+                            <item android:offset="0" android:color="#FF0B7F7D" />
+                            <item android:offset="1" android:color="#FF22D3C8" />
+                        </gradient>
+                    </aapt:attr>
+                </path>
+                <!-- Head: 14% of the lap -->
+                <path
+                    android:name="head"
+                    android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
+                    android:strokeWidth="56"
+                    android:strokeLineCap="round"
+                    android:trimPathStart="0"
+                    android:trimPathEnd="0.14"
+                    android:trimPathOffset="0">
+                    <aapt:attr name="android:strokeColor">
+                        <gradient
+                            android:type="linear"
+                            android:startX="75"
+                            android:startY="0"
+                            android:endX="785"
+                            android:endY="0">
+                            <item android:offset="0" android:color="#FF0B7F7D" />
+                            <item android:offset="1" android:color="#FF22D3C8" />
+                        </gradient>
+                    </aapt:attr>
+                </path>
+                <!-- Screen: cyan -> turquoise -> mint -->
+                <path android:pathData="M295,118 H565 A145,145 0 0 1 710,263 V462 A145,145 0 0 1 565,607 H295 A145,145 0 0 1 150,462 V263 A145,145 0 0 1 295,118 Z">
+                    <aapt:attr name="android:fillColor">
+                        <gradient
+                            android:type="linear"
+                            android:startX="150"
+                            android:startY="118"
+                            android:endX="710"
+                            android:endY="607">
+                            <item android:offset="0" android:color="#FF2FE3F0" />
+                            <item android:offset="0.55" android:color="#FF22D3C8" />
+                            <item android:offset="1" android:color="#FF78F5BE" />
+                        </gradient>
+                    </aapt:attr>
+                </path>
+                <!-- Gloss, clipped to the screen -->
+                <group>
+                    <clip-path android:pathData="M295,118 H565 A145,145 0 0 1 710,263 V462 A145,145 0 0 1 565,607 H295 A145,145 0 0 1 150,462 V263 A145,145 0 0 1 295,118 Z" />
+                    <path android:pathData="M150,118 H710 V166.9 Q458,264.7 150,499.42 Z">
+                        <aapt:attr name="android:fillColor">
+                            <gradient
+                                android:type="linear"
+                                android:startX="150"
+                                android:startY="118"
+                                android:endX="710"
+                                android:endY="607">
+                                <item android:offset="0" android:color="#57FFFFFF" />
+                                <item android:offset="1" android:color="#0FFFFFFF" />
+                            </gradient>
+                        </aapt:attr>
+                    </path>
+                </group>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="head">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="1200"
+                android:interpolator="@android:anim/linear_interpolator"
+                android:propertyName="trimPathOffset"
+                android:repeatCount="infinite"
+                android:repeatMode="restart"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:valueType="floatType" />
+        </aapt:attr>
+    </target>
+    <target android:name="tail">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="1200"
+                android:interpolator="@android:anim/linear_interpolator"
+                android:propertyName="trimPathOffset"
+                android:repeatCount="infinite"
+                android:repeatMode="restart"
+                android:valueFrom="0.74"
+                android:valueTo="1.74"
+                android:valueType="floatType" />
+        </aapt:attr>
+    </target>
+</animated-vector>

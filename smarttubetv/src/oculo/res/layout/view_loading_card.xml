@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo: copy of smarttubetv/src/main/res/layout/view_loading_card.xml with the Oculo loading animation
+     (indeterminateDrawable). Re-sync if upstream changes this layout. -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/progress_indicator"
+        android:indeterminateDrawable="@drawable/progress_large_holo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="36dp"/>
+
+</RelativeLayout>

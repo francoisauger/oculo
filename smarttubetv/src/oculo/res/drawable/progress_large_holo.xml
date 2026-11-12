@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo loading animation, API 21-23 fallback: same as drawable-v24/progress_large_holo.xml with solid
+     colors instead of gradients (gradient colors in vectors need API 24). -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="76dp"
+            android:height="76dp"
+            android:viewportWidth="980"
+            android:viewportHeight="980">
+            <group
+                android:translateX="60"
+                android:translateY="127.5">
+                <!-- Frosted frame -->
+                <path android:pathData="M275,0 H585 A275,275 0 0 1 860,275 V450 A275,275 0 0 1 585,725 H275 A275,275 0 0 1 0,450 V275 A275,275 0 0 1 275,0 Z"
+                    android:fillColor="#FFEAF8F8" />
+                <!-- Track -->
+                <path
+                    android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
+                    android:strokeWidth="56"
+                    android:strokeColor="#1F0B7F7D" />
+                <!-- Tail: 40% of the lap behind the head's front, 32% opacity -->
+                <path
+                    android:name="tail"
+                    android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
+                    android:strokeWidth="56"
+                    android:strokeAlpha="0.32"
+                    android:strokeLineCap="round"
+                    android:trimPathStart="0"
+                    android:trimPathEnd="0.40"
+                    android:trimPathOffset="0.74"
+                    android:strokeColor="#FF0FA3A0" />
+                <!-- Head: 14% of the lap -->
+                <path
+                    android:name="head"
+                    android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
+                    android:strokeWidth="56"
+                    android:strokeLineCap="round"
+                    android:trimPathStart="0"
+                    android:trimPathEnd="0.14"
+                    android:trimPathOffset="0"
+                    android:strokeColor="#FF0FA3A0" />
+                <!-- Screen: cyan -> turquoise -> mint -->
+                <path android:pathData="M295,118 H565 A145,145 0 0 1 710,263 V462 A145,145 0 0 1 565,607 H295 A145,145 0 0 1 150,462 V263 A145,145 0 0 1 295,118 Z"
+                    android:fillColor="#FF22D3C8" />
+                <!-- Gloss, clipped to the screen -->
+                <group>
+                    <clip-path android:pathData="M295,118 H565 A145,145 0 0 1 710,263 V462 A145,145 0 0 1 565,607 H295 A145,145 0 0 1 150,462 V263 A145,145 0 0 1 295,118 Z" />
+                    <path android:pathData="M150,118 H710 V166.9 Q458,264.7 150,499.42 Z"
+                    android:fillColor="#33FFFFFF" />
+                </group>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="head">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="1200"
+                android:interpolator="@android:anim/linear_interpolator"
+                android:propertyName="trimPathOffset"
+                android:repeatCount="infinite"
+                android:repeatMode="restart"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:valueType="floatType" />
+        </aapt:attr>
+    </target>
+    <target android:name="tail">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="1200"
+                android:interpolator="@android:anim/linear_interpolator"
+                android:propertyName="trimPathOffset"
+                android:repeatCount="infinite"
+                android:repeatMode="restart"
+                android:valueFrom="0.74"
+                android:valueTo="1.74"
+                android:valueType="floatType" />
+        </aapt:attr>
+    </target>
+</animated-vector>
