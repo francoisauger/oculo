@@ -6,8 +6,17 @@
     <color name="oculo_cyan">#2FE3F0</color>
     <color name="oculo_turquoise">#22D3C8</color>
     <color name="oculo_mint">#78F5BE</color>
-    <!-- Buffered part of the seek bar (lighter than the played part) -->
-    <color name="oculo_turquoise_pale">#A6F0EA</color>
+    <!-- Player, option 1 "Sarcelle profonde" (docs/mockups/player-colors.html) -->
+    <!-- Played part of the seek bar and watched bar on cards: deeper, more saturated turquoise -->
+    <color name="oculo_seek_played">#0FA3A0</color>
+    <!-- Buffered part of the seek bar: very pale grey -->
+    <color name="oculo_seek_buffered">#E0E6E5</color>
+    <!-- Remaining part of the seek bar: white 25% (declared in src/main/res/values/oculo.xml) -->
+    <color name="oculo_seek_bar_remaining">#40FFFFFF</color>
+    <!-- Toggled/active player icons (like, repeat, subtitles on...) -->
+    <color name="oculo_icon_active">#12B3AC</color>
+    <!-- Track of the watched bar on cards: black 55% -->
+    <color name="oculo_card_progress_track">#8C000000</color>
     <!-- Mid teal for surfaces that carry white text or icons (badges, search orb): 4.8:1 with white -->
     <color name="oculo_teal">#0B7F7D</color>
     <!-- Logo frame: deep teal -->

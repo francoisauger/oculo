@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo: focused player button = deep-teal disc (logo frame #0F4A52) with a turquoise ring; the white icon
+     sits on top. Replaces upstream's translucent white ripple. Option 1 "Sarcelle profonde" of
+     docs/mockups/player-colors.html. The player uses the secondary layout for both rows. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:constantSize="true">
+    <item android:state_focused="true">
+        <shape android:shape="oval">
+            <solid android:color="@color/oculo_deep" />
+            <stroke
+                android:width="@dimen/oculo_control_button_ring"
+                android:color="@color/oculo_turquoise" />
+            <size
+                android:height="@dimen/lb_control_button_secondary_diameter"
+                android:width="@dimen/lb_control_button_secondary_diameter" />
+        </shape>
+    </item>
+</selector>

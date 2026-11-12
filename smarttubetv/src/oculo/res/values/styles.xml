@@ -2,12 +2,14 @@
 <!-- Oculo accents for the default color scheme ("Dark Grey", index 1 in MainUIData). These styles replace the
      upstream ones of the same name (smarttubetv/src/main/res/values/styles.xml): every item is restated, with
      upstream's red accents swapped for Oculo turquoise. Dark backgrounds are unchanged. The OLED and
-     monochrome variants inherit from these; the Red and Blue schemes are untouched. -->
+     monochrome variants inherit from these; the Red and Blue schemes are untouched.
+     Player: option 1 "Sarcelle profonde" of docs/mockups/player-colors.html (played #0FA3A0, buffered #E0E6E5,
+     active icons #12B3AC; focused button disc in drawable-v21/lb_control_button_*.xml). -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="App.Theme.DarkGrey.Player" parent="App.Theme.Leanback.Player">
-        <item name="playbackProgressPrimaryColor">@color/oculo_turquoise</item>
-        <item name="playbackProgressSecondaryColor">@color/oculo_turquoise_pale</item>
-        <item name="playbackControlsIconHighlightColor">@color/oculo_turquoise</item>
+        <item name="playbackProgressPrimaryColor">@color/oculo_seek_played</item>
+        <item name="playbackProgressSecondaryColor">@color/oculo_seek_buffered</item>
+        <item name="playbackControlsIconHighlightColor">@color/oculo_icon_active</item>
         <item name="cardProgressStyle">@style/ProgressBarHorizontal.Dark</item>
         <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
         <item name="cardDefaultBackground">@color/scheme_grey_card_background_dark</item>

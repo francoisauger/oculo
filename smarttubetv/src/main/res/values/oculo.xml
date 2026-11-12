@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo: resources read by upstream code through small Oculo hooks. Values here keep upstream's look;
+     the oculo flavor overrides them in smarttubetv/src/oculo/res. -->
+<resources>
+    <!-- Remaining (not yet buffered) part of the player seek bar (SeekBar.java; upstream Color.GRAY) -->
+    <color name="oculo_seek_bar_remaining">#FF888888</color>
+</resources>

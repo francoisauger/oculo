@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo: player seek bar, option 1 "Sarcelle profonde" (docs/mockups/player-colors.html). -->
+<resources>
+    <!-- Seek bar height when focused (leanback: 6dp) -->
+    <dimen name="lb_playback_transport_progressbar_active_bar_height">8dp</dimen>
+    <!-- Knob radius when focused, keeps the knob in proportion with the thicker bar (leanback: 6dp) -->
+    <dimen name="lb_playback_transport_progressbar_active_radius">8dp</dimen>
+    <!-- Turquoise ring around the focused player button -->
+    <dimen name="oculo_control_button_ring">3dp</dimen>
+</resources>

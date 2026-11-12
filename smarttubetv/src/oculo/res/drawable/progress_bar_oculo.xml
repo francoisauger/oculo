@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Watched-progress bar on video cards (Oculo turquoise instead of upstream red). -->
+<!-- Watched-progress bar on video cards (Oculo deep turquoise on a dark track instead of upstream red). -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>
-            <solid android:color="@color/white_20"/>
+            <solid android:color="@color/oculo_card_progress_track"/>
         </shape>
     </item>
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <solid android:color="@color/oculo_turquoise"/>
+                <solid android:color="@color/oculo_seek_played"/>
             </shape>
         </clip>
     </item>

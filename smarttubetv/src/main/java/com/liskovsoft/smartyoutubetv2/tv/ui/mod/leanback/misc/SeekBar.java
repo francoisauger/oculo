@@ -92,7 +92,7 @@ public final class SeekBar extends View {
     public SeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
-        mBackgroundPaint.setColor(Color.GRAY);
+        mBackgroundPaint.setColor(context.getResources().getColor(com.liskovsoft.smartyoutubetv2.tv.R.color.oculo_seek_bar_remaining)); // Oculo: was Color.GRAY
         mSecondProgressPaint.setColor(Color.LTGRAY);
         mProgressPaint.setColor(Color.RED);
         mKnobPaint.setColor(Color.WHITE);
