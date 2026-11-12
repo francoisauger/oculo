@@ -19,7 +19,11 @@ Kept untouched: `MediaServiceCore`, `SharedModules` (submodules) and `exoplayer-
 | `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, versionCode = upstream × 100 + Oculo revision, versionName = upstream + `-<revision>`, libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
 | `smarttubetv/build.gradle` | One line at the end: `apply from: "oculo.gradle"`. |
 | `smarttubetv/src/oculo/res/` | Name "Oculo", launcher icon, Android TV banner, browse logo, global search label and authority (`xml/searchable.xml`, `search_authority`), update manifest URL (`update_urls`), About links and upstream credit (`feedback`, `releases_url`, `sources_url`). |
-| `smarttubetv/src/oculo/res/values/colors.xml`, `values/styles.xml`, `drawable/progress_bar_oculo.xml` | Oculo accents (palette from the approved logo, preview in `docs/mockups/colors.html`): the default "Dark Grey" scheme's styles are restated with turquoise `#22D3C8` instead of red (seek bar, card progress, focused card with deep-teal `#0B333A` text, toggles), badges (`dark_red`) and search orb in teal `#0B7F7D`, "Teal" scheme re-tinted to `#0B7F7D`/`#0F4A52`. Dark backgrounds unchanged; Red and Blue schemes untouched (`scheme_red_background_dark` pinned to `#B31217`). If upstream changes these styles, re-sync the restated copies. |
+| `smarttubetv/src/oculo/res/values/colors.xml`, `values/styles.xml`, `drawable/progress_bar_oculo.xml` | Oculo accents (palette from the approved logo, preview in `docs/mockups/colors.html`): the default "Dark Grey" scheme's styles are restated with turquoise `#22D3C8` instead of red (focused card with deep-teal `#0B333A` text, toggles), badges (`dark_red`) and search orb in teal `#0B7F7D`, "Teal" scheme re-tinted to `#0B7F7D`/`#0F4A52`. Dark backgrounds unchanged; Red and Blue schemes untouched (`scheme_red_background_dark` pinned to `#B31217`). Seek bar, card progress and player buttons: see « Player » below. If upstream changes these styles, re-sync the restated copies. |
+| Player (32.74-3) | Option 1 « Sarcelle profonde » of `docs/mockups/player-colors.html`: played part and card watched bars `#0FA3A0` (card track black 55%), buffered `#E0E6E5`, remaining white 25% (`oculo_seek_bar_remaining`), active icons `#12B3AC`, focused button = `#0F4A52` disc with a 3dp `#22D3C8` ring (`drawable-v21/lb_control_button_{primary,secondary}.xml`; the player uses the secondary layout for both rows), focused seek bar 8dp with an 8dp knob radius (`values/dimens.xml`). |
+| Loading animation (32.74-3) | Concept B « Balayage », frosted frame, of `docs/mockups/loading.html`: `drawable-v24/progress_large_holo.xml` (AnimatedVectorDrawable, gradients, 1.2 s lap) and `drawable/progress_large_holo.xml` (solid colors, API 21-23) override SharedModules' spinner (`ProgressBarManager`). `layout/view_loading_card.xml` and `layout/widget_preview_card.xml` are copies of the upstream layouts with `indeterminateDrawable` set: re-sync them if upstream changes those layouts. The trail uses the mockup's frosted-variant colors (`#0B7F7D` → `#22D3C8`). |
+| Top-right logo (32.74-3) | `mipmap-nodpi/app_logo_semi_red.png` and `app_logo_semi_grey.png` (the browse `appLogo` badge, 50dp high) hold the « Oculo » wordmark with white letters (from `docs/mockups/logos-v3/oculo-wordmark-dark.png`, 632×200, content 80% of the height). |
+| Home (32.74-3) | `common/.../oculo/OculoData.java` (prefs, `DataSaverBase`) and `OculoSettings.java` (category « Home » in Settings > Main UI): Home reloads on return to the app when older than 10 minutes (upstream 3 h); the news/sports row-title filter is a toggle, off by default; hiding watched videos in Home's first row is a toggle, on by default. Defaults and strings in `common/src/main/res/values/oculo.xml` (upstream behaviour, EN) and `values-fr/oculo.xml` (FR); Oculo defaults in `smarttubetv/src/oculo/res/values/oculo_config.xml`. |
 | `common/.../utils/Utils.java` | Adds `com.francoisauger.oculo` to `KNOWN_PACKAGES` so the full About screen (credits, links) is shown. |
 | `smarttubetv/google-services.json` | Removed (upstream's Firebase project; only used by the `stbeta`/`ststable` flavors). |
 | `.gitignore` | Keystores and signing files. |
@@ -29,6 +33,23 @@ Every place tied to the applicationId: the search provider authority comes from
 `leanbackassistant/src/stfdroid/AndroidManifest.xml` (`${applicationId}.search_provider`) and must match
 `search_authority` and `xml/searchable.xml` in `smarttubetv/src/oculo/res`; the other authorities
 (`.androidx-startup`, `.update_provider`) use `${applicationId}` directly.
+
+## Upstream files touched
+
+Keep this list current: these are the only upstream files Oculo edits (each change is a small hook, marked
+`Oculo` where it is not obvious). Check them first after a merge with upstream.
+
+| File | Hook |
+|---|---|
+| `smarttubetv/build.gradle` | `apply from: "oculo.gradle"` at the end. |
+| `common/.../utils/Utils.java` | `com.francoisauger.oculo` in `KNOWN_PACKAGES`. |
+| `common/.../app/presenters/BrowsePresenter.java` | `refreshIfNeeded()`: interval from `OculoData.getHomeRefreshIntervalMs()` instead of 3 h; `filterHomeIfNeeded()`: returns early when `OculoData.isHomeRowsFilterEnabled()` is false. |
+| `common/.../app/models/data/VideoGroup.java` | `isWatchedSuggestion()`: Home's first row is filtered only when `OculoData.isHomeHideWatchedEnabled()`. |
+| `common/.../app/presenters/settings/MainUISettingsPresenter.java` | `show()`: one call to `OculoSettings.appendHomeCategory()`. |
+| `smarttubetv/.../ui/mod/leanback/misc/SeekBar.java` | Remaining part color read from `R.color.oculo_seek_bar_remaining` instead of `Color.GRAY` (upstream value kept in `smarttubetv/src/main/res/values/oculo.xml`). |
+
+New files outside the flavor (not upstream): `common/.../oculo/`, `common/src/main/res/values/oculo.xml`,
+`common/src/main/res/values-fr/oculo.xml`, `smarttubetv/src/main/res/values/oculo.xml`.
 
 ## Build
 
