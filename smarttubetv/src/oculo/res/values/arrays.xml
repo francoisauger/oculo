@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- In-app updater (SharedModules/appupdatechecker2): manifest in the SmartTube JSON format -->
+    <string-array name="update_urls">
+        <item>https://github.com/francoisauger/oculo/releases/latest/download/oculo_stable.json</item>
+    </string-array>
+
+    <!-- About screen, "Feedback" section: credit to upstream (format: label|url, shown as a QR code) -->
+    <string-array name="feedback">
+        <item>Based on SmartTube by yuliskov (MIT)|https://github.com/yuliskov/SmartTube</item>
+        <item>Oculo on GitHub|https://github.com/francoisauger/oculo</item>
+    </string-array>
+</resources>

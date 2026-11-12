@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo branding. Overrides strings from the app module and from the library modules (common, leanbackassistant). -->
+<resources>
+    <string translatable="false" name="app_name"><![CDATA[Oculo]]></string>
+    <string translatable="false" name="browse_title"><![CDATA[Oculo]]></string>
+
+    <!-- leanbackassistant: global search -->
+    <string translatable="false" name="search_label">Oculo</string>
+    <string translatable="false" name="settings_description">Oculo videos</string>
+    <!-- Must match applicationId + ".search_provider" (provider authority in leanbackassistant/src/stfdroid/AndroidManifest.xml) -->
+    <string translatable="false" name="search_authority">com.francoisauger.oculo.search_provider</string>
+
+    <!-- common: About screen links -->
+    <string translatable="false" name="releases_url">https://github.com/francoisauger/oculo/releases</string>
+    <string translatable="false" name="sources_url">https://github.com/francoisauger/oculo</string>
+</resources>

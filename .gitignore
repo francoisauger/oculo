@@ -71,3 +71,9 @@ tmp/
 fabric.properties
 *BAK.java
 hs_err_pid*.log
+
+# Oculo fork: signing material never lives in the repo
+*.jks
+*.keystore
+keystore.properties
+signing.json

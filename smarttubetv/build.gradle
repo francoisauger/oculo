@@ -255,3 +255,6 @@ dependencies {
 
     implementation 'androidx.work:work-runtime:' + workVersion
 }
+
+// Oculo flavor (fork-specific, keep this the only change to this file)
+apply from: "oculo.gradle"

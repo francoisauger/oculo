@@ -1,0 +1,74 @@
+// Oculo: a thin rebrand of SmartTube, built as its own product flavor.
+// Everything Oculo-specific in the build lives in this file so that merges with upstream stay trivial.
+// Applied at the end of smarttubetv/build.gradle (after the upstream android {} block).
+
+import groovy.json.JsonSlurper
+
+// Bump for an Oculo-only rebuild of the same upstream version; reset to 1 when upstream bumps versionCode.
+def oculoRevision = 1
+
+// Release signing: a JSON file kept OUTSIDE the repo, e.g.
+// {"storeFile": "/abs/path/oculo-release.jks", "storePassword": "...", "keyAlias": "oculo", "keyPassword": "..."}
+// Location: -PoculoSigningConfig=<path>, or env OCULO_SIGNING_CONFIG, or ~/.config/chuck/oculo/signing.json.
+def oculoSigningPath = project.findProperty('oculoSigningConfig') ?:
+        System.getenv('OCULO_SIGNING_CONFIG') ?:
+        "${System.getProperty('user.home')}/.config/chuck/oculo/signing.json"
+def oculoSigning = null
+if (new File(oculoSigningPath).exists()) {
+    oculoSigning = new JsonSlurper().parse(new File(oculoSigningPath))
+}
+
+android {
+    signingConfigs {
+        oculo {
+            if (oculoSigning != null) {
+                storeFile file(oculoSigning.storeFile)
+                storePassword oculoSigning.storePassword
+                keyAlias oculoSigning.keyAlias
+                keyPassword oculoSigning.keyPassword
+            }
+        }
+    }
+
+    productFlavors {
+        oculo {
+            dimension "default"
+            // Values linked with applicationId are overridden in src/oculo/res
+            // (searchable.xml, search_authority); manifest authorities use ${applicationId}.
+            applicationId "com.francoisauger.oculo"
+            minSdkVersion 21
+            targetSdkVersion project.properties.compileSdkVersion
+            versionCode android.defaultConfig.versionCode * 100 + oculoRevision
+            versionNameSuffix "-" + oculoRevision
+
+            // Library modules only know stbeta/ststable/stfdroid: use the F-Droid variant
+            // (no Firebase/Crashlytics, no upstream update channel).
+            matchingFallbacks = ['stfdroid']
+
+            ndk {
+                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86'
+            }
+
+            if (oculoSigning != null) {
+                signingConfig signingConfigs.oculo
+            }
+        }
+    }
+
+    // Runs after the upstream naming closure, so it wins for Oculo variants.
+    applicationVariants.all { variant ->
+        if (variant.flavorName != 'oculo') {
+            return
+        }
+        variant.outputs.all { output ->
+            // "ABI" = OutputFile.ABI (the class is not visible from a script plugin)
+            def arch = output.getFilter("ABI") ?: 'universal'
+            def suffix = variant.buildType.name == 'release' ? '' : '_' + variant.buildType.name
+            output.outputFileName = "Oculo_${variant.versionName}_${arch}${suffix}.apk"
+        }
+    }
+}
+
+if (oculoSigning == null && gradle.startParameter.taskNames.any { it.toLowerCase().contains('oculorelease') }) {
+    logger.warn("Oculo: no signing config found at ${oculoSigningPath}; the release APK will be unsigned.")
+}
