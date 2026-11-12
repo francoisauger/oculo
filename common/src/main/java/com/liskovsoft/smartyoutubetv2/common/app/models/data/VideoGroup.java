@@ -8,6 +8,7 @@ import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.sharedutils.prefs.GlobalPreferences;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoStateService;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoStateService.State;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.BlockedChannelData;
 
 import java.util.ArrayList;
@@ -505,7 +506,7 @@ public class VideoGroup {
             return false;
         }
 
-        if (type == MediaGroup.TYPE_HOME && getPosition() > 0) {
+        if (type == MediaGroup.TYPE_HOME && (getPosition() > 0 || !OculoData.instance(GlobalPreferences.context()).isHomeHideWatchedEnabled())) {
             return false;
         }
 

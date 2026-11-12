@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="oculo_home_rows_filter">Masquer les rangées de nouvelles et de sports</string>
+    <string name="oculo_home_hide_watched">Masquer les vidéos déjà vues dans la première rangée</string>
+</resources>

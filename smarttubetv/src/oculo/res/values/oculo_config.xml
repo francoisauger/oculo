@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo defaults for Home (resources declared in common/src/main/res/values/oculo.xml). -->
+<resources>
+    <!-- Reload Home on return to the app when older than 10 minutes (upstream: 3 hours) -->
+    <integer name="oculo_home_refresh_minutes">10</integer>
+    <!-- Show news/sports rows like official YouTube (upstream hides them) -->
+    <bool name="oculo_home_rows_filter_default">false</bool>
+    <!-- Keep hiding watched videos in Home's first row (upstream behaviour) -->
+    <bool name="oculo_home_hide_watched_default">true</bool>
+</resources>
