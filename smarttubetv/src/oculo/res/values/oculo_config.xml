@@ -11,6 +11,8 @@
     <bool name="oculo_home_continue_watching_default">true</bool>
     <!-- Home's background glow takes the focused thumbnail's color, as on the Google TV home screen -->
     <bool name="oculo_thumbnail_glow_default">true</bool>
+    <!-- Rail: Abricot dot on Subscriptions when subscribed channels have new content (OculoNewContent) -->
+    <bool name="oculo_rail_new_content_dot">true</bool>
     <!-- About: no "Install bridge" button (it installs a third-party APK) -->
     <bool name="oculo_show_install_bridge">false</bool>
 
@@ -44,9 +46,20 @@
     <bool name="oculo_skip_notice">true</bool>
     <color name="oculo_skip_notice_accent">@color/oculo_abricot</color>
 
-    <!-- Focused card ring pulse, as on the Google TV home screen: white 100% -> 45% -> 100% every 2 s -->
-    <integer name="oculo_card_focus_pulse_period">2000</integer>
-    <item name="oculo_card_focus_pulse_min_alpha" type="fraction">45%</item>
+    <!-- Focused card ring pulse, measured on the Google TV home screen (32.74-13, docs/mockups/googletv-ref/):
+         full -> about 16 % of full -> full every 2.4 s (32.74-12: 45 % every 2 s, unmeasured) -->
+    <integer name="oculo_card_focus_pulse_period">2400</integer>
+    <item name="oculo_card_focus_pulse_min_alpha" type="fraction">20%</item>
+    <!-- Glow around the focused card in its thumbnail's color (Google TV), reaching about 14dp beyond the ring;
+         white at a lower strength when the thumbnail has no usable color -->
+    <dimen name="oculo_card_glow_radius">14dp</dimen>
+    <item name="oculo_card_glow_alpha" type="fraction">55%</item>
+    <item name="oculo_card_glow_fallback_alpha" type="fraction">45%</item>
+    <!-- No grey box under the cards (Google TV / YouTube): white title, grey meta (YouTube #AAAAAA) -->
+    <bool name="oculo_card_hide_info_box">true</bool>
+    <color name="oculo_card_meta_text">#AAAAAA</color>
+    <!-- Rail: new-content dot on Subscriptions, Abricot main (couleur-secondaire.html .ic.dotted) -->
+    <color name="oculo_rail_dot">@color/oculo_abricot</color>
 
     <!-- Browse: YouTube-style left rail (OculoRail) -->
     <bool name="oculo_left_rail">true</bool>

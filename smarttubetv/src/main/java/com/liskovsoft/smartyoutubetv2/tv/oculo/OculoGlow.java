@@ -50,6 +50,8 @@ import java.util.concurrent.Executors;
  *     {@link OculoGlowColor} picks and clamps the color. Colors are cached per decoded bitmap.</li>
  *     <li>Colors crossfade over {@link #CROSSFADE_MS}: two pre-built gradient layers whose paint alpha is
  *     animated, so nothing is allocated per frame.</li>
+ *     <li>32.74-13: the same color also goes to the focused card's own glow ({@link OculoUi}), on every screen with
+ *     cards (no usable color = 0: soft white there).</li>
  *     <li>Setting: Settings &gt; Main UI &gt; Home &gt; "Glow from the thumbnail" ({@link OculoData}).</li>
  * </ul>
  */
@@ -115,8 +117,7 @@ public final class OculoGlow {
      * main_image_wrapper, or a channel card).
      */
     public static void onCardFocusChanged(View card, boolean focused) {
-        GlowView view = sView.get();
-        if (view == null || card == null || view.getRootView() != card.getRootView()) {
+        if (card == null) {
             return;
         }
 
@@ -136,21 +137,32 @@ public final class OculoGlow {
         }
     }
 
-    private static void applyFocusedCard() {
+    /**
+     * Background glow (Home only, same window as the card) and the focused card's own glow ({@link OculoUi}).
+     * {@code color} 0 = no usable color: teal background, soft white card glow.
+     */
+    private static void deliver(View card, int color) {
         GlowView view = sView.get();
+        if (view != null && view.getRootView() == card.getRootView()) {
+            view.setTarget(color != 0 ? color : OculoGlowColor.DEFAULT_GLOW);
+        }
+        OculoUi.onCardGlowColor(card, color);
+    }
+
+    private static void applyFocusedCard() {
         View card = sFocusedCard.get();
-        if (view == null || card == null) {
+        if (card == null) {
             return;
         }
 
         if (!OculoData.instance(card.getContext()).isThumbnailGlowEnabled()) {
-            view.setTarget(OculoGlowColor.DEFAULT_GLOW);
+            deliver(card, 0);
             return;
         }
 
         Bitmap bitmap = findBitmap(card);
         if (bitmap == null || bitmap.isRecycled()) {
-            view.setTarget(OculoGlowColor.DEFAULT_GLOW);
+            deliver(card, 0);
             return;
         }
 
@@ -158,7 +170,7 @@ public final class OculoGlow {
         long key = ((long) System.identityHashCode(bitmap) << 32) | (bitmap.getGenerationId() & 0xFFFFFFFFL);
         Integer cached = sColors.get(key);
         if (cached != null) {
-            view.setTarget(cached != 0 ? cached : OculoGlowColor.DEFAULT_GLOW);
+            deliver(card, cached);
             return;
         }
 
@@ -173,9 +185,9 @@ public final class OculoGlow {
             int color = computeColor(sample, source);
             sHandler.post(() -> {
                 sColors.put(key, color);
-                GlowView current = sView.get();
+                View current = sFocusedCard.get();
                 if (current != null && request == sRequest) {
-                    current.setTarget(color != 0 ? color : OculoGlowColor.DEFAULT_GLOW);
+                    deliver(current, color);
                 }
             });
         });

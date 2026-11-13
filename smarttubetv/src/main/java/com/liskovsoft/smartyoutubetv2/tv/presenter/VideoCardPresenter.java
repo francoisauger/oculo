@@ -59,6 +59,9 @@ public class VideoCardPresenter extends LongClickPresenter {
                 ContextCompat.getColor(context, R.color.card_selected_text_grey);
         mSelectedTextColor = OculoUi.cardSelectedTextColor(mSelectedBackgroundColor, mDefaultBackgroundColor,
                 mSelectedTextColor, mDefaultTextColor); // Oculo
+        int defaultBackground = mDefaultBackgroundColor; // Oculo: no info box under the thumbnail
+        mDefaultBackgroundColor = OculoUi.cardInfoBackground(context, mDefaultBackgroundColor, mSelectedBackgroundColor, defaultBackground);
+        mSelectedBackgroundColor = OculoUi.cardInfoBackground(context, mSelectedBackgroundColor, mSelectedBackgroundColor, defaultBackground);
 
         mCardPreviewType = getCardPreviewType(context);
         mThumbQuality = getThumbQuality(context);
@@ -117,7 +120,7 @@ public class VideoCardPresenter extends LongClickPresenter {
         }
         TextView contentText = view.findViewById(R.id.content_text);
         if (contentText != null) {
-            contentText.setTextColor(textColor);
+            contentText.setTextColor(OculoUi.cardMetaTextColor(view.getContext(), textColor)); // Oculo: grey meta
         }
     }
 

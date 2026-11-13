@@ -33,12 +33,14 @@ import androidx.leanback.widget.PageRow;
 import androidx.leanback.widget.VerticalGridView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
 import com.liskovsoft.mediaserviceinterfaces.oauth.Account;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.SearchPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AccountSelectionPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.settings.AccountSettingsPresenter;
 import com.liskovsoft.smartyoutubetv2.common.misc.MediaServiceManager;
 import com.liskovsoft.smartyoutubetv2.common.misc.MediaServiceManager.AccountChangeListener;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoNewContent;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.SectionHeaderItem;
@@ -157,10 +159,18 @@ public final class OculoRail implements AccountChangeListener {
         }
 
         MediaServiceManager.instance().addAccountListener(this);
+
+        // Abricot dot on Subscriptions when subscribed channels have new content
+        if (OculoNewContent.isEnabled(mContext)) {
+            OculoNewContent.instance(mContext).setListener(this::updateCurrentSection);
+        }
     }
 
     public void detach() {
         MediaServiceManager.instance().removeAccountListener(this);
+        if (OculoNewContent.isEnabled(mContext)) {
+            OculoNewContent.instance(mContext).setListener(null);
+        }
         mFragment.getChildFragmentManager().unregisterFragmentLifecycleCallbacks(mHeadersCallbacks);
         mGrid = null;
         mTopBlock = mAvatarRow = mSearchClip = mSearchRow = mListFade = mContent = null;
@@ -173,6 +183,10 @@ public final class OculoRail implements AccountChangeListener {
     public void onStart() {
         applyGridAlignment();
         updateAccount();
+        // New-content dot: first Home load, then at most once per Home refresh interval (never in the background)
+        if (OculoNewContent.isEnabled(mContext)) {
+            OculoNewContent.instance(mContext).refreshIfDue();
+        }
     }
 
     /**
@@ -509,8 +523,59 @@ public final class OculoRail implements AccountChangeListener {
             icon.setImageTintList(isResourceIcon(holder) ? railIconColors() : null);
         }
 
-        item.setActivated(holder != null && holder.getAdapterPosition() == mGrid.getSelectedPosition());
+        boolean current = holder != null && holder.getAdapterPosition() == mGrid.getSelectedPosition();
+        item.setActivated(current);
         setLabelVisible(item, mExpanded);
+
+        if (icon != null && OculoNewContent.isEnabled(mContext)) {
+            int sectionId = getSectionId(holder);
+            if (current && (sectionId == MediaGroup.TYPE_SUBSCRIPTIONS || sectionId == MediaGroup.TYPE_CHANNEL_UPLOADS)) {
+                // Subscriptions or Channels opened: the new content is acknowledged
+                OculoNewContent.instance(mContext).markSeen();
+            }
+            setNewContentDot(icon, sectionId == MediaGroup.TYPE_SUBSCRIPTIONS
+                    && OculoNewContent.instance(mContext).hasDot());
+        }
+    }
+
+    private static int getSectionId(@Nullable RecyclerView.ViewHolder holder) {
+        if (holder instanceof ItemBridgeAdapter.ViewHolder) {
+            Object item = ((ItemBridgeAdapter.ViewHolder) holder).getItem();
+            if (item instanceof PageRow && ((PageRow) item).getHeaderItem() != null) {
+                return (int) ((PageRow) item).getHeaderItem().getId();
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Small round Abricot dot at the icon's top right with a thin dark outline (docs/mockups/couleur-secondaire.html,
+     * {@code .ic.dotted}), drawn in the icon's overlay: visible on the collapsed and expanded rail and on the white
+     * focus pill. Recycled header views lose it when they show another section.
+     */
+    private void setNewContentDot(ImageView icon, boolean show) {
+        Object tag = icon.getTag(R.id.oculo_rail_dot);
+        if (!show) {
+            if (tag instanceof Drawable) {
+                icon.getOverlay().remove((Drawable) tag);
+                icon.setTag(R.id.oculo_rail_dot, null);
+            }
+            return;
+        }
+        if (tag instanceof Drawable) {
+            return;
+        }
+        Resources res = mContext.getResources();
+        int size = res.getDimensionPixelSize(R.dimen.oculo_rail_dot_size);
+        GradientDrawable dot = new GradientDrawable();
+        dot.setShape(GradientDrawable.OVAL);
+        dot.setColor(ContextCompat.getColor(mContext, R.color.oculo_rail_dot));
+        dot.setStroke(res.getDimensionPixelSize(R.dimen.oculo_rail_dot_outline),
+                ContextCompat.getColor(mContext, R.color.oculo_rail_dot_outline));
+        int iconSize = res.getDimensionPixelSize(R.dimen.oculo_rail_icon_size);
+        dot.setBounds(iconSize - size, 0, iconSize, size);
+        icon.getOverlay().add(dot);
+        icon.setTag(R.id.oculo_rail_dot, dot);
     }
 
     private void updateCurrentSection() {

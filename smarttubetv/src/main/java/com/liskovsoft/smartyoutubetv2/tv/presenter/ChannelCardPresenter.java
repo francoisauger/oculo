@@ -53,6 +53,9 @@ public class ChannelCardPresenter extends LongClickPresenter {
                 ContextCompat.getColor(context, R.color.card_selected_text_grey);
         mSelectedTextColor = OculoUi.cardSelectedTextColor(mSelectedBackgroundColor, mDefaultBackgroundColor,
                 mSelectedTextColor, mDefaultTextColor); // Oculo
+        int defaultBackground = mDefaultBackgroundColor; // Oculo: no grey box (new-content color kept)
+        mDefaultBackgroundColor = OculoUi.cardInfoBackground(context, mDefaultBackgroundColor, mSelectedBackgroundColor, defaultBackground);
+        mSelectedBackgroundColor = OculoUi.cardInfoBackground(context, mSelectedBackgroundColor, mSelectedBackgroundColor, defaultBackground);
 
         updateDimensions(context);
 

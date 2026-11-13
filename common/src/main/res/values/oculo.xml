@@ -11,6 +11,9 @@
     <!-- Home's background glow takes the focused thumbnail's color (OculoGlow; only where the theme uses
          Oculo's glow background, i.e. the oculo flavor's Dark Grey scheme) -->
     <bool name="oculo_thumbnail_glow_default">false</bool>
+    <!-- Rail: Abricot dot on the Subscriptions icon when subscribed channels have new content (OculoNewContent:
+         one request with Home's refresh, never in the background). Off upstream. -->
+    <bool name="oculo_rail_new_content_dot">false</bool>
     <!-- About: "Install bridge" button (ATV/Amazon voice-search bridge) -->
     <bool name="oculo_show_install_bridge">true</bool>
 

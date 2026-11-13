@@ -91,6 +91,24 @@
          (cosine ease in-out). 0 = steady ring (upstream); the oculo flavor sets them in oculo_config.xml. -->
     <integer name="oculo_card_focus_pulse_period">0</integer>
     <item name="oculo_card_focus_pulse_min_alpha" type="fraction">100%</item>
+    <!-- 32.74-13: ring + gap OUTSIDE the tile and a soft glow in the thumbnail's color around it (OculoUi.CardFrame,
+         one drawable in the grid item's overlay; tag key below). Glow: blur reach beyond the ring, peak opacity, and
+         the share of it used for the white fallback when the thumbnail has no usable color. 0 = no glow (upstream). -->
+    <item name="oculo_card_frame" type="id" />
+    <dimen name="oculo_card_glow_radius">0dp</dimen>
+    <item name="oculo_card_glow_alpha" type="fraction">0%</item>
+    <item name="oculo_card_glow_fallback_alpha" type="fraction">100%</item>
+    <!-- No info box under video and channel cards (title and meta on the page, Google TV / YouTube); only applies
+         with the focus ring and no focus fill (OculoUi.cardInfoBackground). Off upstream. -->
+    <bool name="oculo_card_hide_info_box">false</bool>
+    <!-- Meta line under a card (channel • views • date). Transparent = the card's text color (upstream). -->
+    <color name="oculo_card_meta_text">#00000000</color>
+    <!-- Rail: new-content dot on the Subscriptions icon (OculoRail, OculoNewContent; flag in common's oculo.xml) -->
+    <item name="oculo_rail_dot" type="id" />
+    <dimen name="oculo_rail_dot_size">7dp</dimen>
+    <dimen name="oculo_rail_dot_outline">1.5dp</dimen>
+    <color name="oculo_rail_dot">#FFA25C</color>
+    <color name="oculo_rail_dot_outline">#131313</color>
     <!-- Card meta line accents (OculoUi.accentCardMeta): live viewer count and publish time under 24 h.
          Transparent = unchanged (upstream); the oculo flavor sets Abricot in oculo_config.xml. -->
     <color name="oculo_card_live_viewers">#00000000</color>
