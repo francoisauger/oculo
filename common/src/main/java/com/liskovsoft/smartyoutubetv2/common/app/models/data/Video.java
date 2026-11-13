@@ -39,7 +39,7 @@ public final class Video {
     public static final long MAX_LIVE_DURATION_MS = 24 * 60 * 60 * 1_000;
     public static final float MIN_WATCHED_PERCENT = 10; // min value for immediately closed videos
     private static final int MAX_AUTHOR_LENGTH_CHARS = 20;
-    private static final String BLACK_PLACEHOLDER_URL = "https://via.placeholder.com/1280x720/000000/000000";
+    private static final String BLACK_PLACEHOLDER_URL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNgAAAAAgABSK+kcQAAAABJRU5ErkJggg=="; // Oculo: local 1x1 black PNG (was via.placeholder.com)
     public int id;
     public String title;
     public String deArrowTitle;

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo: no donation entries (overrides common/src/main/res/values/donations.xml).
+     AboutSettingsPresenter.appendDonation() skips the whole section when the list is empty. -->
+<resources>
+    <string-array name="donations" />
+</resources>

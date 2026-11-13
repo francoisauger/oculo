@@ -183,6 +183,10 @@ public class AboutSettingsPresenter extends BasePresenter<Void> {
     }
 
     private void appendInstallBridge(AppDialogPresenter settingsPresenter) {
+        if (!getContext().getResources().getBoolean(R.bool.oculo_show_install_bridge)) { // Oculo
+            return;
+        }
+
         OptionItem installBridgeOption = UiOptionItem.from(
                 getContext().getString(R.string.install_bridge),
                 option -> startBridgePresenter());

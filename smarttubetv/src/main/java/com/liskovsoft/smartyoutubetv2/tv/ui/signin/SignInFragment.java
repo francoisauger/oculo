@@ -17,6 +17,7 @@ import com.bumptech.glide.request.target.Target;
 import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.SignInPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.views.SignInView;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoQr;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
@@ -71,7 +72,7 @@ public class SignInFragment extends GuidedStepSupportFragment implements SignInV
         mFullSignInUrl = fullSignInUrl != null ? fullSignInUrl : signInUrl;
 
         Glide.with(getContext())
-                .load(Utils.toQrCodeLink(mFullSignInUrl))
+                .load(OculoQr.toBitmap(mFullSignInUrl, 600)) // Oculo: generated on the device (was api.qrserver.com)
                 .placeholder(R.drawable.activate_account_qrcode)
                 .apply(ViewUtil.glideOptions())
                 .error(R.drawable.activate_account_qrcode)

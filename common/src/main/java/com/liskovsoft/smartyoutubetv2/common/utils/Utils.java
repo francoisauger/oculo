@@ -67,6 +67,7 @@ import com.liskovsoft.sharedutils.helpers.MessageHelpers;
 import com.liskovsoft.sharedutils.misc.WeakHashSet;
 import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.sharedutils.okhttp.OkHttpManager;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoQr;
 import com.liskovsoft.smartyoutubetv2.common.BuildConfig;
 import com.liskovsoft.smartyoutubetv2.common.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
@@ -135,7 +136,6 @@ public class Utils {
     private static final String BOOTSTRAP_ACTIVITY_CLASS_NAME = "com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity";
     private static final String TASK_ID = RemoteControlWorker.class.getSimpleName();
     private static final String TAG = Utils.class.getSimpleName();
-    private static final String QR_CODE_URL_TEMPLATE = "https://api.qrserver.com/v1/create-qr-code/?data=%s";
     private static final int GLOBAL_VOLUME_TYPE = AudioManager.STREAM_MUSIC;
     private static final String GLOBAL_VOLUME_SERVICE = Context.AUDIO_SERVICE;
     public static final Handler sHandler = new Handler(Looper.getMainLooper());
@@ -510,7 +510,7 @@ public class Utils {
     }
 
     public static String toQrCodeLink(String data) {
-        return String.format(QR_CODE_URL_TEMPLATE, data);
+        return OculoQr.toQrPageUrl(data); // Oculo: generated on the device (was api.qrserver.com)
     }
 
     public static void openLink(Context context, String url) {
