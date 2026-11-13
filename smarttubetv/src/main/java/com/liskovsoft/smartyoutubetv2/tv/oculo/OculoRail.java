@@ -63,6 +63,7 @@ public final class OculoRail implements AccountChangeListener {
     private final BrowseSupportFragment mFragment;
     private final Context mContext;
     private final ColorStateList mIconColors;
+    private final ColorStateList mIconColorsExpanded;
     private boolean mExpanded;
     private VerticalGridView mGrid;
     private View mTopBlock;
@@ -112,6 +113,8 @@ public final class OculoRail implements AccountChangeListener {
         mFragment = fragment;
         mContext = fragment.getContext();
         mIconColors = ContextCompat.getColorStateList(mContext, R.color.oculo_rail_icon);
+        // As in YouTube: grey icons on the collapsed rail (current section white), white once expanded
+        mIconColorsExpanded = ContextCompat.getColorStateList(mContext, R.color.oculo_rail_icon_expanded);
     }
 
     private void attachInternal(View root) {
@@ -378,7 +381,7 @@ public final class OculoRail implements AccountChangeListener {
         ((FrameLayout.LayoutParams) mSearchRow.getLayoutParams()).gravity = Gravity.TOP;
         ImageView searchIcon = mSearchRow.findViewById(R.id.header_icon);
         searchIcon.setImageResource(R.drawable.oculo_ic_search);
-        searchIcon.setImageTintList(mIconColors);
+        searchIcon.setImageTintList(railIconColors());
         ((TextView) mSearchRow.findViewById(R.id.header_label)).setText(R.string.action_search);
         mSearchRow.setOnClickListener(v -> SearchPresenter.instance(mContext).startSearch(null));
         searchClip.addView(mSearchRow);
@@ -478,6 +481,14 @@ public final class OculoRail implements AccountChangeListener {
                 setLabelVisible(row, mExpanded);
             }
         }
+
+        if (mSearchRow != null) {
+            ((ImageView) mSearchRow.findViewById(R.id.header_icon)).setImageTintList(railIconColors());
+        }
+    }
+
+    private ColorStateList railIconColors() {
+        return mExpanded ? mIconColorsExpanded : mIconColors;
     }
 
     private void styleItem(View child) {
@@ -492,7 +503,7 @@ public final class OculoRail implements AccountChangeListener {
         RecyclerView.ViewHolder holder = mGrid.getChildViewHolder(child);
         if (icon != null) {
             // Section icons follow the rail colors; channel avatars (pinned channels) keep their image.
-            icon.setImageTintList(isResourceIcon(holder) ? mIconColors : null);
+            icon.setImageTintList(isResourceIcon(holder) ? railIconColors() : null);
         }
 
         item.setActivated(holder != null && holder.getAdapterPosition() == mGrid.getSelectedPosition());

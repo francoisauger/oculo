@@ -46,7 +46,8 @@
     <dimen name="oculo_rail_icon_size">20dp</dimen>
     <dimen name="oculo_rail_avatar_size">27dp</dimen>
     <dimen name="oculo_rail_label_margin">12dp</dimen>
-    <dimen name="oculo_rail_pill_radius">19.5dp</dimen>
+    <!-- Focused item: YouTube's white rounded rectangle, 444 x 78 px with 15 px corners -->
+    <dimen name="oculo_rail_pill_radius">7.5dp</dimen>
     <!-- Focused pill width (YouTube: 444 px) -->
     <dimen name="oculo_rail_pill_width">222dp</dimen>
     <!-- Expanded rail: duration of the list's upward move -->
@@ -67,10 +68,20 @@
     <dimen name="oculo_top_bar_time_size">18sp</dimen>
     <dimen name="oculo_top_bar_date_size">11sp</dimen>
     <dimen name="oculo_top_bar_content_clip">75dp</dimen>
-    <!-- Top bar colors: white 15% at rest (YouTube #272727 on its #0F0F0F), the rail's turquoise pill when
-         focused, with deep-teal text and icon -->
+    <!-- YouTube's focus white and the dark ink on it (measured: #F1F1F1, #0F0F0F): focused rail item, mic and
+         Search pill (32.74-8; before: turquoise) -->
+    <color name="oculo_white_focus">#F1F1F1</color>
+    <color name="oculo_white_focus_ink">#0F0F0F</color>
+    <!-- Top bar colors: white 15% at rest (YouTube #272727 on its #0F0F0F), white with dark text and icon when
+         focused, as in YouTube -->
     <color name="oculo_top_bar_button">#26FFFFFF</color>
-    <color name="oculo_top_bar_button_focused">#22D3C8</color>
+    <color name="oculo_top_bar_button_focused">@color/oculo_white_focus</color>
     <color name="oculo_top_bar_text">#BFFFFFFF</color>
-    <color name="oculo_top_bar_text_focused">#0B333A</color>
+    <color name="oculo_top_bar_text_focused">@color/oculo_white_focus_ink</color>
+
+    <!-- Focus contour of video cards (VideoCardPresenter -> OculoUi.setCardFocusFrame): frame color and width.
+         Transparent = no frame (upstream); the oculo flavor sets them. -->
+    <color name="oculo_card_focus_frame">#00000000</color>
+    <dimen name="oculo_card_focus_frame_width">0dp</dimen>
+    <dimen name="oculo_channel_card_focus_frame_width">0dp</dimen>
 </resources>

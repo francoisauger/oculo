@@ -14,4 +14,9 @@
          the first row title sits 18dp higher under the slimmer top bar (upstream SmartTube 130dp). -->
     <dimen name="lb_browse_rows_margin_start">211dp</dimen>
     <dimen name="lb_browse_rows_margin_top">112dp</dimen>
+    <!-- Focus contour of video cards (32.74-8, OculoUi.setCardFocusFrame): 7dp on the 200 x 110dp thumbnail
+         (6.4 % of its height; François's reference frame is thicker, ~15-18 %, on a small icon) -->
+    <dimen name="oculo_card_focus_frame_width">7dp</dimen>
+    <!-- Channel cards (avatar + title, 30dp high): the frame goes around the whole card, thinner -->
+    <dimen name="oculo_channel_card_focus_frame_width">4dp</dimen>
 </resources>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Oculo accents for the default color scheme ("Dark Grey", index 1 in MainUIData). These styles replace the
      upstream ones of the same name (smarttubetv/src/main/res/values/styles.xml): every item is restated, with
-     upstream's red accents swapped for Oculo turquoise. Browse screens get a subtle turquoise glow on black
+     upstream's red accents swapped for Oculo turquoise. Since 32.74-8 focused video and channel cards have no fill
+     (cardSelectedBackground = the card's own background, white text) but a dark-teal contour (OculoUi). Browse screens get a subtle turquoise glow on black
      (shelfBackground, drawable/oculo_browse_background.xml); the player and the OLED variant stay pure black.
      The OLED and monochrome variants inherit from these; the Red and Blue schemes are untouched.
      Player: option 1 "Sarcelle profonde" of docs/mockups/player-colors.html (played #0FA3A0, buffered #E0E6E5,
@@ -14,7 +15,7 @@
         <item name="cardProgressStyle">@style/ProgressBarHorizontal.Dark</item>
         <item name="shelfBackground">@color/scheme_grey_shelf_background_dark</item>
         <item name="cardDefaultBackground">@color/scheme_grey_card_background_dark</item>
-        <item name="cardSelectedBackground">@color/oculo_turquoise</item>
+        <item name="cardSelectedBackground">@color/scheme_grey_card_background_dark</item>
         <item name="android:colorAccent" tools:targetApi="21">@color/oculo_turquoise</item>
     </style>
     <style name="App.Theme.DarkGrey.Browse" parent="App.Theme.Leanback.Browse">
@@ -26,7 +27,7 @@
         <!-- Black with the logo board's subtle turquoise glow (drawable/oculo_browse_background.xml) -->
         <item name="shelfBackground">@drawable/oculo_browse_background</item>
         <item name="cardDefaultBackground">@color/scheme_grey_card_background_dark</item>
-        <item name="cardSelectedBackground">@color/oculo_turquoise</item>
+        <item name="cardSelectedBackground">@color/scheme_grey_card_background_dark</item>
         <!-- Top-right badge: the "Oculo" wordmark (white letters), mipmap-nodpi/app_logo_semi_red.png -->
         <item name="appLogo">@mipmap/app_logo_semi_red</item>
         <item name="android:colorAccent" tools:targetApi="21">@color/oculo_turquoise</item>

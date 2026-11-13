@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Oculo left rail icons: deep teal on the focused pill, turquoise for the current section, white 70% otherwise. -->
+<!-- Oculo left rail icons, collapsed rail (measured on YouTube TV, docs/mockups/youtube-ref/yt-01-launch.png): dark on
+     the focused white item, white #F1F1F1 for the current section, grey #B8B8B8 otherwise. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true" android:color="@color/oculo_deep_dark" />
-    <item android:state_activated="true" android:color="@color/oculo_turquoise" />
-    <item android:color="#B3FFFFFF" />
+    <item android:state_focused="true" android:color="@color/oculo_white_focus_ink" />
+    <item android:state_activated="true" android:color="@color/oculo_white_focus" />
+    <item android:color="#B8B8B8" />
 </selector>

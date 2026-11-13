@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Oculo: left-rail look for the browse section headers (copy of smarttubetv/src/main/res/layout/icon_header_item.xml,
      same ids). Icon centered on the collapsed rail, label hidden while collapsed (OculoRail), focused item =
-     turquoise pill with deep-teal icon and text. Re-sync if upstream changes that layout. -->
+     white rounded rectangle with dark icon and text (YouTube). Re-sync if upstream changes that layout. -->
 <androidx.leanback.widget.NonOverlappingLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"

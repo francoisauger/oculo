@@ -22,6 +22,7 @@ import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoUi;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.base.LongClickPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.video.GridFragmentHelper;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
@@ -50,6 +51,8 @@ public class ChannelCardPresenter extends LongClickPresenter {
                 ContextCompat.getColor(context, Helpers.getThemeAttr(context, R.attr.cardSelectedBackground));
         mSelectedTextColor =
                 ContextCompat.getColor(context, R.color.card_selected_text_grey);
+        mSelectedTextColor = OculoUi.cardSelectedTextColor(mSelectedBackgroundColor, mDefaultBackgroundColor,
+                mSelectedTextColor, mDefaultTextColor); // Oculo
 
         updateDimensions(context);
 
@@ -76,6 +79,7 @@ public class ChannelCardPresenter extends LongClickPresenter {
             
             textView.setBackgroundColor(backgroundColor);
             textView.setTextColor(textColor);
+            OculoUi.setChannelCardFocusFrame(v, hasFocus); // Oculo: focus contour
 
             if (!autoScrollEnabled) {
                 return;

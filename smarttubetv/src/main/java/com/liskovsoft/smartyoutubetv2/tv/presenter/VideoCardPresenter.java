@@ -24,6 +24,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.common.utils.ClickbaitRemover;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoUi;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.base.LongClickPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.video.GridFragmentHelper;
 import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.complexcardview.ComplexImageCardView;
@@ -56,6 +57,8 @@ public class VideoCardPresenter extends LongClickPresenter {
                 ContextCompat.getColor(context, Helpers.getThemeAttr(context, R.attr.cardSelectedBackground));
         mSelectedTextColor =
                 ContextCompat.getColor(context, R.color.card_selected_text_grey);
+        mSelectedTextColor = OculoUi.cardSelectedTextColor(mSelectedBackgroundColor, mDefaultBackgroundColor,
+                mSelectedTextColor, mDefaultTextColor); // Oculo
 
         mCardPreviewType = getCardPreviewType(context);
         mThumbQuality = getThumbQuality(context);
@@ -105,6 +108,8 @@ public class VideoCardPresenter extends LongClickPresenter {
         if (infoField != null) {
             infoField.setBackgroundColor(backgroundColor);
         }
+
+        OculoUi.setCardFocusFrame(view.findViewById(R.id.main_image_wrapper), selected); // Oculo: focus contour
 
         TextView titleText = view.findViewById(R.id.title_text);
         if (titleText != null) {

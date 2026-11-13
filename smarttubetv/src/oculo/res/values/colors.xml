@@ -36,8 +36,13 @@
     <color name="card_default_background_dark">@color/oculo_deep</color>
     <color name="search_opaque">@color/oculo_teal</color>
 
-    <!-- Text on focused cards (turquoise or white background): deep teal, 7.2:1 on turquoise, 13.6:1 on white -->
-    <color name="card_selected_text_grey">@color/oculo_deep_dark</color>
+    <!-- Text on focused cards with a white background (settings tiles, search tags, other schemes): YouTube's dark
+         ink #0F0F0F, like the focused rail item and top bar (32.74-7: deep teal #0B333A). Video and channel cards have
+         no focus fill since 32.74-8 (white text, OculoUi). -->
+    <color name="card_selected_text_grey">@color/oculo_white_focus_ink</color>
+    <!-- Focus contour of video cards (32.74-8, docs/mockups/ref-francois/focus-contour.png): the logo frame's dark
+         teal sampled from François's reference, rgb(34,72,80) -->
+    <color name="oculo_card_focus_frame">#224850</color>
 
     <!-- Card badges (LIVE, NEW, upcoming): upstream dark red -> Abricot, with dark ink text
          (oculo_badge_accent_text); "new content" channel cards use oculo_channel_new_content -->

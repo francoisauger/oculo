@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Oculo left rail: focused item = turquoise pill (like the focused card), nothing otherwise. -->
+<!-- Oculo left rail: focused item = YouTube's white rounded rectangle (#F1F1F1, 7.5dp corners), nothing otherwise. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/oculo_turquoise" />
+            <solid android:color="@color/oculo_white_focus" />
             <corners android:radius="@dimen/oculo_rail_pill_radius" />
         </shape>
     </item>
