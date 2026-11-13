@@ -1,0 +1,3 @@
+# Codex originals and logs: only the resized JPEGs are used
+*.png
+*.log

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oculo : direction B, « Fiche »</title>
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="tv.css">
+<style>
+  html { background: var(--light-50); }
+  body { font-family: "Atkinson Hyperlegible Next", system-ui, sans-serif; font-size: 1.125rem; line-height: 1.6; color: var(--ink); }
+  a { color: var(--teal-700); text-underline-offset: .2em; text-decoration-thickness: 1.5px; }
+  a:hover { color: var(--teal-800); }
+  a:focus-visible { outline: 3px solid var(--teal-600); outline-offset: 3px; border-radius: 4px; }
+  .sheet { max-width: 1060px; margin: 0 auto; padding: 0 clamp(18px, 4vw, 40px); }
+
+  .head { display: flex; align-items: flex-end; gap: 16px; padding-top: 40px; padding-bottom: 22px; border-bottom: 2px solid var(--ink); }
+  .head [data-oculo-logo] { height: 52px; }
+  .head .by { color: var(--ink-muted); padding-bottom: 5px; }
+  .head nav { margin-left: auto; display: flex; gap: 22px; padding-bottom: 5px; }
+
+  /* The whole page is one two-column sheet: what the part is on the left, the part on the right. */
+  .part { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 0 clamp(20px, 4vw, 56px); padding: clamp(30px, 4.4vw, 54px) 0; border-bottom: 1px solid var(--light-200); }
+  .part > h2 { margin: .3em 0 0; font-size: 1rem; font-weight: 700; line-height: 1.35; color: var(--teal-700); }
+  .part > div > :first-child { margin-top: 0; }
+  .part p { max-width: 38em; margin: 0 0 1em; }
+  .open { font-size: clamp(1.45rem, 2.7vw, 2.05rem); line-height: 1.32; letter-spacing: -.008em; max-width: 24em !important; text-wrap: pretty; }
+
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 28px; margin: 30px 0 0; }
+  .facts div { border-top: 1px solid var(--light-200); padding-top: 12px; }
+  .facts dt { font-size: .95rem; color: var(--ink-muted); }
+  .facts dd { margin: 2px 0 0; font-weight: 700; }
+
+  figure { margin: 0; }
+  figure .tv { box-shadow: 0 0 0 1px var(--ink), 0 24px 50px -28px rgba(11, 51, 58, .55); border-radius: 10px; }
+  figcaption { margin-top: 12px; font-size: .98rem; color: var(--ink-muted); max-width: 40em; }
+
+  .changes { margin: 0; }
+  .changes div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 0 20px; padding: 13px 0; border-top: 1px solid var(--light-200); }
+  .changes div:first-child { border-top: 0; padding-top: 0; }
+  .changes dt { font-weight: 700; }
+  .changes dd { margin: 0; max-width: 34em; }
+
+  table { width: 100%; border-collapse: collapse; }
+  caption { text-align: left; max-width: 38em; padding-bottom: 18px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 18px 12px 0; border-top: 1px solid var(--light-200); }
+  thead th { border-top: 0; font-size: .95rem; font-weight: 400; color: var(--ink-muted); padding-top: 0; }
+  tbody th { font-weight: 700; white-space: nowrap; }
+  td.never { color: var(--ink-muted); }
+  .note { font-size: .98rem; color: var(--ink-muted); margin-top: 16px !important; }
+
+  .foot { padding: 26px 0 70px; display: flex; flex-wrap: wrap; gap: 8px 30px; font-size: .98rem; color: var(--ink-muted); }
+  .foot span:last-child { margin-left: auto; color: var(--ink); }
+
+  @media (max-width: 760px) {
+    .part { grid-template-columns: 1fr; }
+    .part > h2 { margin: 0 0 12px; }
+    .facts { grid-template-columns: 1fr; gap: 12px; }
+    .changes div { grid-template-columns: 1fr; }
+    .head nav a:first-child { display: none; }
+    table, tbody, tr, th, td { display: block; } thead { display: none; }
+    tbody tr { border-top: 1px solid var(--light-200); padding: 12px 0; } th, td { border: 0; padding: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header class="head">
+    <a href="#" aria-label="Oculo, accueil"><span data-oculo-logo="light"></span></a>
+    <span class="by">by Arix</span>
+    <nav aria-label="Principale"><a href="https://github.com/francoisauger/oculo">Code source</a><a href="#">English</a></nav>
+  </header>
+
+  <main>
+    <section class="part">
+      <h2>Ce que c’est</h2>
+      <div>
+        <p class="open">Oculo est une app pour Android TV qui lit YouTube. C’est SmartTube, de yuliskov, avec une interface que j’ai refaite pour ma télé : plus calme, lisible du divan, et qui ne parle à personne sans raison.</p>
+        <dl class="facts">
+          <div><dt>Pour</dt><dd>Android TV et Google TV, Android 5 et plus</dd></div>
+          <div><dt>Licence</dt><dd>MIT, code public</dd></div>
+          <div><dt>État</dt><dd>Version 0.9, pas encore publiée</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="part">
+      <h2>À quoi ça ressemble</h2>
+      <figure>
+        <div data-oculo-tv data-auto="0" data-keys="0" data-label="L’accueil d’Oculo : une barre d’icônes à gauche, la recherche en haut, deux rangées de vidéos"></div>
+        <figcaption>L’accueil. Les chaînes, les titres et les images de cet exemple sont inventés.</figcaption>
+      </figure>
+    </section>
+
+    <section class="part">
+      <h2>Ce qui change par rapport à SmartTube</h2>
+      <dl class="changes">
+        <div><dt>Accueil</dt><dd>Une rangée « Continuer à regarder » : les vidéos commencées depuis 48 heures et pas terminées. Un appui long en retire une.</dd></div>
+        <div><dt>Navigation</dt><dd>Une colonne d’icônes à gauche, qui s’ouvre avec la flèche gauche, et la recherche vocale en haut.</dd></div>
+        <div><dt>Sélection</dt><dd>Un anneau blanc qui respire autour de la vignette, et un fond qui prend sa couleur.</dd></div>
+        <div><dt>Lecture</dt><dd>Les segments commandités signalés par SponsorBlock sont sautés, avec un avis discret.</dd></div>
+        <div><dt>Connexion</dt><dd>Le code QR est fabriqué sur la télé. Avant, l’adresse de connexion passait par un service tiers.</dd></div>
+        <div><dt>Moteur</dt><dd>Aucun changement : la lecture reste celle de SmartTube, mise à jour avec lui.</dd></div>
+      </dl>
+    </section>
+
+    <section class="part">
+      <h2>Ce que l’app contacte</h2>
+      <div>
+        <table>
+          <caption>J’ai lu tout le code réseau, sous-modules compris. Voici chaque destination, quand elle est jointe et ce qui y part.</caption>
+          <thead><tr><th scope="col">Destination</th><th scope="col">Quand</th><th scope="col">Ce qui part</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">YouTube</th><td>Toujours</td><td>Les demandes de vidéos et, si vous vous connectez, votre compte.</td></tr>
+            <tr><th scope="row">SponsorBlock</th><td>À chaque vidéo, sauf si coupé</td><td>L’identifiant de la vidéo.</td></tr>
+            <tr><th scope="row">Return YouTube Dislike</th><td>À chaque vidéo, sauf si coupé</td><td>L’identifiant de la vidéo.</td></tr>
+            <tr><th scope="row">GitHub</th><td>Pour vérifier les mises à jour</td><td>Rien de personnel.</td></tr>
+            <tr><th scope="row">Rapports de plantage, statistiques</th><td class="never">Jamais</td><td class="never">Rien : ce code n’est pas dans l’app.</td></tr>
+          </tbody>
+        </table>
+        <p class="note">Maquette : le tableau final reprendra l’audit complet, ligne par ligne.</p>
+      </div>
+    </section>
+
+    <section class="part">
+      <h2>Installer</h2>
+      <div>
+        <p>Pas encore. La version 1.0 sera la première publiée, avec les étapes d’installation ici.</p>
+        <p>D’ici là, le code se compile tel quel : <a href="https://github.com/francoisauger/oculo/blob/oculo/OCULO.md">la marche à suivre est dans le dépôt</a>.</p>
+      </div>
+    </section>
+
+    <section class="part">
+      <h2>Licence et crédits</h2>
+      <div>
+        <p>Oculo est basé sur <a href="https://github.com/yuliskov/SmartTube">SmartTube de yuliskov</a> (licence MIT). Le gros du travail est le sien.</p>
+        <p><a href="https://github.com/francoisauger/oculo">Le dépôt</a>, <a href="https://github.com/francoisauger/oculo/blob/oculo/LICENSE">la licence</a> et <a href="https://github.com/francoisauger/oculo/blob/oculo/OCULO.md">la liste de chaque fichier changé</a> sont publics.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Oculo n’est pas affilié à YouTube ni à Google.</span>
+    <span>Ce site ne charge rien d’ailleurs.</span>
+    <span>Oculo, by Arix</span>
+  </footer>
+</div>
+<script src="logo.js"></script>
+<script src="tv.js"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oculo : direction C, « Gamme »</title>
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="tv.css">
+<style>
+  /* Same skeleton as fenestro.app (night band, light body, several pages), in Oculo's teal. */
+  html { background: var(--light-50); }
+  body { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.55; color: var(--ink); }
+  a { color: var(--teal-700); text-underline-offset: .18em; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--turquoise); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+
+  .night { background: linear-gradient(135deg, #0F5E67, #0B4952 42%, #062A31); color: #fff; }
+  .head { display: flex; align-items: center; gap: 30px; padding-top: 20px; padding-bottom: 20px; }
+  .head [data-oculo-logo] { height: 34px; }
+  .head nav { margin-left: auto; display: flex; align-items: center; gap: clamp(12px, 2vw, 26px); font-weight: 500; font-size: .98rem; }
+  .head nav a { color: #e1f3f3; text-decoration: none; }
+  .head nav a:hover { color: #fff; text-decoration: underline; }
+  .head nav a.install { padding: .5em 1em; border-radius: 9px; border: 1.5px solid rgba(255, 255, 255, .5); }
+  .theme { width: 36px; height: 36px; border-radius: 9px; border: 0; background: rgba(255, 255, 255, .12); color: #fff; cursor: pointer; padding: 8px; }
+  .theme svg { display: block; width: 100%; height: 100%; }
+
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.28fr); gap: clamp(24px, 4vw, 60px); align-items: center; padding-top: clamp(30px, 5vw, 64px); padding-bottom: clamp(40px, 6vw, 76px); }
+  .hero h1 { margin: 0; font-weight: 800; font-size: clamp(2.2rem, 4.5vw, 3.6rem); line-height: 1.04; letter-spacing: -.022em; text-wrap: balance; }
+  .hero .lead { margin: 20px 0 0; color: #cfe6e7; font-size: 1.15rem; max-width: 30em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 9px; margin: 26px 0 0; padding: 0; list-style: none; }
+  .chips button { font: inherit; font-weight: 600; font-size: .95rem; padding: .5em .95em; border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, .28); background: transparent; color: #e1f3f3; cursor: pointer; }
+  .chips button:hover { border-color: rgba(255, 255, 255, .6); }
+  .chips button[aria-pressed="true"] { background: #fff; border-color: #fff; color: var(--teal-950); }
+  .cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 30px; }
+  .btn { display: inline-block; padding: .72em 1.2em; border-radius: 10px; background: var(--teal-400); color: var(--teal-950); font-weight: 700; text-decoration: none; }
+  .btn:hover { background: var(--teal-300); }
+  .cta span { color: #b5d2d4; font-size: .95rem; }
+
+  /* The scene: a TV on its stand, on a low unit. */
+  .scene .bezel { padding: clamp(5px, .7vw, 9px); border-radius: clamp(8px, 1.1vw, 14px); background: #06181b; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .8); }
+  .scene .neck { width: 16%; height: clamp(10px, 1.6vw, 22px); margin: 0 auto; background: #072226; clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%); }
+  .scene .unit { height: 3px; margin: 0 -4%; background: rgba(255, 255, 255, .22); border-radius: 2px; }
+  .scene .cap { margin: 20px 0 0; text-align: center; font-weight: 600; color: #e1f3f3; min-height: 3.1em; }
+
+  .band { padding-top: clamp(56px, 8vw, 104px); padding-bottom: clamp(56px, 8vw, 104px); }
+  .band h2 { margin: 0; font-weight: 800; font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.1; letter-spacing: -.018em; max-width: 18em; }
+  .band .sub { margin: 14px 0 0; color: var(--ink-muted); max-width: 38em; }
+  .feats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(24px, 4vw, 52px); margin-top: 44px; }
+  .feats div { border-top: 2px solid var(--teal-900); padding: 18px 0 30px; }
+  .feats h3 { margin: 0; font-size: 1.12rem; font-weight: 700; }
+  .feats p { margin: 8px 0 0; color: #33484b; }
+  .more { margin-top: 10px; font-weight: 600; }
+
+  .pages { background: #fff; border-top: 1px solid var(--light-100); border-bottom: 1px solid var(--light-100); }
+  .pages ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; }
+  .pages li { padding: 30px 26px 34px 0; }
+  .pages li + li { padding-left: 26px; border-left: 1px solid var(--light-100); }
+  .pages a { font-weight: 700; font-size: 1.1rem; }
+  .pages p { margin: 8px 0 0; color: var(--ink-muted); font-size: .98rem; }
+
+  .foot { padding-top: 34px; padding-bottom: 60px; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 24px; font-size: .95rem; color: var(--ink-muted); }
+  .foot [data-oculo-logo] { height: 30px; }
+  .foot p { margin: 12px 0 0; max-width: 26em; }
+  .foot ul { margin: 0; padding: 0; list-style: none; line-height: 2; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .head nav a:not(.install) { display: none; }
+    .feats { grid-template-columns: 1fr 1fr; }
+    .pages ul { grid-template-columns: 1fr 1fr; }
+    .pages li:nth-child(3) { padding-left: 0; border-left: 0; }
+    .foot { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) { .feats, .pages ul { grid-template-columns: 1fr; } .pages li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--light-100); } }
+</style>
+</head>
+<body>
+<div class="night">
+  <header class="wrap head">
+    <a href="#" aria-label="Oculo, accueil"><span data-oculo-logo="dark"></span></a>
+    <nav aria-label="Principale">
+      <a href="#">Fonctions</a>
+      <a href="#">Vie privée</a>
+      <a href="#">Code source</a>
+      <a href="#">Questions</a>
+      <a href="#">EN</a>
+      <button class="theme" type="button" aria-label="Passer au thème sombre"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+      <a class="install" href="#">Installer</a>
+    </nav>
+  </header>
+
+  <section class="wrap hero">
+    <div>
+      <h1>Vos vidéos, comme vous aimez les regarder.</h1>
+      <p class="lead">Oculo est une app libre et gratuite pour Android TV et Google TV. Elle lit YouTube dans une interface faite pour la télécommande.</p>
+      <ul class="chips" aria-label="Voir une fonction sur la télé">
+        <li><button type="button" data-show="continue" aria-pressed="true">Continuer à regarder</button></li>
+        <li><button type="button" data-show="glow" aria-pressed="false">Lueur selon la vignette</button></li>
+        <li><button type="button" data-show="player" aria-pressed="false">SponsorBlock</button></li>
+        <li><button type="button" data-show="signin" aria-pressed="false">Code QR fait sur la télé</button></li>
+      </ul>
+      <div class="cta">
+        <a class="btn" href="https://github.com/francoisauger/oculo">Voir le code sur GitHub</a>
+        <span>Installation : à la version 1.0.</span>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="bezel"><div id="tv" data-oculo-tv data-auto="0" data-keys="0" data-label="Oculo sur une télé, selon la fonction choisie"></div></div>
+      <div class="neck"></div>
+      <div class="unit"></div>
+      <p class="cap" id="cap" aria-live="polite"></p>
+    </div>
+  </section>
+</div>
+
+<main>
+  <section class="wrap band">
+    <h2>Une télé, une télécommande, et rien de compliqué</h2>
+    <p class="sub">Oculo part de SmartTube et refait ce qu’on voit : l’accueil, la navigation, la sélection, les couleurs.</p>
+    <div class="feats">
+      <div><h3>Continuer à regarder</h3><p>Les vidéos commencées depuis 48 heures, en deuxième rangée de l’accueil.</p></div>
+      <div><h3>Une sélection qu’on voit de loin</h3><p>Un anneau blanc qui respire et un fond qui prend la couleur de la vignette.</p></div>
+      <div><h3>Navigation à gauche</h3><p>Une colonne d’icônes qui s’ouvre d’une flèche, la recherche vocale en haut.</p></div>
+      <div><h3>SponsorBlock</h3><p>Les segments commandités sont sautés, avec un avis discret.</p></div>
+      <div><h3>Sans pistage</h3><p>Aucune statistique d’usage, aucun rapport de plantage.</p></div>
+      <div><h3>Codes QR faits sur place</h3><p>Le code de connexion ne passe par aucun service tiers.</p></div>
+    </div>
+    <p class="more"><a href="#">Toutes les fonctions</a></p>
+  </section>
+
+  <section class="pages">
+    <div class="wrap">
+      <ul>
+        <li><a href="#">Fonctions</a><p>Chaque changement, avec une image.</p></li>
+        <li><a href="#">Vie privée</a><p>Tout ce que l’app contacte, et quand.</p></li>
+        <li><a href="#">Code source</a><p>Le dépôt, la licence, les crédits à SmartTube.</p></li>
+        <li><a href="#">Questions</a><p>Appareils, comptes, mises à jour.</p></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <div>
+    <span data-oculo-logo="light"></span>
+    <p>Oculo, by Arix. Basé sur <a href="https://github.com/yuliskov/SmartTube">SmartTube de yuliskov</a> (licence MIT).</p>
+    <p>Oculo n’est pas affilié à YouTube ni à Google.</p>
+  </div>
+  <ul><li><a href="#">Fonctions</a></li><li><a href="#">Vie privée</a></li><li><a href="#">Questions</a></li><li><a href="#">Installer</a></li></ul>
+  <ul><li><a href="https://github.com/francoisauger/oculo">Dépôt GitHub</a></li><li><a href="https://github.com/francoisauger/oculo/blob/oculo/LICENSE">Licence</a></li><li><a href="#">English</a></li></ul>
+</footer>
+
+<script src="logo.js"></script>
+<script src="tv.js"></script>
+<script>
+  addEventListener('DOMContentLoaded', function () {
+    var tv = document.getElementById('tv').oculo, cap = document.getElementById('cap'), cycle = null;
+    var CAPS = {
+      continue: 'La deuxième rangée reprend les vidéos commencées depuis 48 heures.',
+      glow: 'Le fond prend la couleur de la vignette sélectionnée.',
+      player: 'Un segment commandité est sauté, et un avis le dit.',
+      signin: 'Le code QR de connexion est fabriqué sur la télé.'
+    };
+    function show(kind) {
+      clearInterval(cycle);
+      cap.textContent = CAPS[kind];
+      document.querySelectorAll('.chips button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.show === kind)); });
+      if (kind === 'continue') { tv.show('home'); tv.focus(1, 0); }
+      else if (kind === 'glow') {
+        var i = 0; tv.show('home'); tv.focus(0, 0);
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) cycle = setInterval(function () { tv.focus(0, ++i % 5); }, 1900);
+      } else tv.show(kind);
+    }
+    document.querySelector('.chips').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) show(b.dataset.show); });
+    show(new URLSearchParams(location.search).get('show') || 'continue');
+  });
+</script>
+</body>
+</html>

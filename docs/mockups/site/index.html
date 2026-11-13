@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site d’Oculo : trois directions</title>
+<link rel="stylesheet" href="base.css">
+<style>
+  html { background: #eef2f2; }
+  body { font-family: Nunito, system-ui, sans-serif; font-size: 1.06rem; line-height: 1.55; color: var(--ink); }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px); }
+  header { padding: 44px 0 10px; }
+  h1 { margin: 0; font-weight: 800; font-size: clamp(1.9rem, 3.4vw, 2.7rem); letter-spacing: -.02em; line-height: 1.08; }
+  header p { max-width: 46em; margin: 14px 0 0; color: #33484b; }
+  a { color: var(--teal-700); font-weight: 600; }
+  .dir { margin-top: 46px; padding-top: 30px; border-top: 2px solid var(--ink); }
+  .dir h2 { margin: 0; font-weight: 800; font-size: 1.7rem; letter-spacing: -.01em; }
+  .dir h2 span { display: inline-grid; place-items: center; width: 1.5em; height: 1.5em; margin-right: .45em; border-radius: 9px; background: var(--teal-900); color: #fff; font-size: .85em; }
+  .dir .pitch { margin: 10px 0 0; max-width: 44em; font-size: 1.15rem; }
+  .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 34px; margin: 22px 0 0; }
+  .cols h3 { margin: 0 0 4px; font-size: 1rem; font-weight: 800; color: var(--teal-700); }
+  .cols p, .cols ul { margin: 0; padding: 0; color: #33484b; }
+  .cols ul { padding-left: 1.1em; }
+  .open { margin: 20px 0 12px; }
+  .frame { position: relative; aspect-ratio: 1440 / 880; overflow: hidden; border-radius: 12px; box-shadow: 0 0 0 1px #c9d6d7, 0 24px 60px -34px rgba(11, 51, 58, .6); background: #fff; }
+  .frame iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 880px; border: 0; transform-origin: 0 0; }
+  .same { margin: 54px 0 70px; padding: 26px 30px; border-radius: 14px; background: #fff; }
+  .same h2 { margin: 0 0 8px; font-size: 1.25rem; font-weight: 800; }
+  .same ul { margin: 0; padding-left: 1.1em; columns: 2; column-gap: 44px; color: #33484b; }
+  .same li { break-inside: avoid; margin-bottom: 6px; }
+  @media (max-width: 800px) { .cols { grid-template-columns: 1fr; gap: 14px; } .same ul { columns: 1; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Site d’Oculo : trois directions</h1>
+    <p>Trois façons de structurer le site et de parler d’Oculo. Chaque aperçu est une vraie page : on peut y défiler, et la télé fonctionne. Le texte est un premier jet, en français pour l’instant.</p>
+  </header>
+
+  <section class="dir">
+    <h2><span>A</span>Salon</h2>
+    <p class="pitch">Une seule page sombre, comme la pièce le soir. La télé est le site : elle fonctionne au clavier, et toute la page prend la couleur de la vignette sélectionnée.</p>
+    <div class="cols">
+      <div><h3>Structure</h3><ul><li>Grand titre, puis la télé en pleine largeur</li><li>Visite en défilant : la télé reste à l’écran et change selon le texte</li><li>Origine, crédits, mentions</li></ul></div>
+      <div><h3>Ton</h3><p>Calme, peu de mots, on montre plutôt qu’on explique. Le plus « produit » des trois.</p></div>
+      <div><h3>À savoir</h3><p>La plus marquante, la plus visible aussi. C’est celle qui donne le plus envie d’installer.</p></div>
+    </div>
+    <p class="open"><a href="a.html" target="_blank">Ouvrir A en pleine page</a></p>
+    <div class="frame"><iframe src="a.html" title="Direction A, Salon"></iframe></div>
+  </section>
+
+  <section class="dir">
+    <h2><span>B</span>Fiche</h2>
+    <p class="pitch">Une seule page claire, comme une fiche technique bien faite. Tu parles à la première personne et tu dis exactement ce que c’est, ce qui change et ce que l’app contacte.</p>
+    <div class="cols">
+      <div><h3>Structure</h3><ul><li>Une phrase franche, trois faits</li><li>Une image de l’accueil</li><li>Ce qui change par rapport à SmartTube</li><li>Tableau de ce que l’app contacte</li><li>Installer, licence et crédits</li></ul></div>
+      <div><h3>Ton</h3><p>Sobre, honnête, projet personnel au code ouvert. Rien qui ressemble à de la publicité.</p></div>
+      <div><h3>À savoir</h3><p>La plus discrète : elle convient si tu veux garder Oculo modeste tant que la publication n’est pas décidée.</p></div>
+    </div>
+    <p class="open"><a href="b.html" target="_blank">Ouvrir B en pleine page</a></p>
+    <div class="frame"><iframe src="b.html" title="Direction B, Fiche"></iframe></div>
+  </section>
+
+  <section class="dir">
+    <h2><span>C</span>Gamme</h2>
+    <p class="pitch">Le jumeau du site de Fenestro : même squelette, en sarcelle. Plusieurs pages, une scène en haut dont les boutons montrent chaque fonction sur la télé.</p>
+    <div class="cols">
+      <div><h3>Structure</h3><ul><li>Accueil : bandeau foncé, scène, six fonctions</li><li>Pages Fonctions, Vie privée, Code source, Questions, Installer</li><li>Thème clair ou sombre, comme Fenestro</li></ul></div>
+      <div><h3>Ton</h3><p>Site de produit classique, rassurant, de la même famille que Fenestro.</p></div>
+      <div><h3>À savoir</h3><p>La plus longue à faire et à tenir à jour (six pages). Elle a du sens si la gamme « by Arix » doit se reconnaître d’un site à l’autre.</p></div>
+    </div>
+    <p class="open"><a href="c.html" target="_blank">Ouvrir C en pleine page</a></p>
+    <div class="frame"><iframe src="c.html" title="Direction C, Gamme"></iframe></div>
+  </section>
+
+  <section class="same">
+    <h2>Pareil dans les trois</h2>
+    <ul>
+      <li>Le logo approuvé, la palette sarcelle et l’abricot en accent seulement.</li>
+      <li>L’interface à l’écran est redessinée, avec des chaînes, des titres et des images inventés : aucune capture, donc rien qui vienne de YouTube.</li>
+      <li>Aucun titre ne contient « YouTube » ; la mention « non affilié à YouTube ni à Google » et le crédit à SmartTube sont en bas de page.</li>
+      <li>Aucun lien de téléchargement : « Installation : à la version 1.0 ».</li>
+      <li>Rien sur le blocage des pubs pour l’instant, ni sur les dons.</li>
+      <li>Le site ne charge rien d’ailleurs (polices et images locales), ce qui va avec le discours sur la vie privée.</li>
+    </ul>
+  </section>
+</div>
+<script>
+  function fit() { document.querySelectorAll('.frame').forEach(function (f) { f.firstElementChild.style.transform = 'scale(' + f.clientWidth / 1440 + ')'; }); }
+  addEventListener('resize', fit); fit();
+</script>
+</body>
+</html>
