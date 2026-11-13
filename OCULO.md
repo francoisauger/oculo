@@ -14,6 +14,8 @@ Oculo is not affiliated with YouTube or Google.
 
 Kept untouched: `MediaServiceCore`, `SharedModules` (submodules) and `exoplayer-amzn-2.10.6`.
 
+**MediaServiceCore pin (32.74-10).** Oculo pins `MediaServiceCore` to upstream commit `767a6685` instead of 32.74's `b3d561f5` (both upstream, no Oculo edit). From `66b5a1bc` on (SmartTube 32.73 and 32.74), `FormatInfoWrapper.CLIENT_LIST` starts with the WEB client (Innertube); its WebView poToken is not accepted by the SABR server (`StreamProtectionStatus` stays `ATTESTATION_PENDING`), so YouTube serves about 60 s and then no more media: every video stalls at 0:59 (upstream issues #6370, #6461, #6463, #6439). `767a6685` is the same code with the TV client first, as in 32.71. It lacks two small upstream changes: the "fallback to error result" for unplayable videos and the per-client nonce reset (`b3d561f5`, only matters when a client falls through to the next). After a merge with upstream, move the pin back to upstream's only once upstream fixes the WEB attestation or puts TV first again.
+
 | File | Change |
 |---|---|
 | `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, versionCode = upstream × 100 + Oculo revision, versionName = upstream + `-<revision>`, libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
