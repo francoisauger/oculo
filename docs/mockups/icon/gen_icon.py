@@ -1,9 +1,22 @@
 #!/usr/bin/env python3
-"""Oculo launcher icon (32.74-5): full-bleed logo gradient + teal TV-screen frame.
+"""Oculo launcher icon (32.74-6): the Android TV banner's TV mark on the banner's dark-teal background.
 
-Writes the adaptive-icon layers (vector drawables) into smarttubetv/src/oculo/res and SVG sources here;
-gen_icon.sh renders the legacy PNG and docs/mockups/icon-preview.png from the SVGs.
-Geometry in the 108x108 adaptive viewport; the frame's farthest point stays inside the 66dp safe circle.
+Sources, both taken from the approved logo (docs/mockups/logos-v3.html, logotype « dark » tile, which the
+banner docs/mockups/logos-v3/oculo-banner@2x.png uses):
+  - frame  : rect 860 x 725, rx 275, vertical gradient #ffffff -> #d4f1f1
+  - screen : rect 560 x 489 at (150, 118), rx 145, diagonal gradient #2fe3f0 -> #22d3c8 (55 %) -> #78f5be
+  - gloss  : white 34 % -> 6 % diagonal, clipped to the screen
+  - glow   : soft white/cyan halo around the frame, as on the banner
+  - background: the banner's gradient, sampled from oculo-banner@2x.png (top-left #0F5E67 -> bottom-right
+    #062A31) with a soft light in the top-left corner.
+
+Writes:
+  - smarttubetv/src/oculo/res/drawable/oculo_icon_background.xml  (vector, full bleed)
+  - smarttubetv/src/oculo/res/mipmap-anydpi-v26/app_icon.xml
+  - docs/mockups/icon/oculo-icon-foreground.svg  (gen_icon.sh renders it to the 432 px
+    drawable-nodpi/oculo_icon_foreground.png: a vector drawable cannot blur the glow)
+  - docs/mockups/icon/oculo-icon-full.svg / oculo-icon-legacy.svg  (both layers; legacy = visible 72dp area)
+Geometry in the 108 x 108 adaptive viewport; the frame's farthest point stays inside the 66dp safe circle.
 """
 import math, os
 
@@ -11,21 +24,17 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')
 RES = os.path.join(ROOT, 'smarttubetv', 'src', 'oculo', 'res')
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-CYAN, TURQ, MINT, TEAL = '#2FE3F0', '#22D3C8', '#78F5BE', '#0F4A52'
-C = 54.0
-W, H, R = 60.0, 49.0, 17.0      # outer frame
-T = 7.5                         # frame thickness
+BG_TL, BG_MID, BG_BR = '#0F5E67', '#0B4952', '#062A31'
 
-def rrect(w, h, r):
-    x0, y0, x1, y1 = C - w / 2, C - h / 2, C + w / 2, C + h / 2
-    f = lambda v: ('%.3f' % v).rstrip('0').rstrip('.')
-    return (f'M{f(x0 + r)},{f(y0)} H{f(x1 - r)} A{f(r)},{f(r)} 0 0 1 {f(x1)},{f(y0 + r)} '
-            f'V{f(y1 - r)} A{f(r)},{f(r)} 0 0 1 {f(x1 - r)},{f(y1)} H{f(x0 + r)} '
-            f'A{f(r)},{f(r)} 0 0 1 {f(x0)},{f(y1 - r)} V{f(y0 + r)} A{f(r)},{f(r)} 0 0 1 {f(x0 + r)},{f(y0)} Z')
-
-FRAME = rrect(W, H, R) + ' ' + rrect(W - 2 * T, H - 2 * T, R - T)
-reach = math.hypot(W / 2 - R, H / 2 - R) + R
-assert reach <= 33, reach
+# Logo units -> dp. Farthest frame point from the center: corner arc center + radius.
+FW, FH, FR = 860.0, 725.0, 275.0
+REACH_UNITS = math.hypot(FW / 2 - FR, FH / 2 - FR) + FR
+# Frame width 46dp = about 64 % of the visible 72dp icon (59dp was too big, 38dp too small):
+# breathing room around the mark, far inside the 66dp safe zone, glow included.
+FRAME_WIDTH_DP = 46.0
+S = FRAME_WIDTH_DP / FW             # dp per logo unit
+REACH_DP = REACH_UNITS * S
+OX, OY = 54 - FW * S / 2, 54 - FH * S / 2
 
 def write(path, text):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -42,21 +51,21 @@ write(os.path.join(RES, 'drawable', 'oculo_icon_background.xml'), HEADER + f'''<
         <aapt:attr name="android:fillColor">
             <gradient android:type="linear"
                 android:startX="0" android:startY="0" android:endX="108" android:endY="108">
-                <item android:offset="0" android:color="{CYAN}" />
-                <item android:offset="0.5" android:color="{TURQ}" />
-                <item android:offset="1" android:color="{MINT}" />
+                <item android:offset="0" android:color="{BG_TL}" />
+                <item android:offset="0.5" android:color="{BG_MID}" />
+                <item android:offset="1" android:color="{BG_BR}" />
             </gradient>
         </aapt:attr>
     </path>
-</vector>
-''')
-
-write(os.path.join(RES, 'drawable', 'oculo_icon_foreground.xml'), HEADER + f'''<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp"
-    android:viewportWidth="108" android:viewportHeight="108">
-    <!-- TV-screen frame, interior transparent; farthest point {reach:.1f}dp from center (safe zone 33dp) -->
-    <path android:fillType="evenOdd" android:fillColor="{TEAL}"
-        android:pathData="{FRAME}" />
+    <path android:pathData="M0,0 H108 V108 H0 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="radial"
+                android:centerX="20" android:centerY="16" android:gradientRadius="70">
+                <item android:offset="0" android:color="#14FFFFFF" />
+                <item android:offset="1" android:color="#00FFFFFF" />
+            </gradient>
+        </aapt:attr>
+    </path>
 </vector>
 ''')
 
@@ -66,16 +75,36 @@ write(os.path.join(RES, 'mipmap-anydpi-v26', 'app_icon.xml'), HEADER + '''<adapt
 </adaptive-icon>
 ''')
 
-def svg(view):
+DEFS_BG = f'''<linearGradient id="bg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="108" y2="108">
+<stop offset="0" stop-color="{BG_TL}"/><stop offset="0.5" stop-color="{BG_MID}"/><stop offset="1" stop-color="{BG_BR}"/></linearGradient>
+<radialGradient id="bgl" gradientUnits="userSpaceOnUse" cx="20" cy="16" r="70">
+<stop offset="0" stop-color="#fff" stop-opacity="0.08"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'''
+
+DEFS_MARK = '''<linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d4f1f1"/></linearGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2fe3f0"/><stop offset=".55" stop-color="#22d3c8"/><stop offset="1" stop-color="#78f5be"/></linearGradient>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+<clipPath id="c"><rect x="150" y="118" width="560" height="489" rx="145"/></clipPath>
+<filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="28"/></filter>'''
+
+MARK = f'''<g transform="translate({OX:.4f} {OY:.4f}) scale({S:.6f})">
+<rect x="-6" y="-6" width="872" height="737" rx="281" fill="#c8fbf7" opacity="0.38" filter="url(#glow)"/>
+<rect x="0" y="0" width="860" height="725" rx="275" fill="url(#f)"/>
+<rect x="150" y="118" width="560" height="489" rx="145" fill="url(#s)"/>
+<path clip-path="url(#c)" d="M150 118 H710 V166.9 Q458 264.7 150 499.42 Z" fill="url(#g)"/>
+</g>'''
+
+def svg(view, background=True):
+    bg = ('<rect x="0" y="0" width="108" height="108" fill="url(#bg)"/>'
+          '<rect x="0" y="0" width="108" height="108" fill="url(#bgl)"/>') if background else ''
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="{view}" width="1024" height="1024">
-<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="108" y2="108">
-<stop offset="0" stop-color="{CYAN}"/><stop offset="0.5" stop-color="{TURQ}"/><stop offset="1" stop-color="{MINT}"/>
-</linearGradient></defs>
-<rect x="0" y="0" width="108" height="108" fill="url(#g)"/>
-<path fill-rule="evenodd" fill="{TEAL}" d="{FRAME}"/>
+<defs>{DEFS_BG}
+{DEFS_MARK}</defs>
+{bg}
+{MARK}
 </svg>
 '''
 
+write(os.path.join(HERE, 'oculo-icon-foreground.svg'), svg('0 0 108 108', background=False))
 write(os.path.join(HERE, 'oculo-icon-full.svg'), svg('0 0 108 108'))       # both layers, whole canvas
 write(os.path.join(HERE, 'oculo-icon-legacy.svg'), svg('18 18 72 72'))    # visible 72dp area
-print('frame reach %.2fdp' % reach)
+print('frame %.1f x %.1f dp, reach %.2fdp (safe zone 33dp)' % (FW * S, FH * S, REACH_DP))
