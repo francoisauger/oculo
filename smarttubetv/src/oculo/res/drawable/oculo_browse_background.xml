@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo browse background (home, search, channel...): the logo board's dark tile glow
+     (docs/mockups/logos-v3.html, .tile.dark: radial-gradient(circle at 50% 42%, rgba(50,230,220,.20),
+     transparent 64%)) over the Dark Grey scheme's black. CSS sizes the circle to the farthest corner, so
+     on a 16:9 screen the glow fades out at 0.64 x 1146 = 734 px of 1080: 67.93%p (fraction of the
+     smaller side). Dithered against banding. Used as shelfBackground of App.Theme.DarkGrey.Browse, which
+     UriBackgroundManager draws behind the browse screens; the player keeps its own black background. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/scheme_grey_shelf_background_dark" />
+    <item>
+        <shape
+            android:dither="true"
+            android:shape="rectangle">
+            <gradient
+                android:centerX="0.5"
+                android:centerY="0.42"
+                android:endColor="#0032E6DC"
+                android:gradientRadius="67.93%p"
+                android:startColor="#3332E6DC"
+                android:type="radial" />
+        </shape>
+    </item>
+</layer-list>
