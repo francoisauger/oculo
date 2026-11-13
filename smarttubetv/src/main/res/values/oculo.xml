@@ -79,9 +79,9 @@
     <color name="oculo_top_bar_text">#BFFFFFFF</color>
     <color name="oculo_top_bar_text_focused">@color/oculo_white_focus_ink</color>
 
-    <!-- Focus contour of video cards (VideoCardPresenter -> OculoUi.setCardFocusFrame): frame color and width.
-         Transparent = no frame (upstream); the oculo flavor sets them. -->
-    <color name="oculo_card_focus_frame">#00000000</color>
-    <dimen name="oculo_card_focus_frame_width">0dp</dimen>
-    <dimen name="oculo_channel_card_focus_frame_width">0dp</dimen>
+    <!-- Focus ring of video and channel cards (OculoUi.setCardFocusFrame): ring color, width and gap.
+         Transparent = no ring (upstream); the oculo flavor sets them. -->
+    <color name="oculo_card_focus_ring">#00000000</color>
+    <dimen name="oculo_card_focus_ring_width">0dp</dimen>
+    <dimen name="oculo_card_focus_ring_gap">0dp</dimen>
 </resources>

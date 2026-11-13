@@ -40,9 +40,9 @@
          ink #0F0F0F, like the focused rail item and top bar (32.74-7: deep teal #0B333A). Video and channel cards have
          no focus fill since 32.74-8 (white text, OculoUi). -->
     <color name="card_selected_text_grey">@color/oculo_white_focus_ink</color>
-    <!-- Focus contour of video cards (32.74-8, docs/mockups/ref-francois/focus-contour.png): the logo frame's dark
-         teal sampled from François's reference, rgb(34,72,80) -->
-    <color name="oculo_card_focus_frame">#224850</color>
+    <!-- Focus ring of cards (32.74-9, Google TV home / Plex style, docs/mockups/plex-ref/): YouTube's focus white.
+         32.74-8 had a 7dp dark-teal #224850 frame, rejected. -->
+    <color name="oculo_card_focus_ring">@color/oculo_white_focus</color>
 
     <!-- Card badges (LIVE, NEW, upcoming): upstream dark red -> Abricot, with dark ink text
          (oculo_badge_accent_text); "new content" channel cards use oculo_channel_new_content -->

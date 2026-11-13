@@ -78,53 +78,52 @@ public final class OculoUi {
     }
 
     /**
-     * Focus contour of a video card: a rounded frame ({@code R.color.oculo_card_focus_frame},
-     * {@code R.dimen.oculo_card_focus_frame_width}) drawn over the edges of the thumbnail wrapper (main_image_wrapper),
-     * outer corners = the card's rounded corners, inner corners concentric. The card is zoomed on focus (leanback
-     * ZOOM_FACTOR_SMALL, 1.1), so the picture inside the frame stays about its unfocused size and the frame reads as a
-     * contour around it, like YouTube's outline. The duration badge and watched bar move inside the frame.
-     * No-op when the color is transparent (upstream flavors) or below API 23 (no View foreground).
+     * Focus ring of a video card, in the style of the Google TV home screen and Plex: a thin ring
+     * ({@code R.color.oculo_card_focus_ring}, {@code R.dimen.oculo_card_focus_ring_width}) set slightly apart from the
+     * thumbnail by a dark gap ({@code R.dimen.oculo_card_focus_ring_gap}, the card's own background color), drawn over
+     * the edges of the thumbnail wrapper (main_image_wrapper). Outer corners = the card's rounded corners, the ring's
+     * inner edge and the picture's corners concentric with them. The card is zoomed on focus (leanback
+     * ZOOM_FACTOR_SMALL, 1.1), so the picture inside stays about its unfocused size. The duration badge and watched
+     * bar move inside the ring. No-op when the color is transparent (upstream flavors) or below API 23 (no View
+     * foreground).
      */
     public static void setCardFocusFrame(View wrapper, boolean focused) {
-        setCardFocusFrame(wrapper, focused, R.dimen.oculo_card_focus_frame_width);
-    }
-
-    /**
-     * Same frame around a whole channel card (avatar + title, 30dp high), thinner
-     * ({@code R.dimen.oculo_channel_card_focus_frame_width}).
-     */
-    public static void setChannelCardFocusFrame(View card, boolean focused) {
-        setCardFocusFrame(card, focused, R.dimen.oculo_channel_card_focus_frame_width);
-    }
-
-    private static void setCardFocusFrame(View wrapper, boolean focused, int widthRes) {
         if (wrapper == null || VERSION.SDK_INT < 23) {
             return;
         }
 
         Context context = wrapper.getContext();
-        int color = ContextCompat.getColor(context, R.color.oculo_card_focus_frame);
-        int width = context.getResources().getDimensionPixelSize(widthRes);
+        int color = ContextCompat.getColor(context, R.color.oculo_card_focus_ring);
+        int ring = context.getResources().getDimensionPixelSize(R.dimen.oculo_card_focus_ring_width);
+        int gap = context.getResources().getDimensionPixelSize(R.dimen.oculo_card_focus_ring_gap);
 
-        if (color == 0 || width <= 0) {
+        if (color == 0 || ring <= 0) {
             return;
         }
 
-        if (focused && !(wrapper.getForeground() instanceof FrameDrawable)) {
+        if (focused && !(wrapper.getForeground() instanceof RingDrawable)) {
             float radius = context.getResources().getDimension(R.dimen.lb_rounded_rect_corner_radius);
-            wrapper.setForeground(new FrameDrawable(color, width, radius, findBackgroundColor(wrapper)));
+            wrapper.setForeground(new RingDrawable(color, ring, gap, radius, findBackgroundColor(wrapper)));
         }
 
-        if (wrapper.getForeground() instanceof FrameDrawable) {
+        if (wrapper.getForeground() instanceof RingDrawable) {
             wrapper.getForeground().setAlpha(focused ? 255 : 0);
         }
 
-        // Badge + watched bar (aligned to the wrapper's bottom, full width): inside the frame while focused
+        // Badge + watched bar (aligned to the wrapper's bottom, full width): inside the ring while focused
         View clipInfo = wrapper.findViewById(R.id.clip_info);
         if (clipInfo != null) {
-            clipInfo.setTranslationX(focused ? -width : 0);
-            clipInfo.setTranslationY(focused ? -width : 0);
+            int inset = ring + gap;
+            clipInfo.setTranslationX(focused ? -inset : 0);
+            clipInfo.setTranslationY(focused ? -inset : 0);
         }
+    }
+
+    /**
+     * Same ring around a whole channel card (avatar + title).
+     */
+    public static void setChannelCardFocusFrame(View card, boolean focused) {
+        setCardFocusFrame(card, focused);
     }
 
     /**
@@ -142,61 +141,84 @@ public final class OculoUi {
     }
 
     /**
-     * A rounded frame: outer rounded rectangle minus the inner one (inset by the frame width, concentric corners).
+     * A rounded ring set apart from the content: outer corners painted with the card background, then the ring, then
+     * the gap (card background), all with concentric corners.
      */
-    private static final class FrameDrawable extends Drawable {
-        private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        private final Paint mCornerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        private final Path mPath = new Path();
-        private final Path mCornerPath = new Path();
+    private static final class RingDrawable extends Drawable {
+        private final Paint mRingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final Path mRingPath = new Path();
+        private final Path mBackgroundPath = new Path();
         private final RectF mRect = new RectF();
-        private final int mWidth;
+        private final int mRing;
+        private final int mGap;
         private final float mRadius;
-        private final int mColorAlpha;
+        private final int mRingAlpha;
+        private final int mBackgroundAlpha;
+        private boolean mVisible = true;
 
-        FrameDrawable(int color, int width, float radius, int cornerColor) {
-            mPaint.setColor(color);
-            mCornerPaint.setColor(cornerColor);
-            mCornerPath.setFillType(Path.FillType.EVEN_ODD);
-            mPaint.setStyle(Paint.Style.FILL);
-            mColorAlpha = mPaint.getAlpha();
-            mWidth = width;
+        RingDrawable(int color, int ring, int gap, float radius, int backgroundColor) {
+            mRingPaint.setColor(color);
+            mBackgroundPaint.setColor(backgroundColor);
+            mRingAlpha = mRingPaint.getAlpha();
+            mBackgroundAlpha = mBackgroundPaint.getAlpha();
+            mRing = ring;
+            mGap = gap;
             mRadius = radius;
-            mPath.setFillType(Path.FillType.EVEN_ODD);
+            mRingPath.setFillType(Path.FillType.EVEN_ODD);
+            mBackgroundPath.setFillType(Path.FillType.EVEN_ODD);
         }
 
         @Override
         protected void onBoundsChange(Rect bounds) {
-            mPath.reset();
-            mCornerPath.reset();
-            mRect.set(bounds);
-            mCornerPath.addRect(mRect, Path.Direction.CW);
-            mCornerPath.addRoundRect(mRect, mRadius, mRadius, Path.Direction.CW);
-            mPath.addRoundRect(mRect, mRadius, mRadius, Path.Direction.CW);
-            mRect.inset(mWidth, mWidth);
-            float inner = Math.max(0, mRadius - mWidth);
-            mPath.addRoundRect(mRect, inner, inner, Path.Direction.CW);
-        }
+            mRingPath.reset();
+            mBackgroundPath.reset();
 
-        @Override
-        public void draw(@NonNull Canvas canvas) {
-            if (mPaint.getAlpha() != 0) {
-                if (mCornerPaint.getAlpha() != 0) {
-                    canvas.drawPath(mCornerPath, mCornerPaint);
-                }
-                canvas.drawPath(mPath, mPaint);
+            // Corners outside the outer rounded rectangle (the card is not rounded at the thumbnail's bottom)
+            mRect.set(bounds);
+            mBackgroundPath.addRect(mRect, Path.Direction.CW);
+            mBackgroundPath.addRoundRect(mRect, mRadius, mRadius, Path.Direction.CW);
+
+            // Ring
+            mRingPath.addRoundRect(mRect, mRadius, mRadius, Path.Direction.CW);
+            mRect.inset(mRing, mRing);
+            float r1 = Math.max(0, mRadius - mRing);
+            mRingPath.addRoundRect(mRect, r1, r1, Path.Direction.CW);
+
+            // Gap between the ring and the picture
+            if (mGap > 0) {
+                Path gap = new Path();
+                gap.setFillType(Path.FillType.EVEN_ODD);
+                gap.addRoundRect(mRect, r1, r1, Path.Direction.CW);
+                mRect.inset(mGap, mGap);
+                float r2 = Math.max(0, r1 - mGap);
+                gap.addRoundRect(mRect, r2, r2, Path.Direction.CW);
+                mBackgroundPath.addPath(gap);
             }
         }
 
         @Override
+        public void draw(@NonNull Canvas canvas) {
+            if (!mVisible) {
+                return;
+            }
+            if (mBackgroundPaint.getAlpha() != 0) {
+                canvas.drawPath(mBackgroundPath, mBackgroundPaint);
+            }
+            canvas.drawPath(mRingPath, mRingPaint);
+        }
+
+        @Override
         public void setAlpha(int alpha) {
-            mPaint.setAlpha(mColorAlpha * alpha / 255);
+            mVisible = alpha != 0;
+            mRingPaint.setAlpha(mRingAlpha * alpha / 255);
+            mBackgroundPaint.setAlpha(mBackgroundAlpha * alpha / 255);
             invalidateSelf();
         }
 
         @Override
         public void setColorFilter(ColorFilter colorFilter) {
-            mPaint.setColorFilter(colorFilter);
+            mRingPaint.setColorFilter(colorFilter);
         }
 
         @Override
