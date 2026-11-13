@@ -5,15 +5,17 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -49,8 +51,10 @@ import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
  *     turquoise; the content starts right of it (leanback hook {@code getCollapsedHeadersWidth()}).</li>
  *     <li>Expanded (focus in the rail, D-pad left from the content): labels appear and the content moves right,
  *     as in the YouTube app; the focused item is a turquoise pill. D-pad right goes back to the content.</li>
- *     <li>The profile avatar and search are the first two rail entries (they leave the title bar); the clock,
- *     date and logo stay at the top right.</li>
+ *     <li>The profile avatar stays at the top; Search is the list's first slot and scrolls away with the
+ *     sections, as in YouTube (the list is clipped below the avatar). Expanded, the whole list moves up a little,
+ *     as YouTube's does. D-pad: up from the first section = Search, then the avatar.</li>
+ *     <li>{@link OculoTopBar}: mic and "Search" pill at the top of the content, smaller clock, date and logo.</li>
  * </ul>
  * Everything else stays leanback's: same headers list, same transitions, same focus rules. Enabled by
  * {@code R.bool.oculo_left_rail} (false upstream, true in the oculo flavor).
@@ -63,7 +67,11 @@ public final class OculoRail implements AccountChangeListener {
     private VerticalGridView mGrid;
     private View mTopBlock;
     private View mAvatarRow;
+    private View mSearchClip;
     private View mSearchRow;
+    private View mListFade;
+    private OculoTopBar mTopBar;
+    private View mContent;
     private final FragmentManager.FragmentLifecycleCallbacks mHeadersCallbacks =
             new FragmentManager.FragmentLifecycleCallbacks() {
                 @Override
@@ -112,14 +120,16 @@ public final class OculoRail implements AccountChangeListener {
         // No panel behind the rail: the browse background shows through, as in YouTube.
         mFragment.setBrandColor(Color.TRANSPARENT);
 
-        // Search and account move from the title bar into the rail: keep the title's start (background playback
-        // button) clear of the expanded rail.
-        View titleView = mFragment.getTitleView();
-        if (titleView != null) {
-            int railWidth = mContext.getResources().getDimensionPixelSize(R.dimen.lb_browse_rows_margin_start);
-            titleView.setPaddingRelative(Math.max(titleView.getPaddingStart(), railWidth), titleView.getPaddingTop(),
-                    titleView.getPaddingEnd(), titleView.getPaddingBottom());
+        // Search and account move from the title bar into the rail; the title becomes a YouTube-style top bar.
+        mTopBar = OculoTopBar.attach(mFragment.getTitleView());
+
+        // Content: clipped right of the icons (scrolled cards) and under the top bar.
+        mContent = root.findViewById(R.id.scale_frame);
+        if (mContent != null) {
+            mContent.setClipBounds(OculoTopBar.contentClip(mContext,
+                    mContext.getResources().getDimensionPixelSize(R.dimen.oculo_rail_content_clip_start)));
         }
+        applyContentStart(false);
 
         BrowseFrameLayout browseFrame = root.findViewById(R.id.browse_frame);
         if (browseFrame != null) {
@@ -147,7 +157,8 @@ public final class OculoRail implements AccountChangeListener {
         MediaServiceManager.instance().removeAccountListener(this);
         mFragment.getChildFragmentManager().unregisterFragmentLifecycleCallbacks(mHeadersCallbacks);
         mGrid = null;
-        mTopBlock = mAvatarRow = mSearchRow = null;
+        mTopBlock = mAvatarRow = mSearchClip = mSearchRow = mListFade = mContent = null;
+        mTopBar = null;
     }
 
     /**
@@ -162,8 +173,89 @@ public final class OculoRail implements AccountChangeListener {
      * Leanback hook, inside the headers transition: labels fade in or out with it.
      */
     public void onHeadersShown(boolean show) {
+        boolean changed = mExpanded != show;
         mExpanded = show;
         applyExpandedState();
+        applyListShift(changed);
+        applyContentStart(changed);
+    }
+
+    /**
+     * The top bar's mic and pill start where the content starts (they move with it, as in YouTube).
+     */
+    private void applyContentStart(boolean animate) {
+        if (mTopBar == null) {
+            return;
+        }
+
+        Resources res = mContext.getResources();
+        int rowsPadding = res.getDimensionPixelSize(R.dimen.lb_browse_padding_start);
+        int containerStart = mExpanded ? res.getDimensionPixelSize(R.dimen.lb_browse_rows_margin_start)
+                : getCollapsedWidth(mContext);
+        mTopBar.setStart(containerStart + rowsPadding, animate);
+    }
+
+    /**
+     * Expanded: the list (Search and sections) moves up, as YouTube's does; the clip line stays put.
+     */
+    private void applyListShift(boolean animate) {
+        if (mGrid == null) {
+            return;
+        }
+
+        float target = mExpanded ? -mContext.getResources().getDimensionPixelSize(R.dimen.oculo_rail_expanded_shift) : 0;
+        mGrid.animate().cancel();
+        if (animate) {
+            mGrid.animate().translationY(target)
+                    .setDuration(mContext.getResources().getInteger(R.integer.oculo_rail_shift_duration))
+                    .setUpdateListener(animation -> onListMoved())
+                    .start();
+        } else {
+            mGrid.setTranslationY(target);
+            onListMoved();
+        }
+    }
+
+    /**
+     * Keeps the grid's visible top on the clip line while it is translated, and Search on the list's first
+     * slot.
+     */
+    private void onListMoved() {
+        if (mGrid == null) {
+            return;
+        }
+
+        int shift = Math.round(-mGrid.getTranslationY());
+        mGrid.setClipBounds(new Rect(0, shift, mGrid.getWidth() > 0 ? mGrid.getWidth() : Integer.MAX_VALUE / 2,
+                Integer.MAX_VALUE / 2));
+        updateSearchPosition();
+    }
+
+    /**
+     * Search sits one slot above the first section and follows the list's scroll.
+     */
+    private void updateSearchPosition() {
+        if (mGrid == null || mSearchRow == null) {
+            return;
+        }
+
+        int pitch = mContext.getResources().getDimensionPixelSize(R.dimen.oculo_rail_item_height)
+                + mContext.getResources().getDimensionPixelSize(R.dimen.oculo_rail_item_spacing);
+        RecyclerView.ViewHolder first = mGrid.findViewHolderForAdapterPosition(0);
+        float scrolled;
+        if (first == null) {
+            // Scrolled far down: Search is above the clip line
+            mSearchRow.setVisibility(View.INVISIBLE);
+            scrolled = pitch;
+        } else {
+            mSearchRow.setVisibility(View.VISIBLE);
+            mSearchRow.setTranslationY(first.itemView.getTop() - pitch + mGrid.getTranslationY());
+            scrolled = mGrid.getPaddingTop() - first.itemView.getTop();
+        }
+
+        if (mListFade != null) {
+            mListFade.setAlpha(Math.max(0f, Math.min(1f, scrolled / (pitch / 2f))));
+        }
     }
 
     private void setupHeaders(HeadersSupportFragment headers, View headersRoot) {
@@ -187,8 +279,14 @@ public final class OculoRail implements AccountChangeListener {
         grid.setPaddingRelative(res.getDimensionPixelSize(R.dimen.oculo_rail_list_padding_start),
                 res.getDimensionPixelSize(R.dimen.oculo_rail_list_top),
                 res.getDimensionPixelSize(R.dimen.oculo_rail_list_padding_end),
-                res.getDimensionPixelSize(R.dimen.oculo_rail_list_top) / 4);
-        grid.setClipToPadding(true);
+                res.getDimensionPixelSize(R.dimen.oculo_rail_list_bottom));
+        // The list starts below the avatar; sections scroll up to that line, into the padding where Search is.
+        if (grid.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams gridLp = (ViewGroup.MarginLayoutParams) grid.getLayoutParams();
+            gridLp.topMargin = res.getDimensionPixelSize(R.dimen.oculo_rail_list_clip_top);
+            grid.setLayoutParams(gridLp);
+        }
+        grid.setClipToPadding(false);
         grid.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.oculo_rail_item_spacing));
         applyGridAlignment();
 
@@ -209,17 +307,25 @@ public final class OculoRail implements AccountChangeListener {
                 updateCurrentSection();
             }
         });
+        grid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                updateSearchPosition();
+            }
+        });
+        grid.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> onListMoved());
 
         if (headersRoot instanceof RelativeLayout) {
             addTopBlock((RelativeLayout) headersRoot, grid);
         }
 
         applyExpandedState();
+        applyListShift(false);
     }
 
     /**
      * The list only scrolls when the focused section would leave the rail (leanback keeps the selected header
-     * at a fixed offset, which would push the first sections under the avatar and search).
+     * at a fixed offset, which would scroll Search away as soon as the second section is focused).
      */
     private void applyGridAlignment() {
         if (mGrid == null) {
@@ -236,12 +342,15 @@ public final class OculoRail implements AccountChangeListener {
     private void addTopBlock(RelativeLayout headersRoot, VerticalGridView grid) {
         Resources res = mContext.getResources();
         LayoutInflater inflater = LayoutInflater.from(mContext);
+        int itemHeight = res.getDimensionPixelSize(R.dimen.oculo_rail_item_height);
 
+        // Avatar: fixed at the top, centered on the top bar's line
         FrameLayout block = new FrameLayout(mContext);
         block.setPaddingRelative(grid.getPaddingStart(), 0, grid.getPaddingEnd(), 0);
 
         mAvatarRow = inflater.inflate(R.layout.icon_header_item, block, false);
-        ((FrameLayout.LayoutParams) mAvatarRow.getLayoutParams()).topMargin = res.getDimensionPixelSize(R.dimen.oculo_rail_top_offset);
+        ((FrameLayout.LayoutParams) mAvatarRow.getLayoutParams()).topMargin =
+                res.getDimensionPixelSize(R.dimen.oculo_rail_avatar_center) - itemHeight / 2;
         ImageView avatar = mAvatarRow.findViewById(R.id.header_icon);
         int avatarSize = res.getDimensionPixelSize(R.dimen.oculo_rail_avatar_size);
         int iconSize = res.getDimensionPixelSize(R.dimen.oculo_rail_icon_size);
@@ -261,16 +370,39 @@ public final class OculoRail implements AccountChangeListener {
         });
         block.addView(mAvatarRow);
 
-        mSearchRow = inflater.inflate(R.layout.icon_header_item, block, false);
-        ((FrameLayout.LayoutParams) mSearchRow.getLayoutParams()).topMargin = res.getDimensionPixelSize(R.dimen.oculo_rail_search_offset);
+        // Search: the list's first slot. Lives in a frame with the list's bounds (clipped on the same line) and
+        // follows its scroll (updateSearchPosition).
+        FrameLayout searchClip = new FrameLayout(mContext);
+        searchClip.setPaddingRelative(grid.getPaddingStart(), 0, grid.getPaddingEnd(), 0);
+        mSearchRow = inflater.inflate(R.layout.icon_header_item, searchClip, false);
+        ((FrameLayout.LayoutParams) mSearchRow.getLayoutParams()).gravity = Gravity.TOP;
         ImageView searchIcon = mSearchRow.findViewById(R.id.header_icon);
-        searchIcon.setImageResource(R.drawable.lb_ic_in_app_search);
+        searchIcon.setImageResource(R.drawable.oculo_ic_search);
         searchIcon.setImageTintList(mIconColors);
         ((TextView) mSearchRow.findViewById(R.id.header_label)).setText(R.string.action_search);
         mSearchRow.setOnClickListener(v -> SearchPresenter.instance(mContext).startSearch(null));
-        block.addView(mSearchRow);
+        searchClip.addView(mSearchRow);
 
+        RelativeLayout.LayoutParams clipLp = new RelativeLayout.LayoutParams(grid.getLayoutParams().width,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        clipLp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        clipLp.topMargin = res.getDimensionPixelSize(R.dimen.oculo_rail_list_clip_top);
         // Added after the grid: when the headers get focus (start, back from the player), the list wins.
+        headersRoot.addView(searchClip, clipLp);
+        mSearchClip = searchClip;
+
+        // Fade at the clip line, shown once the list has scrolled
+        View fade = new View(mContext);
+        fade.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[] {Color.BLACK, Color.TRANSPARENT}));
+        fade.setAlpha(0);
+        RelativeLayout.LayoutParams fadeLp = new RelativeLayout.LayoutParams(grid.getLayoutParams().width,
+                res.getDimensionPixelSize(R.dimen.oculo_rail_list_fade));
+        fadeLp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        fadeLp.topMargin = res.getDimensionPixelSize(R.dimen.oculo_rail_list_clip_top);
+        headersRoot.addView(fade, fadeLp);
+        mListFade = fade;
+
         RelativeLayout.LayoutParams blockLp = new RelativeLayout.LayoutParams(grid.getLayoutParams().width,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         blockLp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -278,14 +410,24 @@ public final class OculoRail implements AccountChangeListener {
         mTopBlock = block;
 
         updateAccount();
+        updateSearchPosition();
     }
 
     private View onFocusSearch(View focused, int direction) {
+        if (mTopBar != null && mTopBar.contains(focused)) {
+            return mTopBar.onFocusSearch(focused, direction);
+        }
+
+        if (mTopBar != null && direction == View.FOCUS_UP && !mExpanded && mContent != null
+                && isDescendant(focused, mContent)) {
+            return mTopBar.getEntry(); // up from the first row: the mic, as in YouTube (leanback would pick the pill)
+        }
+
         if (mTopBlock == null || mGrid == null) {
             return null;
         }
 
-        if (isDescendant(focused, mTopBlock)) {
+        if (focused == mAvatarRow || focused == mSearchRow) {
             switch (direction) {
                 case View.FOCUS_UP:
                     return focused == mSearchRow ? mAvatarRow : focused;
@@ -298,7 +440,8 @@ public final class OculoRail implements AccountChangeListener {
             }
         }
 
-        if (direction == View.FOCUS_UP && mExpanded && isDescendant(focused, mGrid)) {
+        if (direction == View.FOCUS_UP && mExpanded && isDescendant(focused, mGrid) && mSearchRow != null) {
+            mSearchRow.setVisibility(View.VISIBLE);
             return mSearchRow; // up from the first section
         }
 

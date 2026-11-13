@@ -21,6 +21,7 @@ import androidx.leanback.widget.PageRow;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.PresenterSelector;
 import androidx.leanback.widget.TitleHelper;
+import androidx.leanback.widget.TitleViewAdapter;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.BrowseSection;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.SettingsGroup;
@@ -114,6 +115,17 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
         if (mOculoRail != null) {
             mOculoRail.onHeadersShown(show);
         }
+    }
+
+    // Oculo: the top bar stays while the rows scroll, as in YouTube (OculoTopBar)
+    @Override
+    public void showTitle(boolean show) {
+        super.showTitle(show || OculoRail.isEnabled(getContext()));
+    }
+
+    @Override
+    public void showTitle(int flags) {
+        super.showTitle(OculoRail.isEnabled(getContext()) ? TitleViewAdapter.FULL_VIEW_VISIBLE : flags);
     }
 
     @Override

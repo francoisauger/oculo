@@ -23,4 +23,6 @@
 
     <string name="oculo_home_rows_filter">Hide news and sports rows</string>
     <string name="oculo_home_hide_watched">Hide watched videos in the first row</string>
+    <!-- Top bar mic button (OculoTopBar) -->
+    <string name="oculo_voice_search">Search by voice</string>
 </resources>

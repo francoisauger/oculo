@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo top bar (OculoTopBar): mic icon and "Search" text. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:color="@color/oculo_top_bar_text_focused" />
+    <item android:color="@color/oculo_top_bar_text" />
+</selector>

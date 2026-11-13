@@ -19,21 +19,58 @@
     <bool name="oculo_left_rail">false</bool>
     <!-- Opacity of unfocused section headers (IconHeaderItemPresenter; upstream: leanback's 50%) -->
     <item name="oculo_header_unselect_alpha" type="fraction">@fraction/lb_browse_header_unselect_alpha</item>
-    <!-- Width kept on screen while collapsed (content starts after it) -->
-    <dimen name="oculo_rail_collapsed_width">56dp</dimen>
-    <!-- Rows: avatar centered 50dp from the top, search 117dp, first section 156dp (YouTube TV's spacing) -->
-    <dimen name="oculo_rail_top_offset">31dp</dimen>
-    <dimen name="oculo_rail_search_offset">98dp</dimen>
-    <dimen name="oculo_rail_list_top">137dp</dimen>
-    <dimen name="oculo_rail_item_height">38dp</dimen>
-    <dimen name="oculo_rail_item_spacing">1dp</dimen>
-    <dimen name="oculo_rail_item_padding_start">11dp</dimen>
-    <dimen name="oculo_rail_list_padding_start">8dp</dimen>
+    <!-- Width kept on screen while collapsed: the content container starts there and the rows keep their
+         own 56dp padding, so the first card starts 78dp from the edge (YouTube TV: 156 px at 1080p).
+         Scrolled cards are clipped at oculo_rail_content_clip_start (just right of the icons). -->
+    <dimen name="oculo_rail_collapsed_width">22dp</dimen>
+    <dimen name="oculo_rail_content_clip_start">34dp</dimen>
+    <!-- Geometry measured on YouTube TV (1080p screenshots in docs/mockups/youtube-ref/, 2 px = 1dp):
+         avatar centered 50.75dp from the top (fixed, never scrolls); the section list is clipped 77.5dp from
+         the top; Search is the list's first slot and scrolls away with the sections. Collapsed: Search centered
+         116.75dp from the top, sections every 39dp after it. Expanded: the whole list moves up 19.5dp
+         (Search 97.25dp, Home 136.25dp). -->
+    <dimen name="oculo_rail_avatar_center">50.75dp</dimen>
+    <dimen name="oculo_rail_list_clip_top">77.5dp</dimen>
+    <dimen name="oculo_rail_list_top">58.75dp</dimen>
+    <dimen name="oculo_rail_expanded_shift">19.5dp</dimen>
+    <dimen name="oculo_rail_list_bottom">28dp</dimen>
+    <!-- Once the list has scrolled, sections fade out over this height just below the avatar instead of being
+         cut sharply (YouTube's list scrolls by whole items; leanback's centers the focused one) -->
+    <dimen name="oculo_rail_list_fade">22dp</dimen>
+    <dimen name="oculo_rail_item_height">39dp</dimen>
+    <dimen name="oculo_rail_item_spacing">0dp</dimen>
+    <!-- Icon centered 38.75dp from the edge, label starting 61dp from the edge (YouTube: 77.5 px, 123 px) -->
+    <dimen name="oculo_rail_list_padding_start">16dp</dimen>
+    <dimen name="oculo_rail_item_padding_start">13dp</dimen>
     <dimen name="oculo_rail_list_padding_end">24dp</dimen>
-    <dimen name="oculo_rail_icon_size">24dp</dimen>
-    <dimen name="oculo_rail_avatar_size">28dp</dimen>
-    <dimen name="oculo_rail_label_margin">17dp</dimen>
-    <dimen name="oculo_rail_pill_radius">19dp</dimen>
-    <!-- Pill width: headers width (270dp) minus the list paddings -->
-    <dimen name="oculo_rail_pill_width">238dp</dimen>
+    <dimen name="oculo_rail_icon_size">20dp</dimen>
+    <dimen name="oculo_rail_avatar_size">27dp</dimen>
+    <dimen name="oculo_rail_label_margin">12dp</dimen>
+    <dimen name="oculo_rail_pill_radius">19.5dp</dimen>
+    <!-- Focused pill width (YouTube: 444 px) -->
+    <dimen name="oculo_rail_pill_width">222dp</dimen>
+    <!-- Expanded rail: duration of the list's upward move -->
+    <integer name="oculo_rail_shift_duration">200</integer>
+
+    <!-- Top bar (OculoTopBar): mic button + "Search" pill at the content's start, clock, date and wordmark at
+         the top right, all centered 50.75dp from the top (YouTube: 101.5 px). YouTube: mic 72 px circle,
+         pill 630 x 72 px, 18 px apart; logo 44 px high. The bar stays while the rows scroll, as in YouTube;
+         the content is clipped under it. -->
+    <dimen name="oculo_top_bar_height">36dp</dimen>
+    <dimen name="oculo_top_bar_pill_width">315dp</dimen>
+    <dimen name="oculo_top_bar_gap">9dp</dimen>
+    <dimen name="oculo_top_bar_icon_size">20dp</dimen>
+    <dimen name="oculo_top_bar_text_inset">17dp</dimen>
+    <dimen name="oculo_top_bar_text_size">18sp</dimen>
+    <dimen name="oculo_top_bar_logo_height">28dp</dimen>
+    <dimen name="oculo_top_bar_logo_margin">14dp</dimen>
+    <dimen name="oculo_top_bar_time_size">18sp</dimen>
+    <dimen name="oculo_top_bar_date_size">11sp</dimen>
+    <dimen name="oculo_top_bar_content_clip">75dp</dimen>
+    <!-- Top bar colors: white 15% at rest (YouTube #272727 on its #0F0F0F), the rail's turquoise pill when
+         focused, with deep-teal text and icon -->
+    <color name="oculo_top_bar_button">#26FFFFFF</color>
+    <color name="oculo_top_bar_button_focused">#22D3C8</color>
+    <color name="oculo_top_bar_text">#BFFFFFFF</color>
+    <color name="oculo_top_bar_text_focused">#0B333A</color>
 </resources>
