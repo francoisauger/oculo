@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Oculo loading animation, concept B "Balayage" with the frosted frame (docs/mockups/loading.html):
-     a light trail runs around the frosted O-screen frame, 1.2 s per lap. Overrides the SmartTube spinner
-     (SharedModules/sharedutils progress_large_holo), used by ProgressBarManager and the flavor copies of
-     view_loading_card.xml and widget_preview_card.xml. API 24+ (gradients); drawable/ holds a solid-color
-     fallback for API 21-23. Geometry = the mockup's SVG (viewBox -60 -127.5 980 980). -->
+<!-- Oculo loading animation: concept B "Balayage" exactly as docs/mockups/loading.html shows it by default
+     (frame toggle "Sarcelle foncé", speed "Réelle"): a cyan -> mint light trail runs around the dark-teal
+     O-screen frame, 1.2 s per lap, linear. Overrides the SmartTube spinner (SharedModules/sharedutils
+     progress_large_holo), used by ProgressBarManager and the flavor copies of view_loading_card.xml and
+     widget_preview_card.xml. API 24+ (gradients); drawable/ holds a solid-color fallback for API 21-23.
+     Geometry = the mockup's SVG (viewBox -60 -127.5 980 980). The mockup's diagonal gradients use SVG
+     objectBoundingBox units (0,0 -> 1,1 on a non-square box): their end points here are chosen so the
+     color lines match (end = start + g / |g|^2, g = (1 / 2w, 1 / 2h)). Frame comparison with the mockup:
+     docs/mockups/loading-compare.png. -->
 <animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt">
     <aapt:attr name="android:drawable">
@@ -15,7 +19,7 @@
             <group
                 android:translateX="60"
                 android:translateY="127.5">
-                <!-- Frosted frame: white -> frost -->
+                <!-- Frame: dark teal, gFrameTeal (vertical #145963 -> #0F4A52 -> #0B3A41) -->
                 <path android:pathData="M275,0 H585 A275,275 0 0 1 860,275 V450 A275,275 0 0 1 585,725 H275 A275,275 0 0 1 0,450 V275 A275,275 0 0 1 275,0 Z">
                     <aapt:attr name="android:fillColor">
                         <gradient
@@ -24,17 +28,19 @@
                             android:startY="0"
                             android:endX="0"
                             android:endY="725">
-                            <item android:offset="0" android:color="#FFFFFFFF" />
-                            <item android:offset="1" android:color="#FFD4F1F1" />
+                            <item android:offset="0" android:color="#FF145963" />
+                            <item android:offset="0.5" android:color="#FF0F4A52" />
+                            <item android:offset="1" android:color="#FF0B3A41" />
                         </gradient>
                     </aapt:attr>
                 </path>
-                <!-- Track -->
+                <!-- Track: rgba(120,245,190,.10) -->
                 <path
                     android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
                     android:strokeWidth="56"
-                    android:strokeColor="#1F0B7F7D" />
-                <!-- Tail: 40% of the lap behind the head's front, 32% opacity -->
+                    android:strokeAlpha="0.10"
+                    android:strokeColor="#FF78F5BE" />
+                <!-- Tail: dash 40 of 100, starts 26 behind the head, 32% opacity -->
                 <path
                     android:name="tail"
                     android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
@@ -51,12 +57,12 @@
                             android:startY="0"
                             android:endX="785"
                             android:endY="0">
-                            <item android:offset="0" android:color="#FF0B7F7D" />
-                            <item android:offset="1" android:color="#FF22D3C8" />
+                            <item android:offset="0" android:color="#FF2FE3F0" />
+                            <item android:offset="1" android:color="#FF78F5BE" />
                         </gradient>
                     </aapt:attr>
                 </path>
-                <!-- Head: 14% of the lap -->
+                <!-- Head: dash 14 of 100, gTrace (horizontal #2FE3F0 -> #78F5BE) -->
                 <path
                     android:name="head"
                     android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
@@ -72,27 +78,27 @@
                             android:startY="0"
                             android:endX="785"
                             android:endY="0">
-                            <item android:offset="0" android:color="#FF0B7F7D" />
-                            <item android:offset="1" android:color="#FF22D3C8" />
+                            <item android:offset="0" android:color="#FF2FE3F0" />
+                            <item android:offset="1" android:color="#FF78F5BE" />
                         </gradient>
                     </aapt:attr>
                 </path>
-                <!-- Screen: cyan -> turquoise -> mint -->
+                <!-- Screen: gScreen, cyan -> turquoise -> mint, diagonal over the 560 x 489 box -->
                 <path android:pathData="M295,118 H565 A145,145 0 0 1 710,263 V462 A145,145 0 0 1 565,607 H295 A145,145 0 0 1 150,462 V263 A145,145 0 0 1 295,118 Z">
                     <aapt:attr name="android:fillColor">
                         <gradient
                             android:type="linear"
                             android:startX="150"
                             android:startY="118"
-                            android:endX="710"
-                            android:endY="607">
+                            android:endX="634.54"
+                            android:endY="672.89">
                             <item android:offset="0" android:color="#FF2FE3F0" />
                             <item android:offset="0.55" android:color="#FF22D3C8" />
                             <item android:offset="1" android:color="#FF78F5BE" />
                         </gradient>
                     </aapt:attr>
                 </path>
-                <!-- Gloss, clipped to the screen -->
+                <!-- Gloss, clipped to the screen: gGloss, white 34% -> 6%, diagonal over its 560 x 381.42 box -->
                 <group>
                     <clip-path android:pathData="M295,118 H565 A145,145 0 0 1 710,263 V462 A145,145 0 0 1 565,607 H295 A145,145 0 0 1 150,462 V263 A145,145 0 0 1 295,118 Z" />
                     <path android:pathData="M150,118 H710 V166.9 Q458,264.7 150,499.42 Z">
@@ -101,8 +107,8 @@
                                 android:type="linear"
                                 android:startX="150"
                                 android:startY="118"
-                                android:endX="710"
-                                android:endY="607">
+                                android:endX="504.92"
+                                android:endY="639.10">
                                 <item android:offset="0" android:color="#57FFFFFF" />
                                 <item android:offset="1" android:color="#0FFFFFFF" />
                             </gradient>

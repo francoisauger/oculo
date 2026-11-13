@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Oculo loading animation, API 21-23 fallback: same as drawable-v24/progress_large_holo.xml with solid
-     colors instead of gradients (gradient colors in vectors need API 24). -->
+<!-- Oculo loading animation, API 21-23 fallback: same as drawable-v24/progress_large_holo.xml (concept B
+     "Balayage", default dark-teal frame of docs/mockups/loading.html) with solid colors instead of gradients
+     (gradient colors in vectors need API 24): each color is the middle of its mockup gradient. -->
 <animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt">
     <aapt:attr name="android:drawable">
@@ -12,15 +13,16 @@
             <group
                 android:translateX="60"
                 android:translateY="127.5">
-                <!-- Frosted frame -->
+                <!-- Frame: dark teal (middle of #145963 -> #0F4A52 -> #0B3A41) -->
                 <path android:pathData="M275,0 H585 A275,275 0 0 1 860,275 V450 A275,275 0 0 1 585,725 H275 A275,275 0 0 1 0,450 V275 A275,275 0 0 1 275,0 Z"
-                    android:fillColor="#FFEAF8F8" />
-                <!-- Track -->
+                    android:fillColor="#FF0F4A52" />
+                <!-- Track: rgba(120,245,190,.10) -->
                 <path
                     android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
                     android:strokeWidth="56"
-                    android:strokeColor="#1F0B7F7D" />
-                <!-- Tail: 40% of the lap behind the head's front, 32% opacity -->
+                    android:strokeAlpha="0.10"
+                    android:strokeColor="#FF78F5BE" />
+                <!-- Tail: dash 40 of 100, starts 26 behind the head, 32% opacity -->
                 <path
                     android:name="tail"
                     android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
@@ -30,8 +32,8 @@
                     android:trimPathStart="0"
                     android:trimPathEnd="0.40"
                     android:trimPathOffset="0.74"
-                    android:strokeColor="#FF0FA3A0" />
-                <!-- Head: 14% of the lap -->
+                    android:strokeColor="#FF53ECD7" />
+                <!-- Head: dash 14 of 100, middle of #2FE3F0 -> #78F5BE -->
                 <path
                     android:name="head"
                     android:pathData="M280,59 H580 A205,205 0 0 1 785,264 V461 A205,205 0 0 1 580,666 H280 A205,205 0 0 1 75,461 V264 A205,205 0 0 1 280,59 Z"
@@ -40,7 +42,7 @@
                     android:trimPathStart="0"
                     android:trimPathEnd="0.14"
                     android:trimPathOffset="0"
-                    android:strokeColor="#FF0FA3A0" />
+                    android:strokeColor="#FF53ECD7" />
                 <!-- Screen: cyan -> turquoise -> mint -->
                 <path android:pathData="M295,118 H565 A145,145 0 0 1 710,263 V462 A145,145 0 0 1 565,607 H295 A145,145 0 0 1 150,462 V263 A145,145 0 0 1 295,118 Z"
                     android:fillColor="#FF22D3C8" />
