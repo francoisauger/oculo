@@ -13,6 +13,7 @@ public class OculoData extends DataSaverBase {
     private static final int INDEX_HOME_ROWS_FILTER = 0;
     private static final int INDEX_HOME_HIDE_WATCHED = 1;
     private static final int INDEX_HOME_CONTINUE_WATCHING = 2;
+    private static final int INDEX_THUMBNAIL_GLOW = 3;
     private static OculoData sInstance;
     private final Context mContext;
 
@@ -67,5 +68,16 @@ public class OculoData extends DataSaverBase {
 
     public void setHomeContinueWatchingEnabled(boolean enabled) {
         setBoolean(INDEX_HOME_CONTINUE_WATCHING, enabled);
+    }
+
+    /**
+     * Home's background glow takes the color of the focused card's thumbnail (Google TV style, OculoGlow).
+     */
+    public boolean isThumbnailGlowEnabled() {
+        return getBoolean(INDEX_THUMBNAIL_GLOW, mContext.getResources().getBoolean(R.bool.oculo_thumbnail_glow_default));
+    }
+
+    public void setThumbnailGlowEnabled(boolean enabled) {
+        setBoolean(INDEX_THUMBNAIL_GLOW, enabled);
     }
 }

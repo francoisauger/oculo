@@ -5,6 +5,7 @@
     <string name="oculo_home_continue_watching">Afficher Continuer à regarder</string>
     <string name="oculo_continue_watching">Continuer à regarder</string>
     <string name="oculo_continue_watching_remove">Ne plus proposer ici</string>
+    <string name="oculo_thumbnail_glow">Lueur selon la vignette</string>
     <!-- Top bar mic button (OculoTopBar) -->
     <string name="oculo_voice_search">Recherche vocale</string>
 </resources>

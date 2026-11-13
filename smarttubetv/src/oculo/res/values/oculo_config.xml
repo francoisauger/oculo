@@ -9,6 +9,8 @@
     <bool name="oculo_home_hide_watched_default">true</bool>
     <!-- Home's second row « Continue watching »: on -->
     <bool name="oculo_home_continue_watching_default">true</bool>
+    <!-- Home's background glow takes the focused thumbnail's color, as on the Google TV home screen -->
+    <bool name="oculo_thumbnail_glow_default">true</bool>
     <!-- About: no "Install bridge" button (it installs a third-party APK) -->
     <bool name="oculo_show_install_bridge">false</bool>
 
@@ -32,6 +34,10 @@
     <!-- Sign-in screen: activation code in Abricot, activation URL in light Abricot -->
     <color name="oculo_signin_code">@color/oculo_abricot</color>
     <color name="oculo_signin_link">@color/oculo_abricot_light</color>
+
+    <!-- Focused card ring pulse, as on the Google TV home screen: white 100% -> 45% -> 100% every 2 s -->
+    <integer name="oculo_card_focus_pulse_period">2000</integer>
+    <item name="oculo_card_focus_pulse_min_alpha" type="fraction">45%</item>
 
     <!-- Browse: YouTube-style left rail (OculoRail) -->
     <bool name="oculo_left_rail">true</bool>

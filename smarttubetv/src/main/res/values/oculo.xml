@@ -87,4 +87,8 @@
     <color name="oculo_card_focus_ring">#00000000</color>
     <dimen name="oculo_card_focus_ring_width">0dp</dimen>
     <dimen name="oculo_card_focus_ring_gap">0dp</dimen>
+    <!-- The focused card's ring pulses (Google TV): full, down to this opacity, back to full, over this period
+         (cosine ease in-out). 0 = steady ring (upstream); the oculo flavor sets them in oculo_config.xml. -->
+    <integer name="oculo_card_focus_pulse_period">0</integer>
+    <item name="oculo_card_focus_pulse_min_alpha" type="fraction">100%</item>
 </resources>

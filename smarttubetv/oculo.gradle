@@ -5,7 +5,7 @@
 import groovy.json.JsonSlurper
 
 // Bump for an Oculo-only rebuild of the same upstream version; reset to 1 when upstream bumps versionCode.
-def oculoRevision = 11
+def oculoRevision = 12
 
 // Release signing: a JSON file kept OUTSIDE the repo, e.g.
 // {"storeFile": "/abs/path/oculo-release.jks", "storePassword": "...", "keyAlias": "oculo", "keyPassword": "..."}
@@ -71,4 +71,9 @@ android {
 
 if (oculoSigning == null && gradle.startParameter.taskNames.any { it.toLowerCase().contains('oculorelease') }) {
     logger.warn("Oculo: no signing config found at ${oculoSigningPath}; the release APK will be unsigned.")
+}
+
+// Oculo code in src/main (tv/oculo/OculoGlow) picks the thumbnail glow color with androidx.palette (Apache 2.0).
+dependencies {
+    implementation 'androidx.palette:palette:1.0.0'
 }
