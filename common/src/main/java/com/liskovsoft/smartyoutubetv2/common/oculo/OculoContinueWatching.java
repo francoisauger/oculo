@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
 import com.liskovsoft.mediaserviceinterfaces.data.MediaItem;
@@ -45,8 +46,10 @@ import io.reactivex.disposables.Disposable;
  * Local positions come from SmartTube's VideoStateService (the store the player resumes from); the time a video
  * was last played in Oculo comes from Oculo's own watch log, written on every position save of the player
  * (VideoStateService does not persist its timestamps). History items carry YouTube's progress (percent, resume
- * position) but no date: the 48 h window is estimated ({@link OculoContinueWatchingRules#selectMerged},
- * {@link OculoContinueWatchingRules#updateSeen}). Signed out or request failed: local log only. Videos removed
+ * position) but no date. 32.74-15: the row = unfinished videos among the history's 20 most recent items, plus the
+ * unfinished videos played in Oculo in the last 48 h ({@link OculoContinueWatchingRules#selectMerged}); no first-fetch
+ * baseline (32.74-14 estimated a 48 h window and left out everything seen on the first fetch). Signed out or request
+ * failed: local log only. Each history arrival writes one line to logcat (tag {@code OculoCW}). Videos removed
  * with « Remove from Continue watching » are kept in a hidden list (30 days). Nothing here touches YouTube's
  * history or the watched state.
  */
@@ -57,7 +60,9 @@ public class OculoContinueWatching {
     public static final int ROW_POSITION = 1;
     private static final String KEY_WATCH_LOG = "OculoWatchLog";
     private static final String KEY_HIDDEN = "OculoContinueHidden";
+    /** 32.74-14's store of estimated history dates, no longer used: cleared once. */
     private static final String KEY_HISTORY_SEEN = "OculoHistorySeen";
+    private static final String TAG = "OculoCW";
     /** Home may be built twice in a row (load, section re-selected): at most one history request per 30 s. */
     private static final long HISTORY_MIN_INTERVAL_MS = 30_000;
     /** History arrived while Home rows were still loading: retry the in-place update. */
@@ -70,8 +75,6 @@ public class OculoContinueWatching {
     private final AppPrefs mPrefs;
     private final Map<String, Mark> mWatchLog;
     private final Map<String, Mark> mHidden;
-    /** History items as Oculo first saw them at their progress (estimated watch time, see updateSeen). */
-    private final Map<String, Mark> mHistorySeen;
     /** Last history page of the account, most recent first (empty: signed out, error, not loaded yet). */
     private final List<HistoryItem> mHistory = new ArrayList<>();
     private final Map<String, Video> mHistoryVideos = new HashMap<>();
@@ -93,7 +96,9 @@ public class OculoContinueWatching {
         OculoContinueWatchingRules.prune(mWatchLog, now, OculoContinueWatchingRules.LOG_RETENTION_MS, OculoContinueWatchingRules.LOG_MAX_SIZE);
         mHidden = OculoContinueWatchingRules.parse(mPrefs.getData(KEY_HIDDEN));
         OculoContinueWatchingRules.prune(mHidden, now, OculoContinueWatchingRules.HIDDEN_RETENTION_MS, OculoContinueWatchingRules.HIDDEN_MAX_SIZE);
-        mHistorySeen = OculoContinueWatchingRules.parse(mPrefs.getData(KEY_HISTORY_SEEN));
+        if (!TextUtils.isEmpty(mPrefs.getData(KEY_HISTORY_SEEN))) {
+            mPrefs.setData(KEY_HISTORY_SEEN, "");
+        }
     }
 
     public static OculoContinueWatching instance(Context context) {
@@ -297,11 +302,9 @@ public class OculoContinueWatching {
         mHistoryVideos.clear();
         mHistoryVideos.putAll(videos);
 
-        if (!history.isEmpty()) {
-            long now = System.currentTimeMillis();
-            OculoContinueWatchingRules.updateSeen(mHistorySeen, history, now);
-            OculoContinueWatchingRules.pruneSeen(mHistorySeen, history, now);
-            schedulePersist();
+        mLogHistory = true; // the next compute() writes one diagnostic line
+        if (group == null) {
+            Log.i(TAG, "history: none (signed out or request failed), local log only");
         }
 
         if (changed) {
@@ -331,6 +334,8 @@ public class OculoContinueWatching {
         updateInPlace(view, mSection);
     }
 
+    private boolean mLogHistory;
+
     private List<Video> compute() {
         VideoStateService stateService = VideoStateService.instance(mContext);
         List<State> states = stateService != null && !stateService.isEmpty()
@@ -350,8 +355,24 @@ public class OculoContinueWatching {
                     state.video.isShorts || (mark.flags & OculoContinueWatchingRules.FLAG_SHORTS) != 0));
         }
 
+        long now = System.currentTimeMillis();
+        List<Pick> picks = OculoContinueWatchingRules.selectMerged(candidates, mHistory, mHidden, now);
+        if (mLogHistory) {
+            mLogHistory = false;
+            int local48h = 0;
+            for (Candidate c : candidates) {
+                if (OculoContinueWatchingRules.isEligible(c, mHidden, now)) {
+                    local48h++;
+                }
+            }
+            Log.i(TAG, "history items=" + mHistory.size()
+                    + " unfinishedInTop" + OculoContinueWatchingRules.HISTORY_TOP + "=" + OculoContinueWatchingRules.countHistoryUnfinished(mHistory)
+                    + " localLogged=" + candidates.size() + " localUnfinished48h=" + local48h
+                    + " hidden=" + mHidden.size() + " shown=" + picks);
+        }
+
         List<Video> result = new ArrayList<>();
-        for (Pick pick : OculoContinueWatchingRules.selectMerged(candidates, mHistory, mHistorySeen, mHidden, System.currentTimeMillis())) {
+        for (Pick pick : picks) {
             Video video;
             if (pick.fromHistory) {
                 video = toCard(mHistoryVideos.get(pick.videoId));
@@ -448,6 +469,5 @@ public class OculoContinueWatching {
     public void persistNow() {
         mPrefs.setData(KEY_WATCH_LOG, OculoContinueWatchingRules.format(mWatchLog));
         mPrefs.setData(KEY_HIDDEN, OculoContinueWatchingRules.format(mHidden));
-        mPrefs.setData(KEY_HISTORY_SEEN, OculoContinueWatchingRules.format(mHistorySeen));
     }
 }

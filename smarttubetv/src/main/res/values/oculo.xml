@@ -26,6 +26,13 @@
          oculo_rail_content_clip_start (container coordinates, just right of the icons; 34dp until 32.74-10). -->
     <dimen name="oculo_rail_collapsed_width">38dp</dimen>
     <dimen name="oculo_rail_content_clip_start">26dp</dimen>
+    <!-- 32.74-15 (OculoRowEdge): while a row is scrolled, its cards are cut at the content's start line (the
+         row's start padding, where the first card sits) instead of oculo_rail_content_clip_start, with a soft fade
+         from fade_outside left of that line (background opaque) to fade_inside right of it (clear). Off upstream. -->
+    <bool name="oculo_row_edge_clip">false</bool>
+    <dimen name="oculo_row_edge_fade_outside">16dp</dimen>
+    <dimen name="oculo_row_edge_fade_inside">8dp</dimen>
+    <item name="oculo_row_edge" type="id" />
     <!-- Geometry measured on YouTube TV (1080p screenshots in docs/mockups/youtube-ref/, 2 px = 1dp):
          avatar centered 50.75dp from the top (fixed, never scrolls); the section list is clipped 77.5dp from
          the top; Search is the list's first slot and scrolls away with the sections. Collapsed: Search centered

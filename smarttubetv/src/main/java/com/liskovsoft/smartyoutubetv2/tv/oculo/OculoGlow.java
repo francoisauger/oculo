@@ -100,6 +100,26 @@ public final class OculoGlow {
         sView = new WeakReference<>(view);
     }
 
+    /**
+     * The glow view of the current browse screen, if any (Home, sections).
+     */
+    @Nullable
+    static View backgroundView() {
+        return sView.get();
+    }
+
+    /**
+     * Paints the glow view's picture in its own coordinates (without View.draw(), which would touch its draw state).
+     */
+    static void drawBackground(View view, Canvas canvas) {
+        if (view instanceof GlowView) {
+            int save = canvas.save();
+            canvas.clipRect(0, 0, view.getWidth(), view.getHeight());
+            ((GlowView) view).paint(canvas);
+            canvas.restoreToCount(save);
+        }
+    }
+
     private static boolean usesGlowBackground(Context context) {
         TypedValue value = new TypedValue();
         if (!context.getTheme().resolveAttribute(R.attr.shelfBackground, value, true) || value.resourceId == 0) {
@@ -395,6 +415,11 @@ public final class OculoGlow {
 
         @Override
         protected void onDraw(Canvas canvas) {
+            paint(canvas);
+        }
+
+        /** Also used by {@link OculoRowEdge} to repaint the background over cards scrolled out on the left. */
+        void paint(Canvas canvas) {
             canvas.drawColor(mBaseColor);
             for (int i = 0; i < 2; i++) {
                 if (mWeights[i] > 0.002f && mPaints[i].getShader() != null) {

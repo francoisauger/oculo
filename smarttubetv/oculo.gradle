@@ -5,7 +5,7 @@
 import groovy.json.JsonSlurper
 
 // Bump for an Oculo-only rebuild of the same upstream version; reset to 1 when upstream bumps versionCode.
-def oculoRevision = 14
+def oculoRevision = 15
 
 // Release signing: a JSON file kept OUTSIDE the repo, e.g.
 // {"storeFile": "/abs/path/oculo-release.jks", "storePassword": "...", "keyAlias": "oculo", "keyPassword": "..."}

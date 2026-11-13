@@ -391,6 +391,8 @@ public final class OculoUi {
 
             if (host.getParent() instanceof ViewGroup) {
                 ((ViewGroup) host.getParent()).setClipChildren(false);
+                // Rows: cards scrolled out on the left are cut (with a fade) at the content's start line
+                OculoRowEdge.install((View) host.getParent());
             }
 
             mHost = host;

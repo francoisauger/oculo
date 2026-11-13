@@ -13,6 +13,8 @@
     <bool name="oculo_thumbnail_glow_default">true</bool>
     <!-- Rail: Abricot dot on Subscriptions when subscribed channels have new content (OculoNewContent) -->
     <bool name="oculo_rail_new_content_dot">true</bool>
+    <!-- Rows: cards scrolled out on the left are cut at the content's start line with a soft fade (OculoRowEdge) -->
+    <bool name="oculo_row_edge_clip">true</bool>
     <!-- About: no "Install bridge" button (it installs a third-party APK) -->
     <bool name="oculo_show_install_bridge">false</bool>
 
