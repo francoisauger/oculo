@@ -101,6 +101,10 @@
     <!-- No info box under video and channel cards (title and meta on the page, Google TV / YouTube); only applies
          with the focus ring and no focus fill (OculoUi.cardInfoBackground). Off upstream. -->
     <bool name="oculo_card_hide_info_box">false</bool>
+    <!-- No elevation shadow under cards that have the focus ring (OculoUi.CardFrame): leanback's dynamic shadow
+         (ShadowOverlayHelper, focused Z 10dp) is cast from the whole card's outline and shows as a black area under
+         the title and meta once the info box is transparent. Off upstream (shadow kept). -->
+    <bool name="oculo_card_no_shadow">false</bool>
     <!-- Meta line under a card (channel • views • date). Transparent = the card's text color (upstream). -->
     <color name="oculo_card_meta_text">#00000000</color>
     <!-- Rail: new-content dot on the Subscriptions icon (OculoRail, OculoNewContent; flag in common's oculo.xml) -->

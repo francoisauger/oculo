@@ -2,8 +2,12 @@ package com.liskovsoft.smartyoutubetv2.common.oculo;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
+import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
+import com.liskovsoft.mediaserviceinterfaces.data.MediaItem;
+import com.liskovsoft.sharedutils.rx.RxHelper;
 import com.liskovsoft.smartyoutubetv2.common.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.BrowseSection;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
@@ -12,26 +16,39 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoSt
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoStateService.State;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.UiOptionItem;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.AppDialogPresenter;
+import com.liskovsoft.smartyoutubetv2.common.app.presenters.BrowsePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.views.BrowseView;
+import com.liskovsoft.smartyoutubetv2.common.app.views.ViewManager;
+import com.liskovsoft.smartyoutubetv2.common.misc.MediaServiceManager;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatchingRules.Candidate;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatchingRules.HistoryItem;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatchingRules.Mark;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatchingRules.Pick;
 import com.liskovsoft.smartyoutubetv2.common.prefs.AppPrefs;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
+import com.liskovsoft.youtubeapi.service.YouTubeServiceManager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.reactivex.disposables.Disposable;
 
 /**
  * Oculo: Home's « Continue watching » row (second row, right after the first one).
  * <p>
- * Data: local only, no network call. Positions come from SmartTube's VideoStateService (the same store the
- * player resumes from); the time a video was last played comes from Oculo's own watch log, written on every
- * position save of the player (VideoStateService does not persist its timestamps). Selection rules:
- * {@link OculoContinueWatchingRules}. Videos removed with « Remove from Continue watching » are kept in a
- * hidden list (30 days). Nothing here touches YouTube's history or the watched state.
+ * Data (32.74-14): the signed-in account's YouTube history (one request when Home is built: first load and the
+ * 10-minute refresh; async, the row is updated in place when it arrives), merged with Oculo's local watch log.
+ * Local positions come from SmartTube's VideoStateService (the store the player resumes from); the time a video
+ * was last played in Oculo comes from Oculo's own watch log, written on every position save of the player
+ * (VideoStateService does not persist its timestamps). History items carry YouTube's progress (percent, resume
+ * position) but no date: the 48 h window is estimated ({@link OculoContinueWatchingRules#selectMerged},
+ * {@link OculoContinueWatchingRules#updateSeen}). Signed out or request failed: local log only. Videos removed
+ * with « Remove from Continue watching » are kept in a hidden list (30 days). Nothing here touches YouTube's
+ * history or the watched state.
  */
 public class OculoContinueWatching {
     /** Stable id of the row, so that it can be replaced, synced or trimmed in place. */
@@ -40,6 +57,12 @@ public class OculoContinueWatching {
     public static final int ROW_POSITION = 1;
     private static final String KEY_WATCH_LOG = "OculoWatchLog";
     private static final String KEY_HIDDEN = "OculoContinueHidden";
+    private static final String KEY_HISTORY_SEEN = "OculoHistorySeen";
+    /** Home may be built twice in a row (load, section re-selected): at most one history request per 30 s. */
+    private static final long HISTORY_MIN_INTERVAL_MS = 30_000;
+    /** History arrived while Home rows were still loading: retry the in-place update. */
+    private static final long APPLY_RETRY_MS = 1_500;
+    private static final int APPLY_MAX_RETRIES = 20;
     private static final long PERSIST_DELAY_MS = 3_000;
     @SuppressLint("StaticFieldLeak")
     private static OculoContinueWatching sInstance;
@@ -47,6 +70,15 @@ public class OculoContinueWatching {
     private final AppPrefs mPrefs;
     private final Map<String, Mark> mWatchLog;
     private final Map<String, Mark> mHidden;
+    /** History items as Oculo first saw them at their progress (estimated watch time, see updateSeen). */
+    private final Map<String, Mark> mHistorySeen;
+    /** Last history page of the account, most recent first (empty: signed out, error, not loaded yet). */
+    private final List<HistoryItem> mHistory = new ArrayList<>();
+    private final Map<String, Video> mHistoryVideos = new HashMap<>();
+    private Disposable mHistoryAction;
+    private long mLastHistoryRequestMs;
+    private int mApplyRetries;
+    private final Runnable mApplyHistory = this::applyHistory;
     private final Runnable mPersist = this::persistNow;
     private WeakReference<BrowseView> mView = new WeakReference<>(null);
     private BrowseSection mSection;
@@ -61,6 +93,7 @@ public class OculoContinueWatching {
         OculoContinueWatchingRules.prune(mWatchLog, now, OculoContinueWatchingRules.LOG_RETENTION_MS, OculoContinueWatchingRules.LOG_MAX_SIZE);
         mHidden = OculoContinueWatchingRules.parse(mPrefs.getData(KEY_HIDDEN));
         OculoContinueWatchingRules.prune(mHidden, now, OculoContinueWatchingRules.HIDDEN_RETENTION_MS, OculoContinueWatchingRules.HIDDEN_MAX_SIZE);
+        mHistorySeen = OculoContinueWatchingRules.parse(mPrefs.getData(KEY_HISTORY_SEEN));
     }
 
     public static OculoContinueWatching instance(Context context) {
@@ -112,6 +145,8 @@ public class OculoContinueWatching {
             mShown.addAll(group.getVideos());
         }
 
+        requestHistory(); // Home load and 10-minute refresh: the row is updated in place when it arrives
+
         return !videos.isEmpty();
     }
 
@@ -127,6 +162,11 @@ public class OculoContinueWatching {
         mView = new WeakReference<>(view);
         mSection = section;
 
+        updateInPlace(view, section);
+    }
+
+    /** Updates the shown row to the current selection: progress only (sync), videos gone (remove), else replace. */
+    private void updateInPlace(BrowseView view, BrowseSection section) {
         List<Video> videos = isEnabled() ? compute() : Collections.emptyList();
         List<String> newIds = ids(videos);
         List<String> shownIds = ids(mShown);
@@ -206,13 +246,95 @@ public class OculoContinueWatching {
         }
     }
 
-    private List<Video> compute() {
-        VideoStateService stateService = VideoStateService.instance(mContext);
-        if (stateService == null || stateService.isEmpty()) {
-            return Collections.emptyList();
+    // ---- Account history ----
+
+    private void requestHistory() {
+        if (!isEnabled() || RxHelper.isAnyActionRunning(mHistoryAction)) {
+            return;
+        }
+        long now = SystemClock.elapsedRealtime();
+        if (mLastHistoryRequestMs != 0 && now - mLastHistoryRequestMs < HISTORY_MIN_INTERVAL_MS) {
+            return;
+        }
+        mLastHistoryRequestMs = now;
+
+        if (MediaServiceManager.instance().getSelectedAccount() == null) {
+            onHistory(null); // signed out: local log only
+            return;
         }
 
-        List<State> states = new ArrayList<>(stateService.getStates());
+        try {
+            mHistoryAction = RxHelper.execute(
+                    YouTubeServiceManager.instance().getContentService().getHistoryObserve(),
+                    group -> Utils.post(() -> onHistory(group)),
+                    error -> Utils.post(() -> onHistory(null)));
+        } catch (RuntimeException e) {
+            onHistory(null);
+        }
+    }
+
+    /** Main thread. {@code group} null = signed out or failed: local log only. */
+    private void onHistory(MediaGroup group) {
+        List<HistoryItem> history = new ArrayList<>();
+        Map<String, Video> videos = new HashMap<>();
+        List<MediaItem> items = group != null ? group.getMediaItems() : null;
+        if (items != null) {
+            for (MediaItem item : items) {
+                Video video = item != null ? Video.from(item) : null;
+                if (video == null || TextUtils.isEmpty(video.videoId) || videos.containsKey(video.videoId)) {
+                    continue;
+                }
+                videos.put(video.videoId, video);
+                history.add(new HistoryItem(video.videoId, video.percentWatched,
+                        video.startTimeSeconds > 0 ? video.startTimeSeconds * 1_000L : -1, video.getDurationMs(),
+                        video.isLive || video.isUpcoming, video.isShorts));
+            }
+        }
+
+        boolean changed = !(mHistory.isEmpty() && history.isEmpty());
+        mHistory.clear();
+        mHistory.addAll(history);
+        mHistoryVideos.clear();
+        mHistoryVideos.putAll(videos);
+
+        if (!history.isEmpty()) {
+            long now = System.currentTimeMillis();
+            OculoContinueWatchingRules.updateSeen(mHistorySeen, history, now);
+            OculoContinueWatchingRules.pruneSeen(mHistorySeen, history, now);
+            schedulePersist();
+        }
+
+        if (changed) {
+            mApplyRetries = 0;
+            applyHistory();
+        }
+    }
+
+    /** Shows the new selection on Home, now if Home is on screen and loaded, else at its next build/resume. */
+    private void applyHistory() {
+        Utils.removeCallbacks(mApplyHistory);
+        BrowseView view = mView.get();
+        if (view == null || mSection == null) {
+            return;
+        }
+        BrowsePresenter presenter = BrowsePresenter.instance(mContext);
+        if (!presenter.isHomeSection() || ViewManager.instance(mContext).getTopView() != BrowseView.class) {
+            return; // Home's next build (or onHomeResumed) uses the cached history
+        }
+        if (presenter.hasPendingActions()) {
+            // Rows still loading: inserting the row now would shift the rows being added
+            if (mApplyRetries++ < APPLY_MAX_RETRIES) {
+                Utils.postDelayed(mApplyHistory, APPLY_RETRY_MS);
+            }
+            return;
+        }
+        updateInPlace(view, mSection);
+    }
+
+    private List<Video> compute() {
+        VideoStateService stateService = VideoStateService.instance(mContext);
+        List<State> states = stateService != null && !stateService.isEmpty()
+                ? new ArrayList<>(stateService.getStates()) : Collections.<State>emptyList();
         List<Candidate> candidates = new ArrayList<>();
         for (State state : states) {
             if (state == null || state.video == null) {
@@ -229,14 +351,39 @@ public class OculoContinueWatching {
         }
 
         List<Video> result = new ArrayList<>();
-        for (String videoId : OculoContinueWatchingRules.select(candidates, mHidden, System.currentTimeMillis())) {
-            State state = stateService.getByVideoId(videoId);
-            Video video = state != null ? toCard(state) : null;
+        for (Pick pick : OculoContinueWatchingRules.selectMerged(candidates, mHistory, mHistorySeen, mHidden, System.currentTimeMillis())) {
+            Video video;
+            if (pick.fromHistory) {
+                video = toCard(mHistoryVideos.get(pick.videoId));
+            } else {
+                State state = stateService != null ? stateService.getByVideoId(pick.videoId) : null;
+                video = state != null ? toCard(state) : null;
+            }
             if (video != null) {
                 result.add(video);
             }
         }
         return result;
+    }
+
+    /**
+     * A fresh card from the account's history: YouTube's progress (percent, resume position) is on the card, and
+     * the player resumes there when Oculo has no newer local state (VideoStateController.restorePosition()).
+     */
+    private static Video toCard(Video historyVideo) {
+        if (historyVideo == null) {
+            return null;
+        }
+        Video video = Video.fromString(historyVideo.toString());
+        if (video == null) {
+            return null;
+        }
+        video.percentWatched = historyVideo.percentWatched;
+        video.startTimeSeconds = historyVideo.startTimeSeconds;
+        if (TextUtils.isEmpty(video.cardImageUrl)) {
+            video.cardImageUrl = "https://i.ytimg.com/vi/" + video.videoId + "/hqdefault.jpg";
+        }
+        return video;
     }
 
     /** A fresh card (the stored Video stays untouched): progress from the saved position, resumes there. */
@@ -301,5 +448,6 @@ public class OculoContinueWatching {
     public void persistNow() {
         mPrefs.setData(KEY_WATCH_LOG, OculoContinueWatchingRules.format(mWatchLog));
         mPrefs.setData(KEY_HIDDEN, OculoContinueWatchingRules.format(mHidden));
+        mPrefs.setData(KEY_HISTORY_SEEN, OculoContinueWatchingRules.format(mHistorySeen));
     }
 }

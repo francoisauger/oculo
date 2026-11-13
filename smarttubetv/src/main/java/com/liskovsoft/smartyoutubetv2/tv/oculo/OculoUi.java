@@ -382,6 +382,13 @@ public final class OculoUi {
                 host.setBackground(null);
             }
 
+            if (res.getBoolean(R.bool.oculo_card_no_shadow)) {
+                // Leanback's dynamic shadow (ShadowOverlayHelper: the item view's Z goes to 10dp on focus) is cast from
+                // the whole card's outline, so with a transparent info box it shows as a black area under the texts.
+                // No outline = no shadow, whatever the Z (which still draws the focused card above its neighbors).
+                host.setOutlineProvider(null);
+            }
+
             if (host.getParent() instanceof ViewGroup) {
                 ((ViewGroup) host.getParent()).setClipChildren(false);
             }

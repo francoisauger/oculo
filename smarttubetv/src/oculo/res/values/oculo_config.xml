@@ -57,6 +57,8 @@
     <item name="oculo_card_glow_fallback_alpha" type="fraction">45%</item>
     <!-- No grey box under the cards (Google TV / YouTube): white title, grey meta (YouTube #AAAAAA) -->
     <bool name="oculo_card_hide_info_box">true</bool>
+    <!-- No black elevation shadow under the cards (Google TV): ring and glow only (32.74-14) -->
+    <bool name="oculo_card_no_shadow">true</bool>
     <color name="oculo_card_meta_text">#AAAAAA</color>
     <!-- Rail: new-content dot on Subscriptions, Abricot main (couleur-secondaire.html .ic.dotted) -->
     <color name="oculo_rail_dot">@color/oculo_abricot</color>

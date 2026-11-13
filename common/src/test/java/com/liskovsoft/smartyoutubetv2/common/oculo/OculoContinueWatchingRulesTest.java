@@ -1,7 +1,9 @@
 package com.liskovsoft.smartyoutubetv2.common.oculo;
 
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatchingRules.Candidate;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatchingRules.HistoryItem;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatchingRules.Mark;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatchingRules.Pick;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -104,5 +106,119 @@ public class OculoContinueWatchingRulesTest {
         assertTrue(OculoContinueWatching.isSubsequence(Arrays.asList("a", "c"), Arrays.asList("a", "b", "c")));
         assertFalse(OculoContinueWatching.isSubsequence(Arrays.asList("c", "a"), Arrays.asList("a", "b", "c")));
         assertFalse(OculoContinueWatching.isSubsequence(Collections.singletonList("d"), Arrays.asList("a", "b")));
+    }
+
+    // ---- Account history (32.74-14) ----
+
+    private static HistoryItem h(String id, float percent) {
+        return new HistoryItem(id, percent, -1, 20 * MIN, false, false);
+    }
+
+    private static List<String> merged(List<Candidate> local, List<HistoryItem> history, Map<String, Mark> seen,
+                                       Map<String, Mark> hidden) {
+        List<String> result = new ArrayList<>();
+        for (Pick p : OculoContinueWatchingRules.selectMerged(local, history, seen, hidden, NOW)) {
+            result.add(p.toString());
+        }
+        return result;
+    }
+
+    @Test
+    public void historyUnfinishedRules() {
+        assertTrue(OculoContinueWatchingRules.isHistoryItemUnfinished(h("a", 2)));
+        assertFalse(OculoContinueWatchingRules.isHistoryItemUnfinished(h("a", 1)));
+        assertTrue(OculoContinueWatchingRules.isHistoryItemUnfinished(new HistoryItem("a", 1, 30_000, 60 * MIN, false, false))); // 30 s known
+        assertFalse(OculoContinueWatchingRules.isHistoryItemUnfinished(h("a", 90)));
+        assertFalse(OculoContinueWatchingRules.isHistoryItemUnfinished(new HistoryItem("a", 60, -1, 2 * MIN, false, false))); // 48 s left
+        assertFalse(OculoContinueWatchingRules.isHistoryItemUnfinished(new HistoryItem("a", 50, -1, 20 * MIN, true, false)));
+        assertFalse(OculoContinueWatchingRules.isHistoryItemUnfinished(new HistoryItem("a", 50, -1, 20 * MIN, false, true)));
+        assertFalse(OculoContinueWatchingRules.isHistoryItemUnfinished(new HistoryItem("a", 50, -1, 50_000, false, false)));
+        assertFalse(OculoContinueWatchingRules.isHistoryItemUnfinished(new HistoryItem("a", 50, -1, -1, false, false)));
+    }
+
+    @Test
+    public void firstFetchIsABaselineOfUnknownAge() {
+        Map<String, Mark> seen = new HashMap<>();
+        List<HistoryItem> history = Arrays.asList(h("a", 40), h("b", 30));
+        OculoContinueWatchingRules.updateSeen(seen, history, NOW);
+        assertEquals(0, seen.get("a").timeMs);
+        assertEquals(40, seen.get("a").flags);
+        // No dated item: nothing is known to be within 48 h
+        assertTrue(merged(null, history, seen, null).isEmpty());
+    }
+
+    @Test
+    public void newOrProgressedItemsAboveKnownOnesAreFresh() {
+        Map<String, Mark> seen = new HashMap<>();
+        OculoContinueWatchingRules.updateSeen(seen, Arrays.asList(h("b", 30), h("c", 20)), NOW - 5 * HOUR);
+        // Later: "a" new at the top, "b" progressed, "c" unchanged, "old" only at the end of a longer page
+        List<HistoryItem> history = Arrays.asList(h("a", 10), h("b", 45), h("c", 20), h("old", 50));
+        OculoContinueWatchingRules.updateSeen(seen, history, NOW);
+        assertEquals(NOW, seen.get("a").timeMs);
+        assertEquals(NOW, seen.get("b").timeMs);
+        assertEquals(0, seen.get("c").timeMs);
+        assertEquals(0, seen.get("old").timeMs);
+        assertEquals(Arrays.asList("a@h", "b@h"), merged(null, history, seen, null));
+    }
+
+    @Test
+    public void itemsAboveALocallyDatedVideoInheritItsTime() {
+        // Watched on a phone (a, b) after "x", played in Oculo 30 h ago; "y" is below "x": age unknown
+        List<HistoryItem> history = Arrays.asList(h("a", 20), h("b", 50), h("x", 95), h("y", 40));
+        List<Candidate> local = Collections.singletonList(video("x", 30, 19 * MIN, 20 * MIN)); // finished
+        Map<String, Mark> seen = new HashMap<>();
+        OculoContinueWatchingRules.updateSeen(seen, history, NOW); // baseline
+        assertEquals(Arrays.asList("a@h", "b@h"), merged(local, history, seen, null));
+
+        // Same, but "x" was played 50 h ago: outside the window
+        List<Candidate> old = Collections.singletonList(video("x", 50, 19 * MIN, 20 * MIN));
+        assertTrue(merged(old, history, seen, null).isEmpty());
+    }
+
+    @Test
+    public void unionWithTheLocalLogLocalWins() {
+        List<HistoryItem> history = Arrays.asList(h("a", 50), h("b", 30));
+        Map<String, Mark> seen = new HashMap<>();
+        OculoContinueWatchingRules.updateSeen(seen, history, NOW - 3 * HOUR); // baseline
+        List<Candidate> local = Arrays.asList(
+                video("new", 0, 5 * MIN, 20 * MIN),   // just watched in Oculo, not in history yet
+                video("b", 2, 5 * MIN, 20 * MIN));    // in history too: local position
+        assertEquals(Arrays.asList("new@l", "a@h", "b@l"), merged(local, history, seen, null));
+
+        // Local says finished: not proposed, even though history still says 30 %
+        List<Candidate> done = Collections.singletonList(video("b", 2, 19 * MIN, 20 * MIN));
+        assertEquals(Collections.singletonList("a@h"), merged(done, history, seen, null));
+    }
+
+    @Test
+    public void accountProgressSeenAfterTheLocalPlayWins() {
+        Map<String, Mark> seen = new HashMap<>();
+        OculoContinueWatchingRules.updateSeen(seen, Arrays.asList(h("z", 10)), NOW - 10 * HOUR);
+        List<HistoryItem> history = Arrays.asList(h("b", 60), h("z", 10));
+        OculoContinueWatchingRules.updateSeen(seen, history, NOW - HOUR); // b moved from local 25 % to 60 %
+        List<Candidate> local = Collections.singletonList(video("b", 5, 19 * MIN, 20 * MIN)); // local: finished
+        assertEquals(Collections.singletonList("b@h"), merged(local, history, seen, null));
+    }
+
+    @Test
+    public void historyHiddenAndCap() {
+        List<HistoryItem> history = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            history.add(h("v" + i, 50));
+        }
+        List<Candidate> local = Collections.singletonList(video("v29", 1, 19 * MIN, 20 * MIN)); // dates all above it
+        Map<String, Mark> hidden = new HashMap<>();
+        hidden.put("v0", new Mark(NOW, 0));
+        List<String> result = merged(local, history, new HashMap<String, Mark>(), hidden);
+        assertEquals(OculoContinueWatchingRules.MAX_ITEMS, result.size());
+        assertEquals("v1@h", result.get(0)); // history order, hidden left out
+        assertEquals("v20@h", result.get(19));
+    }
+
+    @Test
+    public void signedOutFallsBackToTheLocalLog() {
+        assertEquals(Collections.singletonList("a@l"), merged(
+                Collections.singletonList(video("a", 1, 5 * MIN, 20 * MIN)), Collections.<HistoryItem>emptyList(),
+                new HashMap<String, Mark>(), null));
     }
 }

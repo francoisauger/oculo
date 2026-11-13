@@ -18,10 +18,27 @@
          ring 4.5 px with a 5 px gap, Plex ring 4 px with a ~1 px gap -> 2dp ring, 2.5dp dark gap -->
     <dimen name="oculo_card_focus_ring_width">2dp</dimen>
     <dimen name="oculo_card_focus_ring_gap">2.5dp</dimen>
+    <!-- Card spacing (32.74-14): the focused card is zoomed 1.1x around its center (leanback ZOOM_FACTOR_SMALL) and
+         its ring sits (2.5dp gap + 2dp ring) x 1.1 = 4.95dp outside the tile, so it reaches 0.05 x width + 4.95dp
+         beyond the unzoomed card on each side: about 9.8 + 4.95 = 14.75dp for a 196dp video card, i.e. it touched
+         the next card with upstream's 15dp. 20dp leaves about 5dp (rows and grids, GridViewStyle / RowViewStyle,
+         also used by GridFragmentHelper's column count). Grids: the ring's top also reaches about 8.5 + 4.95dp
+         above the card (thumbnail + two text lines, ~170dp), so the vertical spacing goes to 20dp too. -->
+    <dimen name="grid_item_horizontal_spacing">20dp</dimen>
+    <dimen name="grid_item_vertical_spacing">20dp</dimen>
+    <!-- Keeps 4 video / channel cards per row at the default grid scale with the wider spacing
+         ((960dp - 10 %) / (194dp + 20dp) = 4.04 columns; 200dp would give 3.93 -> 3). Same column count as upstream
+         at every « Video grid scale » (0.5x to 1.5x); the cards are stretched to fill the row, about 196dp. -->
+    <dimen name="card_width">194dp</dimen>
+    <dimen name="channel_card_width">194dp</dimen>
+    <!-- Home rows: space above the cards, under the row title (leanback 16dp minus the title's space under its
+         baseline): the zoomed card's ring rises about 13.5dp (video) to 17dp (Shorts) above the card. -->
+    <dimen name="lb_browse_expanded_selected_row_top_padding">24dp</dimen>
     <!-- Settings tiles (32.74-11): smaller tiles so the 13 tiles fit on two rows of 7 at 1080p
-         (GridFragmentHelper: (960dp - 10 %) / (104dp + 15dp spacing) = 7.3 columns; upstream 128dp -> 6), icons
-         30dp (upstream 70dp) centered with a 20dp margin, two-line 14sp title (layout/settings_card.xml copy) -->
-    <dimen name="settings_card_width">104dp</dimen>
+         (GridFragmentHelper: (960dp - 10 %) / (102dp + 20dp spacing) = 7.08 columns; upstream 128dp -> 6; 104dp
+         until 32.74-13, with 15dp spacing), icons 30dp (upstream 70dp) centered with a 20dp margin, two-line 14sp
+         title (layout/settings_card.xml copy) -->
+    <dimen name="settings_card_width">102dp</dimen>
     <dimen name="settings_image_size">30dp</dimen>
     <dimen name="settings_image_padding">20dp</dimen>
     <dimen name="oculo_settings_title_size">14sp</dimen>
