@@ -12,6 +12,7 @@ import com.liskovsoft.smartyoutubetv2.common.prefs.common.DataSaverBase;
 public class OculoData extends DataSaverBase {
     private static final int INDEX_HOME_ROWS_FILTER = 0;
     private static final int INDEX_HOME_HIDE_WATCHED = 1;
+    private static final int INDEX_HOME_CONTINUE_WATCHING = 2;
     private static OculoData sInstance;
     private final Context mContext;
 
@@ -55,5 +56,16 @@ public class OculoData extends DataSaverBase {
 
     public void setHomeHideWatchedEnabled(boolean enabled) {
         setBoolean(INDEX_HOME_HIDE_WATCHED, enabled);
+    }
+
+    /**
+     * Show the « Continue watching » row (OculoContinueWatching) as Home's second row.
+     */
+    public boolean isHomeContinueWatchingEnabled() {
+        return getBoolean(INDEX_HOME_CONTINUE_WATCHING, mContext.getResources().getBoolean(R.bool.oculo_home_continue_watching_default));
+    }
+
+    public void setHomeContinueWatchingEnabled(boolean enabled) {
+        setBoolean(INDEX_HOME_CONTINUE_WATCHING, enabled);
     }
 }

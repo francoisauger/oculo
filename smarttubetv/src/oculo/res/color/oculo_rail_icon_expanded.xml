@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Oculo left rail icons, expanded rail (YouTube TV, yt-02): dark on the focused white item, white otherwise. -->
+<!-- Oculo left rail icons, expanded rail (YouTube TV, yt-02): dark on the focused white item, turquoise #22D3C8 for the
+     current section when it is not focused (32.74-11), white otherwise. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true" android:color="@color/oculo_white_focus_ink" />
+    <item android:state_activated="true" android:color="@color/oculo_turquoise" />
     <item android:color="@color/oculo_white_focus" />
 </selector>

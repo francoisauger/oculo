@@ -27,6 +27,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.errors.SignInError;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoStateService;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoStateService.State;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatching;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoData;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.VideoActionPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu.ChannelUploadsMenuPresenter;
@@ -140,6 +141,7 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
     public void onViewResumed() {
         super.onViewResumed();
 
+        OculoContinueWatching.instance(getContext()).onHomeResumed(getView(), getCurrentSection(), isHomeSection() && mLastUpdateTimeMs != -1); // Oculo
         refreshIfNeeded();
     }
 
@@ -755,6 +757,11 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
                                 mBrowseProcessor.process(videoGroup);
 
                                 continueGroupIfNeeded(videoGroup, false);
+
+                                // Oculo: « Continue watching » right after Home's first row
+                                if (groupIndex.get() == 0 && section.getId() == MediaGroup.TYPE_HOME && OculoContinueWatching.instance(getContext()).showRow(getView(), section)) {
+                                    groupIndex.incrementAndGet();
+                                }
                             }
                         },
                         error -> {

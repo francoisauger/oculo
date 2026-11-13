@@ -1,5 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.common.app.models.playback.controllers;
 
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatching;
 import com.liskovsoft.mediaserviceinterfaces.data.MediaItemMetadata;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.sharedutils.mylogger.Log;
@@ -538,6 +539,8 @@ public class VideoStateController extends BasePlayerController {
             getStateService().save(new State(video, durationMs, durationMs, getPlayer().getSpeed()));
             video.markFullyViewed();
         }
+
+        OculoContinueWatching.instance(getContext()).onPositionSaved(video); // Oculo: watch time for « Continue watching »
 
         Playlist.instance().sync(video);
     }

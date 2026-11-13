@@ -2,6 +2,9 @@
 <resources>
     <string name="oculo_home_rows_filter">Masquer les rangées de nouvelles et de sports</string>
     <string name="oculo_home_hide_watched">Masquer les vidéos déjà vues dans la première rangée</string>
+    <string name="oculo_home_continue_watching">Afficher Continuer à regarder</string>
+    <string name="oculo_continue_watching">Continuer à regarder</string>
+    <string name="oculo_continue_watching_remove">Ne plus proposer ici</string>
     <!-- Top bar mic button (OculoTopBar) -->
     <string name="oculo_voice_search">Recherche vocale</string>
 </resources>

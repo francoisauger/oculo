@@ -14,6 +14,7 @@ import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.SettingsItem;
 import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoUi;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 public class SettingsCardPresenter extends Presenter {
@@ -49,8 +50,11 @@ public class SettingsCardPresenter extends Presenter {
         ViewUtil.setTextScrollSpeed(textView, getCardTextScrollSpeed(context));
 
         container.setOnFocusChangeListener((v, hasFocus) -> {
-            int backgroundColor = hasFocus ? mSelectedBackgroundColor : mDefaultBackgroundColor;
-            int textColor = hasFocus ? mSelectedTextColor : mDefaultTextColor;
+            // Oculo: same focus ring as the video cards instead of the white fill
+            boolean fill = hasFocus && !OculoUi.hasCardFocusRing(context);
+            OculoUi.setCardFocusFrame(container, hasFocus);
+            int backgroundColor = fill ? mSelectedBackgroundColor : mDefaultBackgroundColor;
+            int textColor = fill ? mSelectedTextColor : mDefaultTextColor;
             
             textView.setBackgroundColor(backgroundColor);
             textView.setTextColor(textColor);

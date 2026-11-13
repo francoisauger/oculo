@@ -18,4 +18,11 @@
          ring 4.5 px with a 5 px gap, Plex ring 4 px with a ~1 px gap -> 2dp ring, 2.5dp dark gap -->
     <dimen name="oculo_card_focus_ring_width">2dp</dimen>
     <dimen name="oculo_card_focus_ring_gap">2.5dp</dimen>
+    <!-- Settings tiles (32.74-11): smaller tiles so the 13 tiles fit on two rows of 7 at 1080p
+         (GridFragmentHelper: (960dp - 10 %) / (104dp + 15dp spacing) = 7.3 columns; upstream 128dp -> 6), icons
+         30dp (upstream 70dp) centered with a 20dp margin, two-line 14sp title (layout/settings_card.xml copy) -->
+    <dimen name="settings_card_width">104dp</dimen>
+    <dimen name="settings_image_size">30dp</dimen>
+    <dimen name="settings_image_padding">20dp</dimen>
+    <dimen name="oculo_settings_title_size">14sp</dimen>
 </resources>

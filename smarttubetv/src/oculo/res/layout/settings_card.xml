@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (32.74-11): copy of the upstream settings_card.xml (SettingsCardPresenter) with a two-line title
+     (lines="2", 14sp) so that the smaller tiles keep « Auto Frame Rate », « Language/Country »… whole and all tiles
+     the same height. Sizes in values/dimens.xml (settings_card_width, settings_image_size, settings_image_padding).
+     Re-sync with upstream if it changes this layout. -->
+<!-- MOD: Enable single click touch mode (focusableInTouchMode=false) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:focusableInTouchMode="true"
+              android:focusable="true"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/settings_image"
+        android:layout_width="@dimen/settings_image_size"
+        android:layout_height="@dimen/settings_image_size"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/settings_image_padding"
+        android:visibility="invisible"
+        tools:ignore="ContentDescription"/>
+    <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.marqueetextviewcompat.MarqueeTextViewCompat
+        android:id="@+id/settings_title"
+        android:singleLine="false"
+        android:lines="2"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:textSize="@dimen/oculo_settings_title_size"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/settings_card_width"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/lb_basic_card_info_padding"
+        android:textAlignment="center"/>
+</LinearLayout>

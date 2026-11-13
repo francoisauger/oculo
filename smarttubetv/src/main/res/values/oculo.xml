@@ -20,10 +20,12 @@
     <!-- Opacity of unfocused section headers (IconHeaderItemPresenter; upstream: leanback's 50%) -->
     <item name="oculo_header_unselect_alpha" type="fraction">@fraction/lb_browse_header_unselect_alpha</item>
     <!-- Width kept on screen while collapsed: the content container starts there and the rows keep their
-         own 56dp padding, so the first card starts 78dp from the edge (YouTube TV: 156 px at 1080p).
-         Scrolled cards are clipped at oculo_rail_content_clip_start (just right of the icons). -->
-    <dimen name="oculo_rail_collapsed_width">22dp</dimen>
-    <dimen name="oculo_rail_content_clip_start">34dp</dimen>
+         own 56dp padding, so the first card starts 94dp from the edge. 32.74-11: icon column 20 % wider than
+         YouTube TV's 78dp (156 px at 1080p; François found it narrow), i.e. 22dp -> 38dp here, icons and avatar
+         recentered (+8dp, oculo_rail_list_padding_start). Scrolled cards are clipped at
+         oculo_rail_content_clip_start (container coordinates, just right of the icons; 34dp until 32.74-10). -->
+    <dimen name="oculo_rail_collapsed_width">38dp</dimen>
+    <dimen name="oculo_rail_content_clip_start">26dp</dimen>
     <!-- Geometry measured on YouTube TV (1080p screenshots in docs/mockups/youtube-ref/, 2 px = 1dp):
          avatar centered 50.75dp from the top (fixed, never scrolls); the section list is clipped 77.5dp from
          the top; Search is the list's first slot and scrolls away with the sections. Collapsed: Search centered
@@ -39,8 +41,9 @@
     <dimen name="oculo_rail_list_fade">22dp</dimen>
     <dimen name="oculo_rail_item_height">39dp</dimen>
     <dimen name="oculo_rail_item_spacing">0dp</dimen>
-    <!-- Icon centered 38.75dp from the edge, label starting 61dp from the edge (YouTube: 77.5 px, 123 px) -->
-    <dimen name="oculo_rail_list_padding_start">16dp</dimen>
+    <!-- Icon centered 46.75dp from the edge, label starting 69dp from the edge (32.74-11, centered in the wider
+         94dp column; YouTube: 77.5 px, 123 px, i.e. 38.75dp and 61dp with list padding 16dp) -->
+    <dimen name="oculo_rail_list_padding_start">24dp</dimen>
     <dimen name="oculo_rail_item_padding_start">13dp</dimen>
     <dimen name="oculo_rail_list_padding_end">24dp</dimen>
     <dimen name="oculo_rail_icon_size">20dp</dimen>

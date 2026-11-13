@@ -6,6 +6,8 @@
     <integer name="oculo_home_refresh_minutes">180</integer>
     <bool name="oculo_home_rows_filter_default">true</bool>
     <bool name="oculo_home_hide_watched_default">true</bool>
+    <!-- Home's second row « Continue watching » (OculoContinueWatching); upstream has no such row -->
+    <bool name="oculo_home_continue_watching_default">false</bool>
     <!-- About: "Install bridge" button (ATV/Amazon voice-search bridge) -->
     <bool name="oculo_show_install_bridge">true</bool>
 
@@ -23,6 +25,9 @@
 
     <string name="oculo_home_rows_filter">Hide news and sports rows</string>
     <string name="oculo_home_hide_watched">Hide watched videos in the first row</string>
+    <string name="oculo_home_continue_watching">Show Continue watching</string>
+    <string name="oculo_continue_watching">Continue watching</string>
+    <string name="oculo_continue_watching_remove">Remove from Continue watching</string>
     <!-- Top bar mic button (OculoTopBar) -->
     <string name="oculo_voice_search">Search by voice</string>
 </resources>

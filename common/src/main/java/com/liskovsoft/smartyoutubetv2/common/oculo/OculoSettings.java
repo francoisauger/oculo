@@ -26,6 +26,10 @@ public class OculoSettings {
                 option -> data.setHomeHideWatchedEnabled(option.isSelected()),
                 data.isHomeHideWatchedEnabled()));
 
+        options.add(UiOptionItem.from(context.getString(R.string.oculo_home_continue_watching),
+                option -> data.setHomeContinueWatchingEnabled(option.isSelected()),
+                data.isHomeContinueWatchingEnabled()));
+
         settingsPresenter.appendCheckedCategory(context.getString(R.string.header_home), options);
     }
 }

@@ -87,6 +87,15 @@ public final class OculoUi {
      * bar move inside the ring. No-op when the color is transparent (upstream flavors) or below API 23 (no View
      * foreground).
      */
+    /**
+     * True when the card focus ring is on (oculo flavor, API 23+): presenters then skip their focus fill.
+     */
+    public static boolean hasCardFocusRing(Context context) {
+        return context != null && VERSION.SDK_INT >= 23
+                && ContextCompat.getColor(context, R.color.oculo_card_focus_ring) != 0
+                && context.getResources().getDimensionPixelSize(R.dimen.oculo_card_focus_ring_width) > 0;
+    }
+
     public static void setCardFocusFrame(View wrapper, boolean focused) {
         if (wrapper == null || VERSION.SDK_INT < 23) {
             return;

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Oculo left rail icons, collapsed rail (measured on YouTube TV, docs/mockups/youtube-ref/yt-01-launch.png): dark on
-     the focused white item, white #F1F1F1 for the current section, grey #B8B8B8 otherwise. -->
+<!-- Oculo left rail icons, collapsed rail: dark on the focused white item (YouTube TV, docs/mockups/youtube-ref/yt-01-launch.png),
+     turquoise #22D3C8 for the current section (docs/mockups/couleur-secondaire.html, `.side .ic.cur`; white #F1F1F1 from
+     32.74-7 to 32.74-10), grey #B8B8B8 otherwise. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true" android:color="@color/oculo_white_focus_ink" />
-    <item android:state_activated="true" android:color="@color/oculo_white_focus" />
+    <item android:state_activated="true" android:color="@color/oculo_turquoise" />
     <item android:color="#B8B8B8" />
 </selector>
