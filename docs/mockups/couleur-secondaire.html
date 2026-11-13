@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oculo · couleur secondaire</title>
+<style>
+  @font-face { font-family: "Nunito Oculo"; font-weight: 800; src: url(logos-v3/fonts/nunito-latin-800-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Nunito Oculo"; font-weight: 700; src: url(logos-v3/fonts/nunito-latin-700-normal.woff2) format("woff2"); }
+  :root {
+    color-scheme: dark;
+    --bg: #0e0e12; --surface: #17171d; --surface-2: #1f1f27; --line: rgba(255,255,255,.08);
+    --text: #f2f2f6; --muted: #9a9aa8; --faint: #6f6f7c;
+    --ok: #6fe3b4; --mid: #f2c46b; --bad: #ff8a7a;
+    --round: "Nunito Oculo", ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 15px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 56px 16px 80px; }
+  header h1 { font: 800 44px/1.05 var(--round); margin: 0 0 10px; }
+  header p { margin: 0 0 10px; color: var(--muted); max-width: 800px; }
+  header p b { color: var(--text); font-weight: 600; }
+  @media (max-width: 600px) { header h1 { font-size: 34px; } }
+
+  h2 { font: 800 28px/1.1 var(--round); margin: 0 0 6px; }
+  h2 .tag { display: inline-block; font: 700 13px/1 var(--round); color: #0b333a; background: #22d3c8; border-radius: 8px; padding: 6px 8px; margin-right: 10px; vertical-align: 5px; }
+  h3 { font: 700 17px/1.2 var(--round); margin: 22px 0 8px; }
+  .why { margin: 0 0 18px; color: var(--muted); max-width: 800px; }
+  .label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  section { margin-top: 36px; padding: 28px; border-radius: 28px; background: var(--surface); border: 1px solid var(--line); }
+  @media (max-width: 600px) { section { padding: 18px; border-radius: 20px; } }
+
+  /* ---------- Intro: who does what ---------- */
+  .roles2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
+  @media (max-width: 760px) { .roles2 { grid-template-columns: 1fr; } }
+  .rolebox { background: var(--surface-2); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; }
+  .rolebox h3 { margin: 0 0 8px; display: flex; align-items: center; gap: 10px; }
+  .rolebox h3 i { width: 22px; height: 22px; border-radius: 7px; flex: none; }
+  .rolebox ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+  .rolebox li { margin: 2px 0; }
+  .rolebox li b { color: var(--text); font-weight: 600; }
+
+  .today { display: grid; grid-template-columns: auto 1fr; gap: 14px 20px; align-items: center; margin-top: 18px; padding: 16px 18px; border-radius: 18px; background: #101014; border: 1px solid var(--line); }
+  @media (max-width: 600px) { .today { grid-template-columns: 1fr; } }
+  .today p { margin: 0; color: var(--muted); font-size: 14px; }
+  .today b { color: var(--text); font-weight: 600; }
+  .today .demo { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .pill-now { font: 800 11px/1 var(--round); letter-spacing: .05em; padding: 5px 7px; border-radius: 5px; }
+  .mini-bar { position: relative; width: 220px; height: 8px; border-radius: 99px; background: rgba(255,255,255,.25); }
+  .mini-bar i { position: absolute; top: 0; bottom: 0; border-radius: 99px; }
+
+  /* ---------- Quick compare ---------- */
+  .compare { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 26px; }
+  @media (max-width: 980px) { .compare { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .compare { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .cmp { display: block; text-decoration: none; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; transition: border-color .15s; }
+  .cmp:hover { border-color: rgba(255,255,255,.22); }
+  .cmp.pick { border-color: var(--s); box-shadow: 0 0 0 1px var(--s) inset; }
+  .cmp .chips { display: flex; height: 46px; border-radius: 10px; overflow: hidden; }
+  .cmp .chips i { flex: 1; }
+  .cmp .chips i.teal { flex: 1.4; background: linear-gradient(135deg, #2FE3F0, #22D3C8 55%, #78F5BE); }
+  .cmp b { display: block; font: 800 16px/1.2 var(--round); margin: 10px 0 2px; }
+  .cmp small { color: var(--muted); font-size: 12px; display: block; }
+  .cmp .live { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font: 800 10.5px/1 var(--round); letter-spacing: .05em; padding: 5px 7px; border-radius: 5px; background: var(--live-bg); color: var(--live-fg); }
+  .cmp .live::before, .tv .live::before { content: ""; width: .55em; height: .55em; border-radius: 50%; background: currentColor; }
+  .cmp .mini-bar { width: 100%; margin-top: 12px; height: 6px; }
+  .pickmark { float: right; font: 700 11px/1 var(--round); color: var(--live-fg); background: var(--live-bg); border-radius: 99px; padding: 4px 7px; }
+
+  /* ---------- Option section ---------- */
+  .opt-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 14px; }
+  .scale3 { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sw { width: 112px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #101014; }
+  .sw .c { height: 44px; }
+  @media (max-width: 600px) { .sw { width: calc((100% - 16px) / 3); } .sw .m { font-size: 10.5px; } }
+  .sw .m { padding: 6px 8px 7px; font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+  .sw .m b { display: block; color: var(--text); font-weight: 600; font-size: 12px; }
+  .sw code { font: 11.5px ui-monospace, Menlo, monospace; color: var(--text); }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); padding: 3px; }
+  .seg button { appearance: none; border: 0; background: transparent; color: var(--muted); font: 600 13px/1 inherit; font-family: inherit; padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: #22d3c8; color: #0b333a; }
+  .ctl-label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+
+  /* ---------- TV screen, 1920 x 1080 scaled: 1cqw = 19.2 px on the TV ---------- */
+  .tv { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; container-type: inline-size; margin-top: 16px; border: 1px solid rgba(255,255,255,.06);
+        background: radial-gradient(60% 70% at 18% 0%, rgba(50,230,220,.20), transparent 70%), radial-gradient(50% 60% at 100% 100%, rgba(50,230,220,.06), transparent 70%), #131313; color: #fff; font-family: Roboto, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  body.far .tv { filter: blur(.8px); }
+  body.far .tvwrap { max-width: 560px; }
+
+  .tv .side { position: absolute; left: 0; top: 0; bottom: 0; width: 7.2cqw; display: flex; flex-direction: column; align-items: center; padding-top: 2.6cqw; gap: 2.1cqw; }
+  .tv .side .logo { width: 3.4cqw; margin-bottom: 1.2cqw; }
+  .tv .side .logo svg { width: 100%; height: auto; display: block; }
+  .tv .side .ic { width: 4cqw; height: 4cqw; display: grid; place-items: center; border-radius: 50%; }
+  .tv .side .ic svg { width: 2.3cqw; height: 2.3cqw; fill: rgba(255,255,255,.62); }
+  .tv .side .ic.cur svg { fill: #22D3C8; }
+  .tv .side .ic.dotted { position: relative; }
+  .tv .side .ic.dotted::after { content: ""; position: absolute; right: .65cqw; top: .7cqw; width: .75cqw; height: .75cqw; border-radius: 50%; background: var(--dot); box-shadow: 0 0 0 .2cqw #131313; }
+
+  .tv .top { position: absolute; left: 9.2cqw; right: 3.4cqw; top: 2.6cqw; display: flex; align-items: center; justify-content: space-between; }
+  .tv .top .sect { font-size: 2.3cqw; font-weight: 500; letter-spacing: .01em; }
+  .tv .top .clock { font-size: 1.7cqw; color: rgba(255,255,255,.75); }
+
+  .tv .toast { position: absolute; right: 3.4cqw; bottom: 3cqw; width: 29cqw; display: flex; align-items: center; gap: 1.1cqw; padding: 1cqw 1.3cqw 1cqw 1.1cqw; border-radius: .9cqw; background: #282828; box-shadow: 0 .6cqw 2cqw rgba(0,0,0,.5); z-index: 5; border-left: .45cqw solid var(--toast-acc); }
+  .tv .toast .av { width: 3.2cqw; height: 3.2cqw; border-radius: 50%; flex: none; background: linear-gradient(135deg, #3d5566, #8a6d55); }
+  .tv .toast .t1 { font-size: 1.15cqw; color: var(--toast-acc); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+  .tv .toast .t2 { font-size: 1.4cqw; line-height: 1.25; color: #fff; }
+
+  .tv .rows { position: absolute; left: 9.2cqw; right: 0; top: 7.8cqw; }
+  .tv .rtitle { font-size: 1.75cqw; color: rgba(255,255,255,.85); margin: 0 0 1cqw; font-weight: 500; }
+  .tv .row { display: flex; gap: 1.5cqw; margin-bottom: 2.4cqw; }
+  .tv .card { flex: none; width: 19.5cqw; border-radius: .5cqw; overflow: visible; position: relative; }
+  .tv .thumb { position: relative; aspect-ratio: 16 / 9; border-radius: .5cqw; overflow: hidden; background: #222; }
+  .tv .thumb .art { position: absolute; inset: 0; }
+  .tv .dur { position: absolute; right: .6cqw; bottom: .9cqw; font-size: 1.05cqw; font-weight: 500; background: rgba(0,0,0,.8); padding: .1cqw .45cqw; border-radius: .3cqw; }
+  .tv .watched { position: absolute; left: 0; right: 0; bottom: 0; height: .4cqw; background: rgba(0,0,0,.55); }
+  .tv .watched i { position: absolute; left: 0; top: 0; bottom: 0; background: #0FA3A0; }
+  .tv .live { position: absolute; left: .6cqw; top: .6cqw; display: inline-flex; align-items: center; gap: .45cqw; font: 800 1.05cqw/1 Roboto, -apple-system, sans-serif; letter-spacing: .06em; padding: .45cqw .6cqw; border-radius: .35cqw; background: var(--live-bg); color: var(--live-fg); box-shadow: var(--live-ring, none); }
+  .tv .new { position: absolute; left: .6cqw; top: .6cqw; font: 700 1cqw/1 Roboto, -apple-system, sans-serif; letter-spacing: .06em; padding: .4cqw .55cqw; border-radius: .35cqw; background: var(--new-bg); color: var(--new-fg); box-shadow: var(--new-ring, none); }
+  .tv .info { padding: .8cqw .9cqw 1cqw; border-radius: 0 0 .5cqw .5cqw; }
+  .tv .info .ti { font-size: 1.45cqw; line-height: 1.25; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 3.62cqw; }
+  .tv .info .me { font-size: 1.15cqw; color: rgba(255,255,255,.6); margin-top: .35cqw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tv .info .me .viewers { color: var(--live-text); font-weight: 600; }
+  .tv .card.focus { transform: scale(1.1); transform-origin: 50% 40%; z-index: 3; }
+  .tv .card.focus .thumb { border-radius: .5cqw .5cqw 0 0; }
+  .tv .card.focus .info { background: #22D3C8; }
+  .tv .card.focus .info .ti { color: #0B333A; }
+  .tv .card.focus .info .me { color: rgba(11,51,58,.8); }
+  .tv .card.focus .info .me .viewers { color: #0B333A; }
+  .tv .card.focus { box-shadow: 0 1cqw 2.4cqw rgba(0,0,0,.55); border-radius: .5cqw; }
+
+  /* ---------- Detail panels under the screen ---------- */
+  .details { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 12px; margin-top: 14px; }
+  @media (max-width: 900px) { .details { grid-template-columns: 1fr; } }
+  .panel { background: #101014; border: 1px solid var(--line); border-radius: 16px; padding: 14px; min-width: 0; }
+  .panel .stage { border-radius: 10px; background: #000; padding: 16px 16px 12px; position: relative; overflow: hidden; }
+  .panel.player .stage { background: radial-gradient(50% 80% at 30% 20%, rgba(80,110,150,.45), transparent 70%), radial-gradient(40% 60% at 80% 70%, rgba(160,110,70,.35), transparent 70%), #0b0d10; }
+  .panel.player .stage::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.45); }
+  .panel .stage > * { position: relative; }
+  .seek { position: relative; height: 10px; border-radius: 99px; background: rgba(255,255,255,.25); margin: 34px 0 10px; }
+  .seek .buf { position: absolute; left: 0; top: 0; bottom: 0; width: 62%; border-radius: 99px; background: #E0E6E5; }
+  .seek .played { position: absolute; left: 0; top: 0; bottom: 0; width: 34%; border-radius: 99px; background: #0FA3A0; }
+  .seek .segm { position: absolute; top: 0; bottom: 0; }
+  .seek .knob { position: absolute; left: 34%; top: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border-radius: 50%; background: #fff; }
+  .seek-meta { display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,.7); }
+  .panel .stage > .skip { position: absolute; right: 12px; top: 10px; display: flex; align-items: center; gap: 7px; font-size: 12px; background: rgba(20,20,20,.88); border-radius: 8px; padding: 5px 9px 5px 6px; }
+  .skip i { width: 4px; height: 18px; border-radius: 2px; background: var(--sb-sponsor); }
+  .key { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+  .key span { display: inline-flex; align-items: center; gap: 6px; }
+  .key i { width: 14px; height: 8px; border-radius: 3px; display: inline-block; }
+  .cap { font-size: 12px; color: var(--muted); margin-top: 9px; }
+
+  .code-stage { text-align: center; padding: 18px 10px 16px !important; background: radial-gradient(70% 90% at 50% 0%, rgba(50,230,220,.14), transparent 70%), #131313 !important; }
+  .code-stage .l1 { font-size: 12px; color: rgba(255,255,255,.7); }
+  .code-stage .l1 b { color: #fff; font-weight: 600; }
+  .code-stage .code { font: 800 30px/1.1 var(--round); letter-spacing: .14em; color: var(--code); margin: 10px 0 6px; white-space: nowrap; }
+  .code-stage .l2 { font-size: 11px; color: rgba(255,255,255,.5); }
+
+  .chan-stage { display: flex; align-items: center; gap: 12px; padding: 16px !important; background: #131313 !important; flex-wrap: wrap; }
+  .chan-stage .av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #5a7a52, #c9a86a); flex: none; }
+  .chan-stage .nm { flex: 1; min-width: 90px; font-size: 13px; }
+  .chan-stage .nm small { display: block; color: rgba(255,255,255,.55); font-size: 11.5px; }
+  .chan-btns { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .sub { font: 700 12.5px/1 Roboto, -apple-system, sans-serif; padding: 9px 14px; border-radius: 99px; }
+  .sub.go { background: var(--sub-bg); color: var(--sub-fg); }
+  .sub.done { background: #282828; color: rgba(255,255,255,.8); }
+  .sub.go.focus { box-shadow: 0 0 0 3px #131313, 0 0 0 6px #22D3C8; }
+
+  .contrasts { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2px 20px; font-size: 12.5px; color: var(--faint); }
+  .contrasts li { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed rgba(255,255,255,.05); padding: 4px 0; }
+  .contrasts li span:first-child { display: flex; align-items: center; gap: 7px; }
+  .contrasts li i { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+  .contrasts .v { font-variant-numeric: tabular-nums; font-family: ui-monospace, Menlo, monospace; white-space: nowrap; }
+  .v.good { color: var(--ok); } .v.mid { color: var(--mid); } .v.bad { color: var(--bad); }
+  .note { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+
+  /* ---------- Recommendation ---------- */
+  .reco { border-color: color-mix(in srgb, var(--s) 55%, transparent); background: linear-gradient(135deg, color-mix(in srgb, var(--s) 10%, var(--surface)), var(--surface) 60%); }
+  .reco p { margin: 0 0 10px; max-width: 820px; }
+  .reco .big { display: flex; align-items: center; gap: 14px; margin: 6px 0 16px; flex-wrap: wrap; }
+  .reco .big .duo { display: flex; border-radius: 14px; overflow: hidden; height: 56px; width: 180px; }
+  .reco .big .duo i { flex: 1; }
+  .reco .big b { font: 800 24px/1.1 var(--round); }
+  .reco ul { margin: 0; padding-left: 18px; color: var(--muted); max-width: 820px; }
+  .reco li { margin: 3px 0; }
+
+  footer { color: var(--faint); font-size: 12.5px; margin-top: 28px; max-width: 820px; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gFrameTeal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#145963"/><stop offset=".5" stop-color="#0f4a52"/><stop offset="1" stop-color="#0b3a41"/></linearGradient>
+    <linearGradient id="gScreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2fe3f0"/><stop offset=".55" stop-color="#22d3c8"/><stop offset="1" stop-color="#78f5be"/></linearGradient>
+    <linearGradient id="gGloss" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+    <clipPath id="clipScreen"><rect x="150" y="118" width="560" height="489" rx="145"/></clipPath>
+  </defs>
+  <symbol id="logo" viewBox="0 0 860 725"><rect fill="url(#gFrameTeal)" x="0" y="0" width="860" height="725" rx="275"/><rect fill="url(#gScreen)" x="150" y="118" width="560" height="489" rx="145"/><path fill="url(#gGloss)" clip-path="url(#clipScreen)" d="M150 118 H710 V166.9 Q458 264.7 150 499.42 Z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+  <symbol id="i-subs" viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4-6-3.27v6.53L16 16z"/></symbol>
+  <symbol id="i-hist" viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></symbol>
+  <symbol id="i-set" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header>
+    <h1>Une couleur secondaire ?</h1>
+    <p>Aujourd’hui, Oculo n’a qu’une famille de couleurs : la sarcelle du logo, du cadre foncé jusqu’au cyan et à la menthe. C’est cohérent, mais tout finit par se ressembler : la carte sélectionnée, la barre de lecture, les pastilles et les marques SponsorBlock parlent toutes la même couleur, et l’œil ne sait plus ce qui est <b>la sélection</b> et ce qui est <b>une info</b>.</p>
+    <p>L’idée : garder la sarcelle comme identité, et ajouter une deuxième couleur, rare, pour les petits signaux ponctuels. Voici quatre directions, chacune montrée sur le même écran d’accueil, puis ma recommandation, et l’option de ne rien ajouter.</p>
+
+    <div class="roles2">
+      <div class="rolebox">
+        <h3><i style="background:linear-gradient(135deg,#2FE3F0,#22D3C8 55%,#78F5BE)"></i>La sarcelle reste partout où elle est</h3>
+        <ul>
+          <li><b>Le logo</b> et l’icône de l’app</li>
+          <li><b>La sélection</b> : carte sélectionnée, anneau autour du bouton choisi</li>
+          <li><b>La barre de lecture</b> (partie lue) et la petite barre « déjà vu » des vignettes</li>
+          <li><b>L’animation de chargement</b> (Balayage)</li>
+          <li>Les interrupteurs activés et la rubrique en cours dans le menu</li>
+        </ul>
+      </div>
+      <div class="rolebox">
+        <h3><i style="background:linear-gradient(135deg,#FFC896,#FFA25C 50%,#B9A0FF 50%,#DACBFF)"></i>La secondaire, seulement pour les signaux</h3>
+        <ul>
+          <li><b>EN DIRECT</b> sur les vignettes et dans le lecteur</li>
+          <li><b>NOUVEAU</b> sur les vidéos pas encore vues, et la pastille du menu Abonnements</li>
+          <li><b>Le code de connexion</b> à taper sur le téléphone</li>
+          <li><b>Les segments SponsorBlock</b> sur la barre de lecture</li>
+          <li>Le liseré des <b>notifications</b>, et le bouton <b>S’abonner</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="today">
+      <div class="demo">
+        <span class="pill-now" style="background:#0B7F7D;color:#fff">EN DIRECT</span>
+        <div class="mini-bar"><i style="left:0;width:34%;background:#0FA3A0"></i><i style="left:0;width:5%;background:#00FFFF"></i><i style="left:40%;width:8%;background:#00FF00"></i><i style="left:80%;width:5%;background:#FFFF00"></i></div>
+      </div>
+      <p><b>Aujourd’hui</b> : la pastille EN DIRECT, rouge foncé dans SmartTube, est devenue sarcelle dans Oculo, la même couleur que la sélection. Et SponsorBlock garde ses couleurs fluo (cyan pour l’intro, vert pour les commandites, jaune pour l’autopromo) : le cyan de l’intro se confond avec la partie lue en sarcelle.</p>
+    </div>
+  </header>
+
+  <nav class="compare" id="compare"></nav>
+
+  <div class="toolbar">
+    <span class="ctl-label">Écrans</span>
+    <span class="seg" id="dist"><button aria-pressed="true" data-v="near">Vue rapprochée</button><button aria-pressed="false" data-v="far">Comme à 3 m</button></span>
+  </div>
+
+  <div id="options"></div>
+
+  <section class="reco" id="reco"></section>
+
+  <div id="zero-slot"></div>
+
+  <footer>Contrastes calculés selon WCAG (luminance relative) sur le fond de l’app, #131313. Repères : 4,5:1 pour du texte, 3:1 pour une pastille, une icône ou une barre. Entre la sarcelle et la secondaire, ce n’est pas le contraste de clarté qui compte (les deux sont lumineuses) mais l’écart de teinte, qui est grand pour les quatre options. La catégorie SponsorBlock « musique hors sujet » est orange par défaut : avec l’abricot, elle passerait au gris, comme les catégories rares.</footer>
+</div>
+
+<script>
+const OPTIONS = [
+  {
+    id: 'abricot', n: 'A', name: 'Abricot', tag: 'le complément chaud',
+    why: 'L’orange est la couleur opposée de la sarcelle sur le cercle des couleurs : le contraste de teinte est maximal, et ça reste doux, loin du rouge de YouTube.',
+    light: '#FFC896', main: '#FFA25C', dark: '#B0541A', ink: '#3A1A06',
+  },
+  {
+    id: 'or', n: 'B', name: 'Or doux', tag: 'le plus lumineux',
+    why: 'Un or chaud, comme une lumière de salon. Très lisible de loin, mais proche du jaune : il peut faire « alerte » et voisine avec la menthe du logo.',
+    light: '#F8DE9C', main: '#F2C35B', dark: '#946A12', ink: '#2E2006',
+  },
+  {
+    id: 'lilas', n: 'C', name: 'Lilas', tag: 'le contraste froid',
+    why: 'Un violet clair qui reste dans les tons froids du logo. Duo sarcelle et lilas très calme et élégant le soir, mais EN DIRECT y paraît moins urgent.',
+    light: '#DACBFF', main: '#B9A0FF', dark: '#6E52D6', ink: '#1E1240',
+  },
+  {
+    id: 'orchidee', n: 'D', name: 'Orchidée', tag: 'le plus audacieux',
+    why: 'Un rose vif, le duo classique avec le turquoise (néon, années 80). Beaucoup de personnalité ; à garder loin du corail pour ne pas rappeler le rouge YouTube.',
+    light: '#FFB3DC', main: '#FF7CC4', dark: '#B83A82', ink: '#3A0B25',
+  },
+];
+const ZERO = {
+  id: 'zero', n: '0', name: 'Option zéro : sarcelle seule', tag: 'ne rien ajouter', zero: true,
+  why: 'On garde une seule famille. Pour que la sélection reste la seule chose en sarcelle, les signaux passent en blanc et en gris.',
+  light: '#E4E4E4', main: '#F2F2F2', dark: '#7A7A7A', ink: '#131313',
+};
+const PICK = 'abricot';
+
+/* ---------- contrast ---------- */
+const hx = s => { s = s.replace('#', ''); return [0, 2, 4].map(i => parseInt(s.slice(i, i + 2), 16)); };
+const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+const lum = s => { const [r, g, b] = hx(s); return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); };
+const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+const fmt = r => r.toFixed(1).replace('.', ',') + ':1';
+const BG = '#131313';
+
+function roleVars(o) {
+  if (o.zero) return {
+    '--s': '#22D3C8', '--live-bg': '#F2F2F2', '--live-fg': '#131313', '--live-text': '#FFFFFF',
+    '--new-bg': 'rgba(0,0,0,.78)', '--new-fg': '#FFFFFF', '--new-ring': 'inset 0 0 0 .12cqw rgba(255,255,255,.55)',
+    '--dot': '#FFFFFF', '--toast-acc': '#22D3C8', '--code': '#FFFFFF', '--sub-bg': '#F2F2F2', '--sub-fg': '#131313',
+    '--sb-sponsor': 'repeating-linear-gradient(135deg, #FFFFFF 0 3px, #6a6a6a 3px 6px)', '--sb-intro': '#9A9A9A', '--sb-promo': '#5E5E5E',
+  };
+  return {
+    '--s': o.main, '--live-bg': o.main, '--live-fg': o.ink, '--live-text': o.main,
+    '--new-bg': 'rgba(0,0,0,.78)', '--new-fg': o.light, '--new-ring': 'none',
+    '--dot': o.main, '--toast-acc': o.main, '--code': o.main, '--sub-bg': o.main, '--sub-fg': o.ink,
+    '--sb-sponsor': o.main, '--sb-intro': o.light, '--sb-promo': o.dark,
+  };
+}
+const applyVars = (el, o) => Object.entries(roleVars(o)).forEach(([k, v]) => el.style.setProperty(k, v));
+
+/* ---------- thumbnails ---------- */
+const ART = [
+  'linear-gradient(#24364d 0%, #4f6f8f 42%, #c99b72 58%, #3b4a52 59%, #1c262b 100%)',
+  'radial-gradient(60% 70% at 70% 40%, #e0a36a, transparent 70%), linear-gradient(135deg, #3a2418, #7a4a2a 60%, #24150e)',
+  'radial-gradient(40% 50% at 30% 35%, #ffe8b0, transparent 70%), linear-gradient(160deg, #1d2d4a, #34507a 50%, #0d1626)',
+  'linear-gradient(180deg, #a9c7dc 0%, #e8eef2 45%, #ffffff 55%, #9aa9b2 56%, #5d6c74 100%)',
+  'radial-gradient(50% 60% at 50% 55%, #6fd0a0, transparent 70%), linear-gradient(135deg, #0f2a22, #275a47 60%, #0a1a15)',
+  'radial-gradient(45% 55% at 65% 45%, #d65a8a, transparent 70%), radial-gradient(40% 50% at 30% 60%, #4a6ad6, transparent 70%), #120d1e',
+  'linear-gradient(120deg, #5a3d2b, #b88a5a 45%, #e6d2a6 60%, #6b5038)',
+  'radial-gradient(60% 60% at 40% 40%, #8ab4c8, transparent 70%), linear-gradient(135deg, #1c2a33, #3c5868)',
+  'linear-gradient(200deg, #2b1d3f, #6b4a8a 50%, #e2a86a)',
+  'radial-gradient(50% 50% at 55% 50%, #f2f2f2, transparent 60%), linear-gradient(135deg, #2a2a2a, #575757)',
+];
+const ROW1 = [
+  { art: 1, live: true, t: 'Jazz du dimanche en direct du Café Django', m: '<span class="viewers">1,4 k spectateurs</span> · Café Django' },
+  { art: 0, focus: true, w: 38, d: '48:10', t: 'Les fjords de Norvège en 4K, voyage lent', m: 'Nordic Slow TV · 1,2 M de vues' },
+  { art: 2, isnew: true, d: '12:04', t: 'Montréal sous la neige, balade de nuit', m: 'Ville en marche · il y a 3 h' },
+  { art: 4, w: 100, d: '22:31', t: 'Comment marche un moteur électrique', m: 'Atelier Volt · 340 k vues' },
+  { art: 6, isnew: true, d: '17:45', t: 'Pain au levain en 24 heures, sans pétrin', m: 'La Mie Lente · il y a 1 jour' },
+];
+const ROW2 = [
+  { art: 3, d: '9:58', t: 'Ski de fond au Mont-Tremblant', m: 'Plein Nord · 88 k vues' },
+  { art: 5, live: true, t: 'Synthwave en continu, radio 24 h', m: '<span class="viewers">6,2 k spectateurs</span> · Néon FM' },
+  { art: 7, w: 64, d: '31:20', t: 'Le Saint-Laurent vu du ciel', m: 'Drone Québec · 510 k vues' },
+  { art: 8, d: '14:12', t: 'Coucher de soleil sur la Gaspésie', m: 'Route 132 · 72 k vues' },
+  { art: 9, d: '6:40', t: 'Réparer un vieux tourne-disque', m: 'Analogique · 41 k vues' },
+];
+function card(c) {
+  return `<div class="card${c.focus ? ' focus' : ''}">
+    <div class="thumb"><div class="art" style="background:${ART[c.art]}"></div>
+      ${c.live ? '<span class="live">EN DIRECT</span>' : ''}${c.isnew ? '<span class="new">NOUVEAU</span>' : ''}
+      ${c.d ? `<span class="dur">${c.d}</span>` : ''}${c.w ? `<div class="watched"><i style="width:${c.w}%"></i></div>` : ''}
+    </div>
+    <div class="info"><div class="ti">${c.t}</div><div class="me">${c.m}</div></div>
+  </div>`;
+}
+const ic = (id, cls = '') => `<div class="ic ${cls}"><svg><use href="#i-${id}"/></svg></div>`;
+function tv() {
+  return `<div class="tvwrap"><div class="tv">
+    <div class="side"><div class="logo"><svg viewBox="0 0 860 725"><use href="#logo"/></svg></div>
+      ${ic('search')}${ic('home', 'cur')}${ic('subs', 'dotted')}${ic('hist')}${ic('music')}${ic('set')}</div>
+    <div class="top"><div class="sect">Accueil</div><div class="clock">20:14</div></div>
+    <div class="toast"><div class="av"></div><div><div class="t1">Nouvelle vidéo</div><div class="t2">Nordic Slow TV : Les îles Lofoten au lever du jour</div></div></div>
+    <div class="rows">
+      <div class="rtitle">Abonnements</div><div class="row">${ROW1.map(card).join('')}</div>
+      <div class="rtitle">Pour toi</div><div class="row">${ROW2.map(card).join('')}</div>
+    </div>
+  </div></div>`;
+}
+function details(o) {
+  const segs = `<span class="segm" style="left:0;width:5%;background:var(--sb-intro)"></span>
+    <span class="segm" style="left:41%;width:9%;background:var(--sb-sponsor)"></span>
+    <span class="segm" style="left:79%;width:6%;background:var(--sb-promo)"></span>
+    <span class="segm" style="left:95%;width:5%;background:var(--sb-intro);border-radius:0 99px 99px 0"></span>`;
+  return `<div class="details">
+    <div class="panel player"><div class="label">Barre de lecture et SponsorBlock</div>
+      <div class="stage">
+        <div class="skip"><i></i>Commandite passée</div>
+        <div class="seek"><div class="buf"></div><div class="played"></div>${segs}<div class="knob"></div></div>
+        <div class="seek-meta"><span>16:22</span><span>48:10</span></div>
+      </div>
+      <div class="key"><span><i style="background:#0FA3A0"></i>lu (sarcelle)</span><span><i style="background:var(--sb-intro)"></i>intro et fin</span><span><i style="background:var(--sb-sponsor)"></i>commandite</span><span><i style="background:var(--sb-promo)"></i>autopromo</span></div>
+    </div>
+    <div class="panel"><div class="label">Code de connexion</div>
+      <div class="stage code-stage"><div class="l1">Sur ton téléphone, va à <b>youtube.com/activate</b></div><div class="code">KQX-7TP</div><div class="l2">Le code change dans 4 min</div></div>
+      <div class="cap">Le code est la seule chose à lire de loin : il prend la secondaire.</div>
+    </div>
+    <div class="panel"><div class="label">Chaîne</div>
+      <div class="stage chan-stage"><div class="av"></div><div class="nm">Plein Nord<small>212 k abonnés</small></div></div>
+      <div class="chan-btns"><span class="sub go">S’abonner</span><span class="sub go focus">S’abonner</span><span class="sub done">Abonné</span></div>
+      <div class="cap">Normal, sélectionné (anneau sarcelle), déjà abonné.</div>
+    </div>
+  </div>`;
+}
+function contrasts(o) {
+  const rows = o.zero ? [
+    ['EN DIRECT : texte foncé sur pastille blanche', o.main, o.ink, o.main],
+    ['NOUVEAU : texte blanc sur fond noir', '#FFFFFF', '#000000', '#FFFFFF'],
+    ['Code de connexion blanc sur le fond', '#FFFFFF', BG, '#FFFFFF'],
+    ['Segment gris clair sur le fond', '#9A9A9A', BG, '#9A9A9A'],
+  ] : [
+    ['Teinte principale en texte sur le fond', o.main, BG, o.main],
+    ['Variante claire en texte sur le fond', o.light, BG, o.light],
+    ['Texte encre sur la pastille EN DIRECT', o.ink, o.main, o.main],
+    ['Texte blanc sur la variante foncée', '#FFFFFF', o.dark, o.dark],
+    ['Variante foncée sur le fond (barre seulement)', o.dark, BG, o.dark],
+  ];
+  return `<ul class="contrasts">${rows.map(([l, a, b, chip]) => {
+    const r = ratio(a, b); const g = r >= 4.5 ? 'good' : r >= 3 ? 'mid' : 'bad';
+    const t = r >= 4.5 ? 'texte OK' : r >= 3 ? 'barre, icône' : 'trop faible';
+    return `<li><span><i style="background:${chip}"></i>${l}</span><span class="v ${g}">${fmt(r)} · ${t}</span></li>`;
+  }).join('')}</ul>`;
+}
+function swatches(o) {
+  const s = (c, n, d) => `<div class="sw"><div class="c" style="background:${c}"></div><div class="m"><b>${n}</b><code>${c}</code><br>${d}</div></div>`;
+  if (o.zero) return `<div class="scale3">${s('#F2F2F2', 'Blanc cassé', 'EN DIRECT')}${s('#9A9A9A', 'Gris', 'segments')}${s('#22D3C8', 'Turquoise', 'tout le reste')}</div>`;
+  return `<div class="scale3">${s(o.light, 'Claire', 'texte, intro')}${s(o.main, 'Principale', 'pastilles, code')}${s(o.dark, 'Foncée', 'fond, autopromo')}</div>`;
+}
+function section(o) {
+  return `<section id="${o.id}">
+    <div class="opt-head">
+      <div style="max-width:640px"><h2><span class="tag">${o.n}</span>${o.name}</h2><p class="why" style="margin:0"><b style="color:var(--text);font-weight:600">${o.tag[0].toUpperCase() + o.tag.slice(1)}.</b> ${o.why}</p></div>
+      ${swatches(o)}
+    </div>
+    ${tv()}
+    ${details(o)}
+    ${contrasts(o)}
+    ${o.zero ? '<p class="note">Ce que ça veut dire : EN DIRECT devient une pastille blanche (bien visible, neutre), NOUVEAU un simple contour blanc, et les segments SponsorBlock passent en gris, la commandite en rayures. Ça marche, mais tout ce qui n’est pas la sélection devient blanc ou gris : l’écran est plus sobre, un peu plus froid, et les segments se lisent moins bien qu’en couleur.</p>' : ''}
+  </section>`;
+}
+
+/* ---------- render ---------- */
+const all = [...OPTIONS, ZERO];
+document.getElementById('compare').innerHTML = all.map(o => `
+  <a class="cmp${o.id === PICK ? ' pick' : ''}" href="#${o.id}" data-id="${o.id}">
+    <div class="chips"><i class="teal"></i>${o.zero ? '<i style="background:#F2F2F2"></i><i style="background:#7A7A7A"></i>' : `<i style="background:${o.light}"></i><i style="background:${o.main}"></i><i style="background:${o.dark}"></i>`}</div>
+    <b>${o.id === PICK ? '<span class="pickmark">recommandé</span>' : ''}${o.zero ? 'Option zéro' : o.name}</b><small>${o.tag}</small>
+    <span class="live">EN DIRECT</span>
+    <div class="mini-bar"><i style="left:0;width:34%;background:#0FA3A0"></i><i style="left:0;width:5%;background:var(--sb-intro)"></i><i style="left:41%;width:9%;background:var(--sb-sponsor)"></i><i style="left:79%;width:6%;background:var(--sb-promo)"></i></div>
+  </a>`).join('');
+document.querySelectorAll('.cmp').forEach(el => applyVars(el, all.find(o => o.id === el.dataset.id)));
+
+const optRoot = document.getElementById('options');
+optRoot.innerHTML = OPTIONS.map(section).join('');
+document.getElementById('zero-slot').innerHTML = section(ZERO);
+all.forEach(o => applyVars(document.getElementById(o.id), o));
+
+const p = OPTIONS.find(o => o.id === PICK);
+const reco = document.getElementById('reco');
+reco.innerHTML = `
+  <h2><span class="tag">★</span>Ma recommandation</h2>
+  <div class="big"><div class="duo"><i style="background:linear-gradient(135deg,#2FE3F0,#22D3C8 55%,#78F5BE)"></i><i style="background:${p.light}"></i><i style="background:${p.main}"></i><i style="background:${p.dark}"></i></div><b>Sarcelle + ${p.name}</b></div>
+  <p>Je prendrais l’<b>abricot</b>. C’est l’opposé exact de la sarcelle sur le cercle des couleurs : une pastille EN DIRECT ou un segment de commandite se distinguent du premier coup d’œil, même de loin et même à côté de la carte sélectionnée. Sa chaleur dit « en ce moment », comme le rouge d’un direct, sans jamais ressembler au rouge de YouTube.</p>
+  <p>Le lilas est le plan B si tu veux rester dans les tons froids et calmes ; l’or et l’orchidée ont plus de caractère, mais ils tirent l’attention plus souvent qu’on le voudrait.</p>
+  <ul>
+    <li>Principale <b style="color:${p.main}">${p.main}</b> : ${fmt(ratio(p.main, BG))} sur le fond, texte encre ${p.ink} dessus à ${fmt(ratio(p.ink, p.main))}.</li>
+    <li>Claire <b style="color:${p.light}">${p.light}</b> pour NOUVEAU et l’intro des segments, foncée <b style="color:${p.dark}">${p.dark}</b> pour l’autopromo (texte blanc dessus à ${fmt(ratio('#FFFFFF', p.dark))}).</li>
+    <li>À garder rare : si la secondaire se met à apparaître sur plus de deux ou trois éléments par écran, elle perd son effet.</li>
+  </ul>`;
+applyVars(reco, p);
+
+const dist = document.getElementById('dist');
+dist.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  dist.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  document.body.classList.toggle('far', b.dataset.v === 'far');
+});
+</script>
+</body>
+</html>
