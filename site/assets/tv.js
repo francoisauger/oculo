@@ -143,7 +143,7 @@
       '<div class="tv-scene tv-home">' +
         '<div class="tv-rows"></div>' +
         '<div class="tv-rail"><span class="tv-avatar">' + icon('person') + '</span><span class="tv-who">' + T.who + '</span><div class="tv-list">' +
-          RAIL.map(function (k, i) { return '<span class="tv-item' + (k === 'home' ? ' cur' : '') + '">' + icon(k) + '<em>' + T.rail[i] + '</em></span>'; }).join('') + '</div></div>' +
+          RAIL.map(function (k, i) { return '<span class="tv-item' + (k === 'home' ? ' cur' : k === 'subs' ? ' dot' : '') + '">' + icon(k) + '<em>' + T.rail[i] + '</em></span>'; }).join('') + '</div></div>' +
         '<div class="tv-top"><span class="tv-mic">' + icon('mic') + '</span><span class="tv-pill">' + T.search + '</span>' +
           '<span class="tv-clock"><b></b><i></i></span><span class="tv-wm">' + wordmark() + '</span></div>' +
       '</div>' +

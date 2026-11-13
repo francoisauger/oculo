@@ -22,6 +22,8 @@
 .tv-item svg { position: absolute; left: 25px; top: 19px; width: 40px; height: 40px; }
 .tv-item em { position: absolute; left: 90px; top: 0; font-style: normal; font-size: 36px; line-height: 78px; white-space: nowrap; opacity: 0; transition: opacity .2s; }
 .tv-item.cur { color: #22d3c8; }
+/* New content in Subscriptions: a small Abricot dot on the icon. */
+.tv-item.dot::after { content: ""; position: absolute; left: 54px; top: 14px; width: 14px; height: 14px; border-radius: 50%; background: #ffa25c; box-shadow: 0 0 0 3px #131313; }
 .tv-home.open .tv-list { transform: translateY(-39px); }
 .tv-home.open .tv-who, .tv-home.open .tv-item em { opacity: 1; transition-delay: .1s; }
 .tv-home.open .tv-item { color: #fff; }
@@ -44,24 +46,25 @@
 .tv-row.above { opacity: 0; }
 .tv-rowtitle { margin: 0; height: 106px; padding-top: 26px; box-sizing: border-box; font-size: 40px; line-height: 48px; color: #a1a1a6; }
 .tv-track { display: flex; gap: 30px; transition: transform .42s cubic-bezier(.2, .7, .2, 1); }
-.tv-card { flex: none; width: 401px; height: 418px; border-radius: 24px; background: #121212; cursor: pointer; transition: transform .22s, opacity .3s; }
+.tv-card { position: relative; flex: none; width: 401px; height: 418px; cursor: pointer; transition: transform .22s, opacity .3s; }
 .tv-card.past { opacity: 0; }
 .tv-card.focus { transform: scale(1.1); z-index: 2; }
-.tv-thumb { position: relative; height: 226px; border-radius: 24px 24px 0 0; background: #1c1c1c center / cover; overflow: hidden; }
-.tv-card.focus .tv-thumb { border-radius: 24px; }
-/* Focus: a 2dp white ring, a 2.5dp dark gap, then the picture. The ring breathes every 2 s. */
-.tv-card.focus .tv-thumb::before { content: ""; position: absolute; inset: 0; border-radius: 24px; box-shadow: inset 0 0 0 9px #121212; z-index: 1; }
-.tv-card.focus .tv-thumb::after { content: ""; position: absolute; inset: 0; border-radius: 24px; box-shadow: inset 0 0 0 4px #f1f1f1; z-index: 2; animation: tv-pulse 2s ease-in-out infinite; }
-@keyframes tv-pulse { 50% { opacity: .45; } }
+.tv-thumb { position: relative; height: 226px; border-radius: 24px; background: #1c1c1c center / cover; overflow: hidden; }
+/* Focus, as in the app since 32.74-13: a 2dp white ring set 2.5dp outside the picture, breathing every
+   2.4 s down to 20 %, and a soft glow in the picture's color reaching 14dp beyond the ring. No info box. */
+.tv-card::before, .tv-card::after { content: ""; position: absolute; left: -9px; top: -9px; width: 419px; height: 244px; border-radius: 33px; opacity: 0; pointer-events: none; }
+.tv-card::before { box-shadow: 0 0 28px 4px color-mix(in srgb, var(--glow) 55%, transparent); transition: opacity .22s; }
+.tv-card::after { box-shadow: inset 0 0 0 4px #f1f1f1; }
+.tv-card.focus::before { opacity: 1; }
+.tv-card.focus::after { opacity: 1; animation: tv-pulse 2.4s ease-in-out infinite; }
+@keyframes tv-pulse { 50% { opacity: .2; } }
 .tv-badge { position: absolute; right: 12px; bottom: 12px; padding: 0 8px; font-size: 28px; line-height: 36px; background: rgba(0, 0, 0, .72); color: #fff; z-index: 3; }
 .tv-badge.live { background: #ffa25c; color: #3a1a06; font-weight: 500; }
-.tv-card.focus .tv-badge { right: 20px; bottom: 20px; }
 .tv-watched { position: absolute; left: 0; right: 0; bottom: 0; height: 8px; background: rgba(0, 0, 0, .55); z-index: 3; }
 .tv-watched i { display: block; height: 100%; background: #0fa3a0; }
-.tv-card.focus .tv-watched { left: 16px; right: 16px; bottom: 11px; border-radius: 4px; overflow: hidden; }
-.tv-text { padding: 20px 22px; }
+.tv-text { padding: 20px 6px; }
 .tv-title { margin: 0; font-size: 32px; line-height: 38px; height: 76px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.tv-meta { margin: 16px 0 0; font-size: 24px; line-height: 30px; color: #e4e4e4; height: 60px; overflow: hidden; }
+.tv-meta { margin: 16px 0 0; font-size: 24px; line-height: 30px; color: #aaa; height: 60px; overflow: hidden; }
 .tv-meta b { font-weight: 400; color: #ffa25c; }
 
 /* Player */
@@ -98,7 +101,7 @@
 .tv-sign .s3 { font-size: 28px; color: #a1a1a6; margin-top: 34px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .tv-card.focus .tv-thumb::after, .tv-skip, .tv-seek .played, .tv-seek .knob { animation: none; }
+  .tv-card.focus::after, .tv-skip, .tv-seek .played, .tv-seek .knob { animation: none; }
   .tv-skip { opacity: 1; } .tv-seek .played { width: 40%; } .tv-seek .knob { left: 40%; }
   .tv-stage, .tv-scene, .tv-rows, .tv-track, .tv-card, .tv-list, .tv-mic, .tv-pill { transition: none !important; }
 }
