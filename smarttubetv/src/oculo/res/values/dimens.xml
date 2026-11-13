@@ -7,4 +7,6 @@
     <dimen name="lb_playback_transport_progressbar_active_radius">8dp</dimen>
     <!-- Turquoise ring around the focused player button -->
     <dimen name="oculo_control_button_ring">3dp</dimen>
+    <!-- Left rail: the focused section is a pill, not zoomed (leanback: 1.2) -->
+    <item format="float" name="lb_browse_header_select_scale" type="dimen">1.0</item>
 </resources>

@@ -16,6 +16,13 @@
   --oculo-turquoise-deep: #16BFB4;
   --oculo-mint-deep: #5EE6A8;
 
+  /* Secondary « Abricot » (32.74-6, docs/mockups/couleur-secondaire.html option A): signals only
+     (LIVE/NEW badges, sign-in code, SponsorBlock segments). Teal stays the identity. */
+  --oculo-abricot-light: #FFC896;  /* intro/outro segments, URL; 12.4:1 on #121212 */
+  --oculo-abricot: #FFA25C;        /* badges, sign-in code, sponsor segment; 9.4:1 on #121212 */
+  --oculo-abricot-dark: #B0541A;   /* self-promo segment, fill under white text (5.1:1) */
+  --oculo-abricot-ink: #3A1A06;    /* text on Abricot (7.9:1) */
+
   /* Teal scale */
   --oculo-teal-50: #E1FEFA;
   --oculo-teal-100: #C6FBF4;
@@ -61,8 +68,13 @@
   --oculo-card-focus-text: var(--oculo-teal-950);
   --oculo-switch-on-thumb: var(--oculo-teal-400);
   --oculo-switch-on-track: var(--oculo-teal-700);
-  --oculo-badge-bg: var(--oculo-teal-600);
-  --oculo-badge-text: #FFFFFF;
+  --oculo-badge-bg: var(--oculo-abricot);
+  --oculo-badge-text: var(--oculo-abricot-ink);
+  --oculo-signin-code: var(--oculo-abricot);
+  --oculo-sb-sponsor: var(--oculo-abricot);
+  --oculo-sb-intro-outro: var(--oculo-abricot-light);
+  --oculo-sb-self-promo: var(--oculo-abricot-dark);
+  --oculo-sb-rare: #9A9A9A;      /* music off-topic, interaction, preview, filler: greys */
 
   /* Roles: website */
   --oculo-site-bg-light: var(--oculo-light-50);

@@ -69,15 +69,16 @@ public class SponsorBlockData {
 
     private void initColorMapping() {
         mSegmentColorMapping = new HashMap<>();
-        mSegmentColorMapping.put(SponsorSegment.CATEGORY_SPONSOR, R.color.green);
-        mSegmentColorMapping.put(SponsorSegment.CATEGORY_INTRO, R.color.cyan);
-        mSegmentColorMapping.put(SponsorSegment.CATEGORY_OUTRO, R.color.blue);
-        mSegmentColorMapping.put(SponsorSegment.CATEGORY_SELF_PROMO, R.color.yellow);
-        mSegmentColorMapping.put(SponsorSegment.CATEGORY_INTERACTION, R.color.magenta);
-        mSegmentColorMapping.put(SponsorSegment.CATEGORY_MUSIC_OFF_TOPIC, R.color.orange_peel);
-        mSegmentColorMapping.put(SponsorSegment.CATEGORY_PREVIEW_RECAP, R.color.light_blue);
-        mSegmentColorMapping.put(SponsorSegment.CATEGORY_POI_HIGHLIGHT, R.color.light_pink);
-        mSegmentColorMapping.put(SponsorSegment.CATEGORY_FILLER, R.color.electric_violet);
+        // Oculo: colors from resources (oculo_sb_*, upstream values in common/src/main/res/values/oculo.xml)
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_SPONSOR, R.color.oculo_sb_sponsor);
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_INTRO, R.color.oculo_sb_intro);
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_OUTRO, R.color.oculo_sb_outro);
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_SELF_PROMO, R.color.oculo_sb_self_promo);
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_INTERACTION, R.color.oculo_sb_interaction);
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_MUSIC_OFF_TOPIC, R.color.oculo_sb_music_off_topic);
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_PREVIEW_RECAP, R.color.oculo_sb_preview_recap);
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_POI_HIGHLIGHT, R.color.oculo_sb_poi_highlight);
+        mSegmentColorMapping.put(SponsorSegment.CATEGORY_FILLER, R.color.oculo_sb_filler);
     }
 
     private void initAllCategories() {

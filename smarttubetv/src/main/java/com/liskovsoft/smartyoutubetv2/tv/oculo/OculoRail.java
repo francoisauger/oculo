@@ -1,0 +1,428 @@
+package com.liskovsoft.smartyoutubetv2.tv.oculo;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.leanback.app.BrowseSupportFragment;
+import androidx.leanback.app.HeadersSupportFragment;
+import androidx.leanback.widget.BaseGridView;
+import androidx.leanback.widget.BrowseFrameLayout;
+import androidx.leanback.widget.ItemBridgeAdapter;
+import androidx.leanback.widget.OnChildViewHolderSelectedListener;
+import androidx.leanback.widget.PageRow;
+import androidx.leanback.widget.VerticalGridView;
+import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+import com.liskovsoft.mediaserviceinterfaces.oauth.Account;
+import com.liskovsoft.smartyoutubetv2.common.app.presenters.SearchPresenter;
+import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AccountSelectionPresenter;
+import com.liskovsoft.smartyoutubetv2.common.app.presenters.settings.AccountSettingsPresenter;
+import com.liskovsoft.smartyoutubetv2.common.misc.MediaServiceManager;
+import com.liskovsoft.smartyoutubetv2.common.misc.MediaServiceManager.AccountChangeListener;
+import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
+import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.ui.browse.SectionHeaderItem;
+import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
+
+/**
+ * Oculo: turns the browse headers into a YouTube TV style left rail.
+ * <ul>
+ *     <li>Collapsed (focus in the content): a narrow column of icons stays on screen, the current section in
+ *     turquoise; the content starts right of it (leanback hook {@code getCollapsedHeadersWidth()}).</li>
+ *     <li>Expanded (focus in the rail, D-pad left from the content): labels appear and the content moves right,
+ *     as in the YouTube app; the focused item is a turquoise pill. D-pad right goes back to the content.</li>
+ *     <li>The profile avatar and search are the first two rail entries (they leave the title bar); the clock,
+ *     date and logo stay at the top right.</li>
+ * </ul>
+ * Everything else stays leanback's: same headers list, same transitions, same focus rules. Enabled by
+ * {@code R.bool.oculo_left_rail} (false upstream, true in the oculo flavor).
+ */
+public final class OculoRail implements AccountChangeListener {
+    private final BrowseSupportFragment mFragment;
+    private final Context mContext;
+    private final ColorStateList mIconColors;
+    private boolean mExpanded;
+    private VerticalGridView mGrid;
+    private View mTopBlock;
+    private View mAvatarRow;
+    private View mSearchRow;
+    private final FragmentManager.FragmentLifecycleCallbacks mHeadersCallbacks =
+            new FragmentManager.FragmentLifecycleCallbacks() {
+                @Override
+                public void onFragmentViewCreated(@NonNull FragmentManager fm, @NonNull Fragment f, @NonNull View v,
+                                                  @Nullable Bundle savedInstanceState) {
+                    if (f instanceof HeadersSupportFragment) {
+                        setupHeaders((HeadersSupportFragment) f, v);
+                    }
+                }
+            };
+
+    public static boolean isEnabled(Context context) {
+        return context != null && context.getResources().getBoolean(R.bool.oculo_left_rail);
+    }
+
+    /**
+     * Width that stays on screen while the headers are hidden (0 when the rail is off).
+     */
+    public static int getCollapsedWidth(Context context) {
+        return isEnabled(context) ? context.getResources().getDimensionPixelSize(R.dimen.oculo_rail_collapsed_width) : 0;
+    }
+
+    /**
+     * Called from BrowseFragment.onCreateView, after leanback created its views. Returns null when disabled.
+     */
+    @Nullable
+    public static OculoRail attach(BrowseSupportFragment fragment, View root) {
+        if (!isEnabled(fragment.getContext()) || root == null) {
+            return null;
+        }
+
+        OculoRail rail = new OculoRail(fragment);
+        rail.attachInternal(root);
+        return rail;
+    }
+
+    private OculoRail(BrowseSupportFragment fragment) {
+        mFragment = fragment;
+        mContext = fragment.getContext();
+        mIconColors = ContextCompat.getColorStateList(mContext, R.color.oculo_rail_icon);
+    }
+
+    private void attachInternal(View root) {
+        mExpanded = mFragment.isShowingHeaders();
+
+        // No panel behind the rail: the browse background shows through, as in YouTube.
+        mFragment.setBrandColor(Color.TRANSPARENT);
+
+        // Search and account move from the title bar into the rail: keep the title's start (background playback
+        // button) clear of the expanded rail.
+        View titleView = mFragment.getTitleView();
+        if (titleView != null) {
+            int railWidth = mContext.getResources().getDimensionPixelSize(R.dimen.lb_browse_rows_margin_start);
+            titleView.setPaddingRelative(Math.max(titleView.getPaddingStart(), railWidth), titleView.getPaddingTop(),
+                    titleView.getPaddingEnd(), titleView.getPaddingBottom());
+        }
+
+        BrowseFrameLayout browseFrame = root.findViewById(R.id.browse_frame);
+        if (browseFrame != null) {
+            BrowseFrameLayout.OnFocusSearchListener upstream = browseFrame.getOnFocusSearchListener();
+            browseFrame.setOnFocusSearchListener((focused, direction) -> {
+                View result = onFocusSearch(focused, direction);
+                return result != null ? result : upstream != null ? upstream.onFocusSearch(focused, direction) : null;
+            });
+        }
+
+        mFragment.getChildFragmentManager().registerFragmentLifecycleCallbacks(mHeadersCallbacks, false);
+
+        HeadersSupportFragment headers = mFragment.getHeadersSupportFragment();
+        if (headers != null) {
+            headers.setItemsAlwaysVisible(true);
+            if (headers.getView() != null) {
+                setupHeaders(headers, headers.getView());
+            }
+        }
+
+        MediaServiceManager.instance().addAccountListener(this);
+    }
+
+    public void detach() {
+        MediaServiceManager.instance().removeAccountListener(this);
+        mFragment.getChildFragmentManager().unregisterFragmentLifecycleCallbacks(mHeadersCallbacks);
+        mGrid = null;
+        mTopBlock = mAvatarRow = mSearchRow = null;
+    }
+
+    /**
+     * Leanback resets the headers' alignment in onStart.
+     */
+    public void onStart() {
+        applyGridAlignment();
+        updateAccount();
+    }
+
+    /**
+     * Leanback hook, inside the headers transition: labels fade in or out with it.
+     */
+    public void onHeadersShown(boolean show) {
+        mExpanded = show;
+        applyExpandedState();
+    }
+
+    private void setupHeaders(HeadersSupportFragment headers, View headersRoot) {
+        VerticalGridView grid = headers.getVerticalGridView();
+
+        if (grid == null || grid == mGrid) {
+            return;
+        }
+
+        mGrid = grid;
+        headers.setItemsAlwaysVisible(true);
+        Resources res = mContext.getResources();
+
+        headersRoot.setElevation(0);
+        View fadingEdge = headersRoot.findViewById(R.id.fade_out_edge);
+        if (fadingEdge != null) {
+            fadingEdge.setVisibility(View.GONE);
+        }
+
+        grid.setBackgroundColor(Color.TRANSPARENT);
+        grid.setPaddingRelative(res.getDimensionPixelSize(R.dimen.oculo_rail_list_padding_start),
+                res.getDimensionPixelSize(R.dimen.oculo_rail_list_top),
+                res.getDimensionPixelSize(R.dimen.oculo_rail_list_padding_end),
+                res.getDimensionPixelSize(R.dimen.oculo_rail_list_top) / 4);
+        grid.setClipToPadding(true);
+        grid.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.oculo_rail_item_spacing));
+        applyGridAlignment();
+
+        grid.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+            @Override
+            public void onChildViewAttachedToWindow(@NonNull View view) {
+                styleItem(view);
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(@NonNull View view) {
+                // NOP
+            }
+        });
+        grid.addOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
+            @Override
+            public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
+                updateCurrentSection();
+            }
+        });
+
+        if (headersRoot instanceof RelativeLayout) {
+            addTopBlock((RelativeLayout) headersRoot, grid);
+        }
+
+        applyExpandedState();
+    }
+
+    /**
+     * The list only scrolls when the focused section would leave the rail (leanback keeps the selected header
+     * at a fixed offset, which would push the first sections under the avatar and search).
+     */
+    private void applyGridAlignment() {
+        if (mGrid == null) {
+            return;
+        }
+
+        mGrid.setItemAlignmentOffset(0);
+        mGrid.setItemAlignmentOffsetPercent(50);
+        mGrid.setWindowAlignmentOffset(0);
+        mGrid.setWindowAlignmentOffsetPercent(50);
+        mGrid.setWindowAlignment(BaseGridView.WINDOW_ALIGN_BOTH_EDGE);
+    }
+
+    private void addTopBlock(RelativeLayout headersRoot, VerticalGridView grid) {
+        Resources res = mContext.getResources();
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+
+        FrameLayout block = new FrameLayout(mContext);
+        block.setPaddingRelative(grid.getPaddingStart(), 0, grid.getPaddingEnd(), 0);
+
+        mAvatarRow = inflater.inflate(R.layout.icon_header_item, block, false);
+        ((FrameLayout.LayoutParams) mAvatarRow.getLayoutParams()).topMargin = res.getDimensionPixelSize(R.dimen.oculo_rail_top_offset);
+        ImageView avatar = mAvatarRow.findViewById(R.id.header_icon);
+        int avatarSize = res.getDimensionPixelSize(R.dimen.oculo_rail_avatar_size);
+        int iconSize = res.getDimensionPixelSize(R.dimen.oculo_rail_icon_size);
+        ViewGroup.LayoutParams lp = avatar.getLayoutParams();
+        lp.width = lp.height = avatarSize;
+        avatar.setLayoutParams(lp);
+        // Keep the avatar centered on the icon column
+        mAvatarRow.setPaddingRelative(mAvatarRow.getPaddingStart() - (avatarSize - iconSize) / 2, 0, mAvatarRow.getPaddingEnd(), 0);
+        TextView avatarLabel = mAvatarRow.findViewById(R.id.header_label);
+        ViewGroup.MarginLayoutParams labelLp = (ViewGroup.MarginLayoutParams) avatarLabel.getLayoutParams();
+        labelLp.setMarginStart(labelLp.getMarginStart() - (avatarSize - iconSize) / 2);
+        avatarLabel.setLayoutParams(labelLp);
+        mAvatarRow.setOnClickListener(v -> AccountSelectionPresenter.instance(mContext).nextAccountOrDialog());
+        mAvatarRow.setOnLongClickListener(v -> {
+            AccountSettingsPresenter.instance(mContext).show();
+            return true;
+        });
+        block.addView(mAvatarRow);
+
+        mSearchRow = inflater.inflate(R.layout.icon_header_item, block, false);
+        ((FrameLayout.LayoutParams) mSearchRow.getLayoutParams()).topMargin = res.getDimensionPixelSize(R.dimen.oculo_rail_search_offset);
+        ImageView searchIcon = mSearchRow.findViewById(R.id.header_icon);
+        searchIcon.setImageResource(R.drawable.lb_ic_in_app_search);
+        searchIcon.setImageTintList(mIconColors);
+        ((TextView) mSearchRow.findViewById(R.id.header_label)).setText(R.string.action_search);
+        mSearchRow.setOnClickListener(v -> SearchPresenter.instance(mContext).startSearch(null));
+        block.addView(mSearchRow);
+
+        // Added after the grid: when the headers get focus (start, back from the player), the list wins.
+        RelativeLayout.LayoutParams blockLp = new RelativeLayout.LayoutParams(grid.getLayoutParams().width,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        blockLp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        headersRoot.addView(block, blockLp);
+        mTopBlock = block;
+
+        updateAccount();
+    }
+
+    private View onFocusSearch(View focused, int direction) {
+        if (mTopBlock == null || mGrid == null) {
+            return null;
+        }
+
+        if (isDescendant(focused, mTopBlock)) {
+            switch (direction) {
+                case View.FOCUS_UP:
+                    return focused == mSearchRow ? mAvatarRow : focused;
+                case View.FOCUS_DOWN:
+                    return focused == mAvatarRow ? mSearchRow : mGrid;
+                case View.FOCUS_LEFT:
+                    return focused;
+                default:
+                    return null; // right: leanback moves to the content and collapses the rail
+            }
+        }
+
+        if (direction == View.FOCUS_UP && mExpanded && isDescendant(focused, mGrid)) {
+            return mSearchRow; // up from the first section
+        }
+
+        return null;
+    }
+
+    private static boolean isDescendant(View view, View parent) {
+        View current = view;
+        while (current != null) {
+            if (current == parent) {
+                return true;
+            }
+            ViewParent next = current.getParent();
+            current = next instanceof View ? (View) next : null;
+        }
+        return false;
+    }
+
+    private void applyExpandedState() {
+        if (mGrid != null) {
+            for (int i = 0; i < mGrid.getChildCount(); i++) {
+                styleItem(mGrid.getChildAt(i));
+            }
+            if (!mExpanded) {
+                // Collapsed: icons are visible but must not catch focus from the content (leanback's left
+                // move targets the list itself, which then expands).
+                mGrid.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            }
+        }
+
+        for (View row : new View[] {mAvatarRow, mSearchRow}) {
+            if (row != null) {
+                row.setFocusable(mExpanded);
+                setLabelVisible(row, mExpanded);
+            }
+        }
+    }
+
+    private void styleItem(View child) {
+        if (mGrid == null || child == null) {
+            return;
+        }
+
+        // Grid child = leanback's wrapper around the header view (layout icon_header_item)
+        ImageView icon = child.findViewById(R.id.header_icon);
+        View item = icon != null && icon.getParent() instanceof View ? (View) icon.getParent() : child;
+
+        RecyclerView.ViewHolder holder = mGrid.getChildViewHolder(child);
+        if (icon != null) {
+            // Section icons follow the rail colors; channel avatars (pinned channels) keep their image.
+            icon.setImageTintList(isResourceIcon(holder) ? mIconColors : null);
+        }
+
+        item.setActivated(holder != null && holder.getAdapterPosition() == mGrid.getSelectedPosition());
+        setLabelVisible(item, mExpanded);
+    }
+
+    private void updateCurrentSection() {
+        if (mGrid == null) {
+            return;
+        }
+
+        for (int i = 0; i < mGrid.getChildCount(); i++) {
+            styleItem(mGrid.getChildAt(i));
+        }
+    }
+
+    private static boolean isResourceIcon(RecyclerView.ViewHolder holder) {
+        if (!(holder instanceof ItemBridgeAdapter.ViewHolder)) {
+            return true;
+        }
+
+        Object item = ((ItemBridgeAdapter.ViewHolder) holder).getItem();
+
+        if (item instanceof PageRow && ((PageRow) item).getHeaderItem() instanceof SectionHeaderItem) {
+            return ((SectionHeaderItem) ((PageRow) item).getHeaderItem()).getIconUrl() == null;
+        }
+
+        return true;
+    }
+
+    private static void setLabelVisible(View item, boolean visible) {
+        View label = item.findViewById(R.id.header_label);
+        if (label != null) {
+            label.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void onAccountChanged(Account account) {
+        updateAccount();
+    }
+
+    private void updateAccount() {
+        if (mAvatarRow == null) {
+            return;
+        }
+
+        ImageView avatar = mAvatarRow.findViewById(R.id.header_icon);
+        TextView label = mAvatarRow.findViewById(R.id.header_label);
+        Account current = MediaServiceManager.instance().getSelectedAccount();
+
+        if (current != null) {
+            label.setText(current.getName() != null ? current.getName() : current.getEmail());
+        } else {
+            label.setText(R.string.dialog_account_none);
+        }
+
+        if (current != null && current.getAvatarImageUrl() != null
+                && !(mContext instanceof Activity && !Utils.checkActivity((Activity) mContext))) {
+            avatar.setImageTintList(null);
+            try {
+                Glide.with(mContext)
+                        .load(current.getAvatarImageUrl())
+                        .apply(ViewUtil.glideOptions())
+                        .circleCrop()
+                        .into(avatar);
+            } catch (ExceptionInInitializerError | IllegalArgumentException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Drawable icon = ContextCompat.getDrawable(mContext, R.drawable.browse_title_account);
+            avatar.setImageDrawable(icon);
+            avatar.setImageTintList(mIconColors);
+        }
+    }
+}

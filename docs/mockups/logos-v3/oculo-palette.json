@@ -2,33 +2,149 @@
   "name": "Oculo",
   "source": "Measured from the approved logo (docs/mockups/logos-v3); teal scale built in OKLCH around the logo hue",
   "brand": {
-    "frame": { "hex": "#0F4A52", "role": "Dark frame of the icon" },
-    "ink": { "hex": "#0B333A", "role": "Frame shadow, text on turquoise" },
-    "cyan": { "hex": "#2FE3F0", "role": "Screen gradient, start" },
-    "turquoise": { "hex": "#22D3C8", "role": "Screen gradient, middle; main accent" },
-    "mint": { "hex": "#78F5BE", "role": "Screen gradient, end" },
-    "frost": { "hex": "#D4F1F1", "role": "White frame, bottom (icon on dark)" },
-    "reflection": { "start": "rgba(255,255,255,0.34)", "end": "rgba(255,255,255,0.06)", "role": "Highlight across the screen" },
-    "gradientOnLight": ["#1FD2E0", "#16BFB4", "#5EE6A8"]
+    "frame": {
+      "hex": "#0F4A52",
+      "role": "Dark frame of the icon"
+    },
+    "ink": {
+      "hex": "#0B333A",
+      "role": "Frame shadow, text on turquoise"
+    },
+    "cyan": {
+      "hex": "#2FE3F0",
+      "role": "Screen gradient, start"
+    },
+    "turquoise": {
+      "hex": "#22D3C8",
+      "role": "Screen gradient, middle; main accent"
+    },
+    "mint": {
+      "hex": "#78F5BE",
+      "role": "Screen gradient, end"
+    },
+    "frost": {
+      "hex": "#D4F1F1",
+      "role": "White frame, bottom (icon on dark)"
+    },
+    "reflection": {
+      "start": "rgba(255,255,255,0.34)",
+      "end": "rgba(255,255,255,0.06)",
+      "role": "Highlight across the screen"
+    },
+    "gradientOnLight": [
+      "#1FD2E0",
+      "#16BFB4",
+      "#5EE6A8"
+    ]
+  },
+  "secondary": {
+    "name": "Abricot",
+    "role": "Secondary color for signals only (LIVE/NEW badges, sign-in code, SponsorBlock segments); teal stays the identity",
+    "light": {
+      "hex": "#FFC896",
+      "onDark": 12.45,
+      "use": "Intro/outro segments, sign-in URL"
+    },
+    "main": {
+      "hex": "#FFA25C",
+      "onDark": 9.43,
+      "use": "Badges, sign-in code, sponsor segment"
+    },
+    "dark": {
+      "hex": "#B0541A",
+      "onDark": 3.68,
+      "whiteOn": 5.09,
+      "use": "Self-promo segment, channel cards with new content (white text)"
+    },
+    "ink": {
+      "hex": "#3A1A06",
+      "onMain": 7.95,
+      "use": "Text on Abricot badges"
+    }
   },
   "teal": {
-    "50":  { "hex": "#E1FEFA", "onWhite": 1.06, "onDark": 17.63 },
-    "100": { "hex": "#C6FBF4", "onWhite": 1.13, "onDark": 16.51 },
-    "200": { "hex": "#98F5EB", "onWhite": 1.27, "onDark": 14.80 },
-    "300": { "hex": "#58EADD", "onWhite": 1.48, "onDark": 12.69 },
-    "400": { "hex": "#22D3C8", "onWhite": 1.87, "onDark": 10.01 },
-    "500": { "hex": "#02B6AE", "onWhite": 2.53, "onDark": 7.41 },
-    "600": { "hex": "#028481", "onWhite": 4.55, "onDark": 4.12 },
-    "700": { "hex": "#026F71", "onWhite": 5.97, "onDark": 3.14 },
-    "800": { "hex": "#02575D", "onWhite": 8.32, "onDark": 2.25 },
-    "900": { "hex": "#0F4A52", "onWhite": 9.90, "onDark": 1.89 },
-    "950": { "hex": "#0B333A", "onWhite": 13.56, "onDark": 1.38 }
+    "50": {
+      "hex": "#E1FEFA",
+      "onWhite": 1.06,
+      "onDark": 17.63
+    },
+    "100": {
+      "hex": "#C6FBF4",
+      "onWhite": 1.13,
+      "onDark": 16.51
+    },
+    "200": {
+      "hex": "#98F5EB",
+      "onWhite": 1.27,
+      "onDark": 14.8
+    },
+    "300": {
+      "hex": "#58EADD",
+      "onWhite": 1.48,
+      "onDark": 12.69
+    },
+    "400": {
+      "hex": "#22D3C8",
+      "onWhite": 1.87,
+      "onDark": 10.01
+    },
+    "500": {
+      "hex": "#02B6AE",
+      "onWhite": 2.53,
+      "onDark": 7.41
+    },
+    "600": {
+      "hex": "#028481",
+      "onWhite": 4.55,
+      "onDark": 4.12
+    },
+    "700": {
+      "hex": "#026F71",
+      "onWhite": 5.97,
+      "onDark": 3.14
+    },
+    "800": {
+      "hex": "#02575D",
+      "onWhite": 8.32,
+      "onDark": 2.25
+    },
+    "900": {
+      "hex": "#0F4A52",
+      "onWhite": 9.9,
+      "onDark": 1.89
+    },
+    "950": {
+      "hex": "#0B333A",
+      "onWhite": 13.56,
+      "onDark": 1.38
+    }
   },
   "contrastNote": "onDark is measured against #121212",
   "safe": {
-    "fillUnderWhiteText": ["600", "700", "800", "900", "950"],
-    "accentOnDark": ["50", "100", "200", "300", "400", "500", "600", "700"],
-    "textOnWhite": ["600", "700", "800", "900", "950"]
+    "fillUnderWhiteText": [
+      "600",
+      "700",
+      "800",
+      "900",
+      "950"
+    ],
+    "accentOnDark": [
+      "50",
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "textOnWhite": [
+      "600",
+      "700",
+      "800",
+      "900",
+      "950"
+    ]
   },
   "neutralsDark": {
     "black": "#000000",
@@ -63,8 +179,20 @@
       "cardFocusText": "#0B333A",
       "switchOnThumb": "#22D3C8",
       "switchOnTrack": "#026F71",
-      "badgeBackground": "#028481",
-      "badgeText": "#FFFFFF"
+      "badgeBackground": "#FFA25C",
+      "badgeText": "#3A1A06",
+      "signInCode": "#FFA25C",
+      "sponsorBlock": {
+        "sponsor": "#FFA25C",
+        "intro": "#FFC896",
+        "outro": "#FFC896",
+        "selfPromo": "#B0541A",
+        "poiHighlight": "#FFC896",
+        "interaction": "#7A7A7A",
+        "musicOffTopic": "#9A9A9A",
+        "previewRecap": "#BDBDBD",
+        "filler": "#5E5E5E"
+      }
     },
     "website": {
       "backgroundLight": "#F4F8F8",

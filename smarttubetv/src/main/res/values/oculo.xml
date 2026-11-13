@@ -4,4 +4,36 @@
 <resources>
     <!-- Remaining (not yet buffered) part of the player seek bar (SeekBar.java; upstream Color.GRAY) -->
     <color name="oculo_seek_bar_remaining">#FF888888</color>
+    <!-- Text on accent card badges (LIVE, NEW, upcoming; ComplexImageView). Transparent = keep upstream's -->
+    <color name="oculo_badge_accent_text">#00000000</color>
+    <!-- Background of channel cards with new content (ChannelCardPresenter; upstream dark_red) -->
+    <color name="oculo_channel_new_content">@color/dark_red</color>
+    <!-- Sign-in screen (SignInFragment): code text (transparent = keep upstream's) and URL (upstream red) -->
+    <color name="oculo_signin_code">#00000000</color>
+    <color name="oculo_signin_link">@color/red</color>
+    <!-- Tag key: a badge's original text colors (OculoUi.tintBadgeText) -->
+    <item name="oculo_badge_text_colors" type="id" />
+
+    <!-- Left rail (OculoRail, hooked into BrowseFragment): YouTube-style icon column that stays on screen and
+         expands with labels when focused. Off upstream; the oculo flavor turns it on. -->
+    <bool name="oculo_left_rail">false</bool>
+    <!-- Opacity of unfocused section headers (IconHeaderItemPresenter; upstream: leanback's 50%) -->
+    <item name="oculo_header_unselect_alpha" type="fraction">@fraction/lb_browse_header_unselect_alpha</item>
+    <!-- Width kept on screen while collapsed (content starts after it) -->
+    <dimen name="oculo_rail_collapsed_width">56dp</dimen>
+    <!-- Rows: avatar centered 50dp from the top, search 117dp, first section 156dp (YouTube TV's spacing) -->
+    <dimen name="oculo_rail_top_offset">31dp</dimen>
+    <dimen name="oculo_rail_search_offset">98dp</dimen>
+    <dimen name="oculo_rail_list_top">137dp</dimen>
+    <dimen name="oculo_rail_item_height">38dp</dimen>
+    <dimen name="oculo_rail_item_spacing">1dp</dimen>
+    <dimen name="oculo_rail_item_padding_start">11dp</dimen>
+    <dimen name="oculo_rail_list_padding_start">8dp</dimen>
+    <dimen name="oculo_rail_list_padding_end">24dp</dimen>
+    <dimen name="oculo_rail_icon_size">24dp</dimen>
+    <dimen name="oculo_rail_avatar_size">28dp</dimen>
+    <dimen name="oculo_rail_label_margin">17dp</dimen>
+    <dimen name="oculo_rail_pill_radius">19dp</dimen>
+    <!-- Pill width: headers width (270dp) minus the list paddings -->
+    <dimen name="oculo_rail_pill_width">238dp</dimen>
 </resources>

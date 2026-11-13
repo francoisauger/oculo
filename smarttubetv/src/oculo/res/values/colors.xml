@@ -22,6 +22,12 @@
     <!-- Logo frame: deep teal -->
     <color name="oculo_deep">#0F4A52</color>
     <color name="oculo_deep_dark">#0B333A</color>
+    <!-- Secondary color « Abricot » (docs/mockups/couleur-secondaire.html, option A), for signals only:
+         LIVE/NEW badges, sign-in code, SponsorBlock segments. Teal stays the identity (selection, focus). -->
+    <color name="oculo_abricot_light">#FFC896</color>
+    <color name="oculo_abricot">#FFA25C</color>
+    <color name="oculo_abricot_dark">#B0541A</color>
+    <color name="oculo_abricot_ink">#3A1A06</color>
 
     <!-- "Teal" color scheme (upstream #0096a6 / #004B53) re-tinted to Oculo's teals -->
     <color name="fastlane_background">@color/oculo_teal</color>
@@ -33,8 +39,9 @@
     <!-- Text on focused cards (turquoise or white background): deep teal, 7.2:1 on turquoise, 13.6:1 on white -->
     <color name="card_selected_text_grey">@color/oculo_deep_dark</color>
 
-    <!-- Card badges (LIVE, NEW, upcoming) and "new content" channel cards: upstream dark red -> Oculo teal -->
-    <color name="dark_red">@color/oculo_teal</color>
+    <!-- Card badges (LIVE, NEW, upcoming): upstream dark red -> Abricot, with dark ink text
+         (oculo_badge_accent_text); "new content" channel cards use oculo_channel_new_content -->
+    <color name="dark_red">@color/oculo_abricot</color>
     <!-- Keep the "Red" color scheme red (it pointed at dark_red) -->
     <color name="scheme_red_background_dark">#B31217</color>
 </resources>

@@ -20,6 +20,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.views.SignInView;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoQr;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoUi;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 import java.util.List;
@@ -68,6 +69,7 @@ public class SignInFragment extends GuidedStepSupportFragment implements SignInV
         }
 
         getGuidanceStylist().getTitleView().setText(userCode);
+        OculoUi.setTextColorIfSet(getGuidanceStylist().getTitleView(), R.color.oculo_signin_code); // Oculo
 
         mFullSignInUrl = fullSignInUrl != null ? fullSignInUrl : signInUrl;
 
@@ -82,7 +84,7 @@ public class SignInFragment extends GuidedStepSupportFragment implements SignInV
         String description = getString(R.string.signin_view_description, signInUrl);
         int start = description.indexOf(signInUrl);
         int end = start + signInUrl.length();
-        CharSequence coloredDescription = Utils.color(description, ContextCompat.getColor(getContext(), R.color.red), start, end);
+        CharSequence coloredDescription = Utils.color(description, ContextCompat.getColor(getContext(), R.color.oculo_signin_link), start, end);
 
         getGuidanceStylist().getDescriptionView().setText(coloredDescription);
     }

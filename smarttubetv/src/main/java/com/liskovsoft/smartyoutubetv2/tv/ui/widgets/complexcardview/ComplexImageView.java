@@ -17,6 +17,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.embedplayer.EmbedPlayerView;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoUi;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 import java.lang.ref.WeakReference;
@@ -110,6 +111,7 @@ public class ComplexImageView extends RelativeLayout {
         }
 
         mBadgeText.setBackgroundColor(color);
+        OculoUi.tintBadgeText(mBadgeText, color); // Oculo: dark text on the accent badge
     }
 
     /**

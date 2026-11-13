@@ -9,4 +9,30 @@
     <bool name="oculo_home_hide_watched_default">true</bool>
     <!-- About: no "Install bridge" button (it installs a third-party APK) -->
     <bool name="oculo_show_install_bridge">false</bool>
+
+    <!-- SponsorBlock segments, secondary color « Abricot » (docs/mockups/couleur-secondaire.html, option A):
+         sponsor = main, intro and outro = light, self-promo = dark; the rare categories in greys so that
+         nothing clashes with the teal played part or with the orange (music off-topic was orange). -->
+    <color name="oculo_sb_sponsor">@color/oculo_abricot</color>
+    <color name="oculo_sb_intro">@color/oculo_abricot_light</color>
+    <color name="oculo_sb_outro">@color/oculo_abricot_light</color>
+    <color name="oculo_sb_self_promo">@color/oculo_abricot_dark</color>
+    <color name="oculo_sb_interaction">#7A7A7A</color>
+    <color name="oculo_sb_music_off_topic">#9A9A9A</color>
+    <color name="oculo_sb_preview_recap">#BDBDBD</color>
+    <color name="oculo_sb_poi_highlight">@color/oculo_abricot_light</color>
+    <color name="oculo_sb_filler">#5E5E5E</color>
+
+    <!-- Accent badges (LIVE, NEW, upcoming): dark ink text on the Abricot badge -->
+    <color name="oculo_badge_accent_text">@color/oculo_abricot_ink</color>
+    <!-- Channel cards with new content: dark Abricot, white text 5.1:1 -->
+    <color name="oculo_channel_new_content">@color/oculo_abricot_dark</color>
+    <!-- Sign-in screen: activation code in Abricot, activation URL in light Abricot -->
+    <color name="oculo_signin_code">@color/oculo_abricot</color>
+    <color name="oculo_signin_link">@color/oculo_abricot_light</color>
+
+    <!-- Browse: YouTube-style left rail (OculoRail) -->
+    <bool name="oculo_left_rail">true</bool>
+    <!-- Rail items are not dimmed when unfocused: colors come from color/oculo_rail_icon and oculo_rail_label -->
+    <item name="oculo_header_unselect_alpha" type="fraction">100%</item>
 </resources>

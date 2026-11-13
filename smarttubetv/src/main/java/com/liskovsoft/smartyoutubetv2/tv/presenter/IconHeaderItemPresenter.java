@@ -39,7 +39,7 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
         mUnselectedAlpha = viewGroup.getResources()
-                .getFraction(R.fraction.lb_browse_header_unselect_alpha, 1, 1);
+                .getFraction(R.fraction.oculo_header_unselect_alpha, 1, 1); // Oculo (upstream lb_browse_header_unselect_alpha)
         LayoutInflater inflater = (LayoutInflater) viewGroup.getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDefaultIcon = new ColorDrawable(ContextCompat.getColor(viewGroup.getContext(), R.color.lb_grey));

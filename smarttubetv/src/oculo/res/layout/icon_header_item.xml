@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo: left-rail look for the browse section headers (copy of smarttubetv/src/main/res/layout/icon_header_item.xml,
+     same ids). Icon centered on the collapsed rail, label hidden while collapsed (OculoRail), focused item =
+     turquoise pill with deep-teal icon and text. Re-sync if upstream changes that layout. -->
+<androidx.leanback.widget.NonOverlappingLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/oculo_rail_item_height"
+    android:minHeight="@dimen/oculo_rail_item_height"
+    android:minWidth="@dimen/oculo_rail_pill_width"
+    android:background="@drawable/oculo_rail_item_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/oculo_rail_item_padding_start"
+    android:paddingEnd="12dp">
+
+    <ImageView
+        android:id="@+id/header_icon"
+        android:layout_width="@dimen/oculo_rail_icon_size"
+        android:layout_height="@dimen/oculo_rail_icon_size"
+        android:duplicateParentState="true"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/header_icon" />
+
+    <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.marqueetextviewcompat.HeaderMarqueeTextViewCompat
+        android:id="@+id/header_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/oculo_rail_label_margin"
+        android:duplicateParentState="true"
+
+        android:singleLine="true"
+        android:maxWidth="170dp"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:ellipsize="marquee"
+        android:scrollHorizontally="true"
+
+        style="@style/TextAppearance.Leanback.Header"
+        android:textSize="16sp"
+        android:textColor="@color/oculo_rail_label" />
+</androidx.leanback.widget.NonOverlappingLinearLayout>

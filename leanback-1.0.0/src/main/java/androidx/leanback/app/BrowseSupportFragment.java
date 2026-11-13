@@ -1446,12 +1446,27 @@ public class BrowseSupportFragment extends BaseSupportFragment {
         }
     }
 
+    /**
+     * Oculo: width of the headers strip that stays on screen while the headers are hidden (an icon rail).
+     * 0 (default) = upstream behaviour: hidden headers slide fully off screen and the content takes the
+     * whole width.
+     */
+    protected int getCollapsedHeadersWidth() {
+        return 0;
+    }
+
+    /**
+     * Oculo: called inside the headers transition scene, after the headers were shown or hidden.
+     */
+    protected void onHeadersShown(boolean show) {
+    }
+
     private void setHeadersOnScreen(boolean onScreen) {
         MarginLayoutParams lp;
         View containerList;
         containerList = mHeadersSupportFragment.getView();
         lp = (MarginLayoutParams) containerList.getLayoutParams();
-        lp.setMarginStart(onScreen ? 0 : -mContainerListMarginStart);
+        lp.setMarginStart(onScreen || getCollapsedHeadersWidth() > 0 ? 0 : -mContainerListMarginStart); // Oculo: rail stays
         containerList.setLayoutParams(lp);
     }
 
@@ -1460,11 +1475,12 @@ public class BrowseSupportFragment extends BaseSupportFragment {
         mHeadersSupportFragment.setHeadersEnabled(show);
         setHeadersOnScreen(show);
         expandMainFragment(!show);
+        onHeadersShown(show); // Oculo
     }
 
     private void expandMainFragment(boolean expand) {
         MarginLayoutParams params = (MarginLayoutParams) mScaleFrameLayout.getLayoutParams();
-        params.setMarginStart(!expand ? mContainerListMarginStart : 0);
+        params.setMarginStart(!expand ? mContainerListMarginStart : getCollapsedHeadersWidth()); // Oculo: was 0
         mScaleFrameLayout.setLayoutParams(params);
         mMainFragmentAdapter.setExpand(expand);
 

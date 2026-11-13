@@ -83,6 +83,7 @@ public class HeadersSupportFragment extends BaseRowSupportFragment {
     OnHeaderClickedListener mOnHeaderClickedListener;
     private boolean mHeadersEnabled = true;
     private boolean mHeadersGone = false;
+    private boolean mItemsAlwaysVisible = false; // Oculo
     private int mBackgroundColor;
     private boolean mBackgroundColorSet;
 
@@ -186,7 +187,7 @@ public class HeadersSupportFragment extends BaseRowSupportFragment {
         if (listView != null) {
             getView().setVisibility(mHeadersGone ? View.GONE : View.VISIBLE);
             if (!mHeadersGone) {
-                if (mHeadersEnabled) {
+                if (mHeadersEnabled || mItemsAlwaysVisible) { // Oculo: icon rail keeps its items
                     listView.setChildrenVisibility(View.VISIBLE);
                 } else {
                     listView.setChildrenVisibility(View.INVISIBLE);
@@ -197,6 +198,14 @@ public class HeadersSupportFragment extends BaseRowSupportFragment {
 
     void setHeadersEnabled(boolean enabled) {
         mHeadersEnabled = enabled;
+        updateListViewVisibility();
+    }
+
+    /**
+     * Oculo: keep the header items visible while the headers are disabled (collapsed icon rail).
+     */
+    public void setItemsAlwaysVisible(boolean visible) {
+        mItemsAlwaysVisible = visible;
         updateListViewVisibility();
     }
 

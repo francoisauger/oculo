@@ -34,6 +34,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.views.BrowseView;
 import com.liskovsoft.smartyoutubetv2.common.misc.CrashRestorer;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoRail;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.IconHeaderItemPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.dialog.ErrorDialogFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.headers.ExtendedHeadersSupportFragment;
@@ -56,6 +57,7 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
     private boolean mIsFragmentCreated;
     private boolean mFocusOnContent;
     private CrashRestorer mCrashRestorer;
+    private OculoRail mOculoRail;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,30 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
 
         mProgressBarManager.setRootView((ViewGroup) root);
 
+        mOculoRail = OculoRail.attach(this, root); // Oculo: left icon rail (null when off)
+
         return root;
+    }
+
+    // Oculo: left icon rail hooks (see OculoRail)
+    @Override
+    protected int getCollapsedHeadersWidth() {
+        return OculoRail.getCollapsedWidth(getContext());
+    }
+
+    @Override
+    protected void onHeadersShown(boolean show) {
+        if (mOculoRail != null) {
+            mOculoRail.onHeadersShown(show);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mOculoRail != null) {
+            mOculoRail.onStart();
+        }
     }
 
     @Override
@@ -442,6 +467,11 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
     @Override
     public void onDestroyView() {
         mSectionFragmentFactory.cleanup();
+
+        if (mOculoRail != null) {
+            mOculoRail.detach();
+            mOculoRail = null;
+        }
 
         super.onDestroyView();
     }

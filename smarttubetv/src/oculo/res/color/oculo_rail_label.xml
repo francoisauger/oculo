@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo left rail labels (shown while the rail is expanded). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:color="@color/oculo_deep_dark" />
+    <item android:state_activated="true" android:color="@color/oculo_turquoise" />
+    <item android:color="#E6FFFFFF" />
+</selector>

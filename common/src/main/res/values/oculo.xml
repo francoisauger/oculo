@@ -9,6 +9,18 @@
     <!-- About: "Install bridge" button (ATV/Amazon voice-search bridge) -->
     <bool name="oculo_show_install_bridge">true</bool>
 
+    <!-- SponsorBlock segment colors on the seek bar (SponsorBlockData; upstream values). Users can only turn
+         the markers on or off, not pick colors, so these are the colors. -->
+    <color name="oculo_sb_sponsor">@color/green</color>
+    <color name="oculo_sb_intro">@color/cyan</color>
+    <color name="oculo_sb_outro">@color/blue</color>
+    <color name="oculo_sb_self_promo">@color/yellow</color>
+    <color name="oculo_sb_interaction">@color/magenta</color>
+    <color name="oculo_sb_music_off_topic">@color/orange_peel</color>
+    <color name="oculo_sb_preview_recap">@color/light_blue</color>
+    <color name="oculo_sb_poi_highlight">@color/light_pink</color>
+    <color name="oculo_sb_filler">@color/electric_violet</color>
+
     <string name="oculo_home_rows_filter">Hide news and sports rows</string>
     <string name="oculo_home_hide_watched">Hide watched videos in the first row</string>
 </resources>
