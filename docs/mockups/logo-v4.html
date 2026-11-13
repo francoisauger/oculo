@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oculo · logo v4</title>
+<style>
+  @font-face { font-family: "Nunito Oculo"; font-weight: 800; src: url(logos-v3/fonts/nunito-latin-800-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Nunito Oculo"; font-weight: 700; src: url(logos-v3/fonts/nunito-latin-700-normal.woff2) format("woff2"); }
+  :root {
+    color-scheme: dark;
+    --bg: #0e0e12; --surface: #17171d; --surface-2: #1f1f27; --line: rgba(255,255,255,.08);
+    --text: #f2f2f6; --muted: #9a9aa8; --faint: #6f6f7c; --accent: #22d3c8; --apricot: #ffa25c;
+    --ok: #6fe3b4; --mid: #f2c46b; --bad: #ff8a7a;
+    --round: "Nunito Oculo", ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+    --k: 1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 15px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 56px 16px 80px; }
+  header h1 { font: 800 44px/1.05 var(--round); margin: 0 0 10px; }
+  header p { margin: 0 0 10px; color: var(--muted); max-width: 800px; }
+  header p b { color: var(--text); font-weight: 600; }
+  @media (max-width: 600px) { header h1 { font-size: 34px; } }
+  h2 { font: 800 28px/1.1 var(--round); margin: 0 0 6px; }
+  h2 .tag, h3 .tag { display: inline-block; font: 700 13px/1 var(--round); color: #0b333a; background: var(--accent); border-radius: 8px; padding: 6px 8px; margin-right: 10px; vertical-align: 4px; }
+  h3 { font: 800 21px/1.2 var(--round); margin: 0 0 6px; }
+  .badge { display: inline-block; font: 700 11px/1 var(--round); letter-spacing: .04em; text-transform: uppercase; padding: 5px 8px; border-radius: 6px; margin-left: 8px; vertical-align: 3px; }
+  .badge.now { background: #2a2a33; color: var(--muted); }
+  .badge.pick { background: var(--apricot); color: #3a1a06; }
+  .why { margin: 0 0 18px; color: var(--muted); max-width: 800px; }
+  .label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  section { margin-top: 36px; padding: 28px; border-radius: 28px; background: var(--surface); border: 1px solid var(--line); }
+  @media (max-width: 600px) { section { padding: 18px; border-radius: 20px; } }
+
+  /* Quick compare strip */
+  .compare { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+  @media (max-width: 900px) { .compare { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .cmp { display: block; text-decoration: none; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px 10px 12px; text-align: center; transition: border-color .15s; min-width: 0; }
+  .cmp:hover { border-color: rgba(255,255,255,.22); }
+  .cmp.pick { border-color: var(--apricot); box-shadow: 0 0 0 1px var(--apricot) inset; }
+  .cmp svg { width: 76%; max-width: 104px; height: auto; display: block; margin: 0 auto 8px; }
+  .cmp b { display: block; font: 800 14px/1.2 var(--round); }
+  .cmp small { color: var(--muted); font-size: 12px; }
+
+  /* Variant cards */
+  .var { margin-top: 22px; padding: 22px; border-radius: 22px; background: var(--surface-2); border: 1px solid var(--line); }
+  .var:first-of-type { margin-top: 0; }
+  .var.is-pick { border-color: rgba(255,162,92,.55); }
+  @media (max-width: 600px) { .var { padding: 14px; } }
+  .var > p { margin: 0 0 12px; color: var(--muted); max-width: 820px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+  .chip { font-size: 12.5px; padding: 5px 10px; border-radius: 999px; background: #121217; border: 1px solid var(--line); color: var(--muted); }
+  .chip b { font-weight: 700; }
+  .chip.ok b { color: var(--ok); } .chip.mid b { color: var(--mid); } .chip.bad b { color: var(--bad); }
+  .colors { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 600 11.5px/1.4 ui-monospace, "SF Mono", Menlo, monospace; color: var(--faint); margin: -6px 0 16px; }
+  .colors i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: -2px; margin-right: 5px; border: 1px solid rgba(255,255,255,.15); }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 12px; }
+  @media (max-width: 860px) { .two, .three { grid-template-columns: 1fr; } }
+  .tile { border-radius: 16px; display: grid; place-items: center; padding: 26px 22px; min-width: 0; }
+  .tile.banner { background: radial-gradient(120% 120% at 8% 6%, rgba(255,255,255,.07), transparent 50%), linear-gradient(135deg, #0F5E67, #0B4952 50%, #062A31); }
+  .tile.light { background: #f3f3f6; }
+  .tile.page { background: radial-gradient(circle at 50% 42%, rgba(50,230,220,.16), transparent 64%), #0b0b0e; border: 1px solid rgba(255,255,255,.06); }
+  .tile .wm { display: block; width: 100%; max-width: 420px; height: auto; }
+  .row { display: flex; gap: 22px; align-items: flex-end; justify-content: center; flex-wrap: wrap; }
+  .row figure { margin: 0; text-align: center; font-size: 11px; color: #8c8c98; }
+  .tile.light figure { color: #6c6c78; }
+  .row svg { display: block; margin: 0 auto 6px; }
+  .mini { display: grid; gap: 10px; place-items: stretch; padding: 14px; }
+  .mini > div { border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 10px; font-size: 11px; }
+  .mini .b { background: linear-gradient(135deg, #0F5E67, #062A31); color: #8fb7bb; }
+  .mini .l { background: #f3f3f6; color: #6c6c78; }
+  .mini svg { display: block; height: 32px; width: auto; }
+  .mini svg.h24 { height: 24px; }
+
+  /* Loader controls */
+  .controls { display: flex; flex-wrap: wrap; gap: 12px 22px; margin: 4px 0 6px; align-items: center; }
+  .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 18px; background: var(--surface-2); padding: 3px; }
+  .seg button { appearance: none; border: 0; background: transparent; color: var(--muted); font: 600 13px/1 -apple-system, BlinkMacSystemFont, sans-serif; padding: 8px 12px; border-radius: 999px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: #0b333a; }
+  .ctl-label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-right: 8px; }
+  .sticky { position: sticky; top: 0; z-index: 5; background: rgba(23,23,29,.94); backdrop-filter: blur(8px); margin: 0 -28px; padding: 12px 28px; border-bottom: 1px solid var(--line); }
+  @media (max-width: 600px) { .sticky { margin: 0 -18px; padding: 10px 18px; } }
+
+  .ld { margin-top: 22px; padding: 22px; border-radius: 22px; background: var(--surface-2); border: 1px solid var(--line); }
+  .ld.is-pick { border-color: rgba(255,162,92,.55); }
+  @media (max-width: 600px) { .ld { padding: 14px; } }
+  .ld > p { margin: 0 0 10px; color: var(--muted); max-width: 820px; }
+  .feas { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+  .feas b { color: var(--ok); font-weight: 700; }
+  .feas b.mid { color: var(--mid); }
+  .ldgrid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 12px; }
+  @media (max-width: 860px) { .ldgrid { grid-template-columns: 1fr; } }
+  .stage { border-radius: 18px; background: radial-gradient(circle at 50% 46%, rgba(34,211,200,.13), transparent 60%), #0b0b0b; border: 1px solid rgba(255,255,255,.06); display: grid; place-items: center; min-width: 0; }
+  .stage.big { aspect-ratio: 4 / 3; }
+  .stage.big svg { width: 58%; max-width: 360px; height: auto; display: block; }
+  .real { display: grid; grid-template-rows: auto auto; gap: 12px; }
+  .real .stage { padding: 22px 12px; }
+  .real .pair { display: flex; gap: 26px; align-items: center; justify-content: center; flex-wrap: wrap; }
+  .real figure { margin: 0; text-align: center; font-size: 11px; color: #8c8c98; }
+  .real figure svg { display: block; margin: 0 auto 6px; }
+  .tvshot { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,.06); background: #131313; }
+  .tvshot .bar { position: absolute; left: 0; right: 0; top: 0; height: 13%; background: #181818; }
+  .tvshot .rows { position: absolute; left: 4%; right: 0; top: 22%; display: grid; gap: 9%; }
+  .tvshot .r { display: flex; gap: 1.6%; }
+  .tvshot .r b { flex: none; width: 21%; aspect-ratio: 16/9; border-radius: 4px; background: #1d1d1d; }
+  .tvshot .spot { position: absolute; left: 50%; top: 50%; width: 13%; transform: translate(-50%, -50%); }
+  .tvshot .spot svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+  /* Recommendation */
+  .reco { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px; align-items: center; }
+  @media (max-width: 700px) { .reco { grid-template-columns: 1fr; } }
+  .reco .pair { display: flex; gap: 14px; }
+  .reco .pair > div { width: 150px; height: 150px; border-radius: 22px; display: grid; place-items: center; background: radial-gradient(circle at 50% 46%, rgba(34,211,200,.13), transparent 62%), #0b0b0b; border: 1px solid rgba(255,255,255,.06); }
+  @media (max-width: 400px) { .reco .pair > div { width: 130px; height: 130px; } }
+  .reco p { margin: 0 0 10px; color: var(--muted); }
+  .reco p b { color: var(--text); }
+  footer { margin-top: 40px; color: var(--muted); font-size: 13px; text-align: center; }
+
+  /* ---------- Loader motion ---------- */
+  .paused * { animation-play-state: paused !important; }
+  /* L1 Comète */
+  .l1 .tail { animation: l1a calc(1.4s * var(--k)) linear infinite; }
+  .l1 .body { animation: l1b calc(1.4s * var(--k)) linear infinite; }
+  .l1 .head { animation: l1c calc(1.4s * var(--k)) linear infinite; }
+  @keyframes l1a { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -100; } }
+  @keyframes l1b { from { stroke-dashoffset: -14; } to { stroke-dashoffset: -114; } }
+  @keyframes l1c { from { stroke-dashoffset: -25; } to { stroke-dashoffset: -125; } }
+  .l1 .scr-breathe { animation: l1s calc(1.4s * var(--k)) ease-in-out infinite; }
+  @keyframes l1s { 0%, 100% { opacity: 0; } 50% { opacity: .22; } }
+  /* L2 Allumage */
+  .l2 .lit { transform-box: view-box; transform-origin: 430px 362.5px; animation: l2lit calc(1.6s * var(--k)) infinite; }
+  .l2 .line { transform-box: fill-box; transform-origin: center; animation: l2line calc(1.6s * var(--k)) infinite; }
+  .l2 .band { animation: l2band calc(1.6s * var(--k)) infinite; }
+  .l2 .glint { transform-box: fill-box; transform-origin: center; animation: l2glint calc(1.6s * var(--k)) infinite; }
+  @keyframes l2lit {
+    0%, 8% { opacity: 0; transform: scale(1, .03); }
+    9% { opacity: 1; transform: scale(1, .03); animation-timing-function: cubic-bezier(.3,0,.2,1); }
+    30% { opacity: 1; transform: scale(1, 1); }
+    76% { opacity: 1; transform: scale(1, 1); animation-timing-function: ease-in; }
+    100% { opacity: 0; transform: scale(1, 1); }
+  }
+  @keyframes l2line {
+    0% { opacity: 1; transform: scale(.06, 1); animation-timing-function: cubic-bezier(.2,.7,.3,1); }
+    10% { opacity: 1; transform: scale(1, 1); }
+    24% { opacity: 0; transform: scale(1, 1.6); }
+    100% { opacity: 0; transform: scale(1, 1.6); }
+  }
+  @keyframes l2band { 0%, 30% { transform: translate(-260px, -440px); animation-timing-function: cubic-bezier(.45,0,.25,1); } 70%, 100% { transform: translate(260px, 440px); } }
+  @keyframes l2glint { 0%, 52% { opacity: 0; transform: scale(.3); } 62% { opacity: 1; transform: scale(1); } 80%, 100% { opacity: 0; transform: scale(.6); } }
+  /* L3 Respiration */
+  .l3 .o { transform-box: fill-box; transform-origin: center; animation: l3o calc(1.6s * var(--k)) ease-in-out infinite; }
+  .l3 .halo-t { animation: l3t calc(3.2s * var(--k)) ease-in-out infinite; }
+  .l3 .halo-a { animation: l3a calc(3.2s * var(--k)) ease-in-out infinite; }
+  .l3 .warm { animation: l3w calc(3.2s * var(--k)) ease-in-out infinite; }
+  @keyframes l3o { 0%, 100% { transform: scale(.955); } 50% { transform: scale(1); } }
+  @keyframes l3t { 0%, 100% { opacity: .15; } 25% { opacity: .85; } 50%, 75% { opacity: .12; } }
+  @keyframes l3a { 0%, 25%, 100% { opacity: .08; } 50% { opacity: .12; } 75% { opacity: .8; } }
+  @keyframes l3w { 0%, 50%, 100% { opacity: 0; } 75% { opacity: .30; } }
+  /* L4 Veille */
+  .l4 .led { animation: l4led calc(1.2s * var(--k)) ease-in-out infinite; }
+  .l4 .ledglow { animation: l4glow calc(1.2s * var(--k)) ease-in-out infinite; }
+  .l4 .band { animation: l4band calc(1.2s * var(--k)) cubic-bezier(.45,0,.3,1) infinite; }
+  .l4 .shim { animation: l4shim calc(1.2s * var(--k)) ease-in-out infinite; }
+  @keyframes l4led { 0%, 100% { opacity: .25; } 40% { opacity: 1; } }
+  @keyframes l4glow { 0%, 100% { opacity: 0; } 40% { opacity: .9; } }
+  @keyframes l4band { 0% { transform: translate(-300px, -500px); } 75%, 100% { transform: translate(300px, 500px); } }
+  @keyframes l4shim { 0%, 100% { opacity: 0; } 50% { opacity: .55; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs><path id="culo" d="M1211 0Q1131 0 1071.5 -31.5Q1012 -63 980.0 -121.0Q948 -179 948 -258Q948 -317 966.0 -364.0Q984 -411 1018.5 -444.0Q1053 -477 1102.0 -494.5Q1151 -512 1211 -512Q1242 -512 1277.0 -504.5Q1312 -497 1346 -479Q1366 -470 1373.5 -453.5Q1381 -437 1379.0 -419.5Q1377 -402 1366.5 -388.5Q1356 -375 1340.0 -370.5Q1324 -366 1304 -376Q1285 -387 1264.5 -392.0Q1244 -397 1226 -397Q1196 -397 1173.0 -387.5Q1150 -378 1134.5 -360.5Q1119 -343 1110.5 -317.0Q1102 -291 1102 -257Q1102 -191 1134.5 -153.5Q1167 -116 1226 -116Q1244 -116 1264.0 -120.5Q1284 -125 1304 -136Q1324 -146 1340.0 -141.0Q1356 -136 1365.5 -122.5Q1375 -109 1376.5 -91.5Q1378 -74 1370.5 -57.5Q1363 -41 1344 -32Q1310 -15 1276.0 -7.5Q1242 0 1211 0ZM1631 0Q1569 0 1528.0 -23.0Q1487 -46 1467.5 -92.5Q1448 -139 1448 -208V-434Q1448 -472 1467.5 -491.0Q1487 -510 1523 -510Q1559 -510 1579.0 -491.0Q1599 -472 1599 -434V-204Q1599 -160 1617.0 -138.5Q1635 -117 1674 -117Q1717 -117 1744.5 -147.5Q1772 -178 1772 -228V-434Q1772 -472 1791.5 -491.0Q1811 -510 1847 -510Q1884 -510 1903.5 -491.0Q1923 -472 1923 -434V-79Q1923 -2 1850 -2Q1814 -2 1795.0 -22.0Q1776 -42 1776 -79V-146L1791 -107Q1769 -56 1728.0 -28.0Q1687 0 1631 0ZM2217 0Q2128 0 2084.0 -49.5Q2040 -99 2040 -197V-648Q2040 -686 2059.5 -705.5Q2079 -725 2116 -725Q2152 -725 2171.5 -705.5Q2191 -686 2191 -648V-203Q2191 -162 2208.5 -142.5Q2226 -123 2255 -123Q2263 -123 2270.0 -124.0Q2277 -125 2285 -125Q2301 -127 2307.5 -115.5Q2314 -104 2314 -70Q2314 -40 2302.0 -24.5Q2290 -9 2265 -4Q2255 -3 2242.0 -1.5Q2229 0 2217 0ZM2604 0Q2525 0 2466.5 -31.0Q2408 -62 2376.0 -120.0Q2344 -178 2344 -257Q2344 -316 2362.0 -363.0Q2380 -410 2414.5 -443.5Q2449 -477 2497.0 -494.5Q2545 -512 2604 -512Q2683 -512 2741.5 -481.0Q2800 -450 2832.5 -393.0Q2865 -336 2865 -257Q2865 -197 2846.5 -150.0Q2828 -103 2794.0 -69.0Q2760 -35 2711.5 -17.5Q2663 0 2604 0ZM2604 -113Q2637 -113 2661.0 -129.0Q2685 -145 2699.0 -176.5Q2713 -208 2713 -257Q2713 -330 2683.0 -364.5Q2653 -399 2604 -399Q2572 -399 2547.5 -384.0Q2523 -369 2509.5 -337.5Q2496 -306 2496 -257Q2496 -184 2526.0 -148.5Q2556 -113 2604 -113Z"/></defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <h1>Oculo · logo, quatrième tour</h1>
+    <p>Tu trouvais que le blanc du cadre et le cyan de l’écran se mélangent : les deux sont très clairs, l’œil ne les sépare pas bien. Ici, <b>même forme, mêmes proportions, mêmes couleurs</b> ; seul l’équilibre entre le clair et le foncé change. Ensuite, quatre animations de chargement faites avec le vrai logo, en sarcelle et en abricot.</p>
+    <p>Chaque logo a sa note de contraste entre le cadre et l’écran (ou, pour les versions avec bordure, entre chaque couleur et la bordure) (1 = aucune différence, 21 = noir sur blanc ; au-dessus de 3, les deux se séparent bien même petit).</p>
+    <div class="compare" id="compare"></div>
+  </header>
+
+  <section id="logo">
+    <h2><span class="tag">A</span>Le logo</h2>
+    <p class="why">Pour chaque version : le logotype sur le fond de la bannière et sur fond clair, l’icône ronde du lanceur, puis les petites tailles (48 et 32 px) pour voir si ça reste lisible.</p>
+    <div id="variants"></div>
+  </section>
+
+  <section id="chargement">
+    <h2><span class="tag">B</span>L’animation de chargement</h2>
+    <p class="why">Le O de chaque animation est exactement le logo : même cadre, même écran, seul le mouvement s’ajoute. Choisis la version du logo en haut, elle change partout. Chaque animation mélange la sarcelle et l’abricot.</p>
+    <div class="sticky">
+      <div class="controls">
+        <span><span class="ctl-label">Logo</span><span class="seg" id="varSeg"></span></span>
+        <span><span class="ctl-label">Vitesse</span><span class="seg" id="speedSeg"><button data-v="1" aria-pressed="true">Réelle</button><button data-v="4" aria-pressed="false">4 × plus lent</button><button data-v="0" aria-pressed="false">Pause</button></span></span>
+      </div>
+    </div>
+    <div id="loaders"></div>
+  </section>
+
+  <section id="reco">
+    <h2><span class="tag">C</span>Ma recommandation</h2>
+    <div class="reco">
+      <div class="pair"><div id="recoIcon"></div><div id="recoLoader"></div></div>
+      <div id="recoText"></div>
+    </div>
+  </section>
+
+  <footer>Oculo · logo et chargement, quatrième tour, 12 novembre 2026 · <a href="logos-v3.html" style="color:inherit">tour précédent</a> · <a href="loading.html" style="color:inherit">chargement actuel</a> · <a href="couleur-secondaire.html" style="color:inherit">couleur secondaire</a></footer>
+</div>
+
+<script>
+/* ---------- Geometry (logo units, exact as gen_icon.py) ---------- */
+const FW = 860, FH = 725, FR = 275;
+const SX = 150, SY = 118, SW = 560, SH = 489, SR = 145;
+const GLOSS = 'M150 118 H710 V166.9 Q458 264.7 150 499.42 Z';
+const BANNER_MID = '#0b4952';
+
+const rr = (x, y, w, h, r) => `M${x + r} ${y} H${x + w - r} A${r} ${r} 0 0 1 ${x + w} ${y + r} V${y + h - r} A${r} ${r} 0 0 1 ${x + w - r} ${y + h} H${x + r} A${r} ${r} 0 0 1 ${x} ${y + h - r} V${y + r} A${r} ${r} 0 0 1 ${x + r} ${y} Z`;
+/* Same rounded rect but starting mid-top, for the comet trail (hides the seam on a straight edge) */
+const ring = (x, y, w, h, r) => `M${x + w / 2} ${y} H${x + w - r} A${r} ${r} 0 0 1 ${x + w} ${y + r} V${y + h - r} A${r} ${r} 0 0 1 ${x + w - r} ${y + h} H${x + r} A${r} ${r} 0 0 1 ${x} ${y + h - r} V${y + r} A${r} ${r} 0 0 1 ${x + r} ${y} Z`;
+
+/* ---------- Colors ---------- */
+const W = [[0, '#ffffff'], [1, '#d4f1f1']];
+const TEALF = [[0, '#0f4a52'], [1, '#0b333a']];
+const SCR = [[0, '#2fe3f0'], [.55, '#22d3c8'], [1, '#78f5be']];
+const SCR_L = [[0, '#1fd2e0'], [.55, '#16bfb4'], [1, '#5ee6a8']];
+const INK_D = '#ffffff', INK_L = '#0d3b42';
+const APR = { light: '#FFC896', main: '#FFA25C', dark: '#B0541A', ink: '#3A1A06' };
+
+const V = {
+  actuel: {
+    name: 'Actuel', short: 'approuvé', badge: 'now',
+    why: 'Le logo approuvé au troisième tour, pour comparer : cadre blanc, écran cyan, turquoise et menthe. Les deux sont très clairs, d’où le manque de contraste.',
+    dark: { frame: W, screen: SCR, ink: INK_D, glow: ['#c8fbf7', .38] },
+    light: { frame: TEALF, screen: SCR_L, ink: INK_L },
+  },
+  nuit: {
+    name: 'Cadre nuit', short: 'cadre foncé',
+    why: 'On inverse : le cadre devient sarcelle foncé, comme dans le chargement actuel, et l’écran garde ses couleurs vives. L’écran éclate, mais sur le fond de la bannière le cadre se perd ; il lui faut un fin liséré menthe et un halo.',
+    dark: { frame: [[0, '#1d7a84'], [.5, '#12555e'], [1, '#0b3a41']], rim: '#58eadd', screen: SCR, ink: INK_D, glow: ['#22d3c8', .55] },
+    light: { frame: TEALF, screen: SCR_L, ink: INK_L },
+  },
+  profond: {
+    name: 'Écran profond', short: 'écran plus foncé',
+    why: 'Le cadre reste blanc ; l’écran part du cyan en haut à gauche et descend vers une sarcelle profonde en bas à droite. Le blanc ressort tout seul et l’écran a plus de relief. Sur fond clair, rien ne change.',
+    dark: { frame: W, screen: [[0, '#45e8ef'], [.42, '#0c8b8f'], [1, '#08444c']], ink: INK_D, glow: ['#c8fbf7', .34] },
+    light: { frame: TEALF, screen: SCR_L, ink: INK_L },
+  },
+  lunette: {
+    name: 'Lunette', short: 'fine bordure foncée',
+    why: 'On garde le blanc et le cyan tels quels, mais une fine bordure sarcelle très foncée les sépare, comme le contour noir autour de l’image d’une vraie télé. Chaque couleur a maintenant un voisin foncé, donc le contraste grimpe sans rien changer d’autre.',
+    dark: { frame: W, bezel: '#062a31', gap: 34, screen: SCR, ink: INK_D, glow: ['#c8fbf7', .38] },
+    light: { frame: TEALF, bezel: '#041d22', gap: 34, screen: SCR_L, ink: INK_L },
+  },
+  inverse: {
+    name: 'Inversé', short: 'cadre vif, écran foncé',
+    why: 'Le dégradé vif passe sur le cadre, et l’écran devient une sarcelle profonde avec une lueur cyan dans le coin, comme une télé allumée sur une image sombre. Très fort, mais ça change le caractère du logo.',
+    dark: { frame: [[0, '#5ef0e6'], [.5, '#22d3c8'], [1, '#2fd9a4']], screen: [[0, '#126a73'], [.6, '#0b3a41'], [1, '#062a31']], screenGlow: true, glossSoft: true, ink: INK_D, glow: ['#22d3c8', .45] },
+    light: { frame: [[0, '#1fd2e0'], [.5, '#16bfb4'], [1, '#12a89f']], screen: [[0, '#126a73'], [.6, '#0b3a41'], [1, '#062a31']], screenGlow: true, glossSoft: true, ink: INK_L },
+  },
+  veille: {
+    name: 'Lunette abricot', short: 'lunette + voyant',
+    why: 'La Lunette, plus un petit voyant abricot au bas du cadre, comme la lumière de veille d’une télé. Une touche chaude discrète qui relie le logo à la couleur secondaire ; aux très petites tailles il disparaît, et c’est correct.',
+    dark: { frame: W, bezel: '#062a31', gap: 34, screen: SCR, led: true, ink: INK_D, glow: ['#c8fbf7', .38] },
+    light: { frame: TEALF, bezel: '#041d22', gap: 34, screen: SCR_L, led: true, ink: INK_L },
+  },
+};
+const ORDER = ['actuel', 'nuit', 'profond', 'lunette', 'inverse', 'veille'];
+const PICK_LOGO = 'veille', PICK_LOADER = 'l1';
+
+/* ---------- Contrast (WCAG relative luminance, averaged along each gradient) ---------- */
+const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const lum = ([r, g, b]) => { const f = (c) => { c /= 255; return c <= .03928 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4; }; return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); };
+const at = (stops, t) => { for (let i = 1; i < stops.length; i++) { const [t0, c0] = stops[i - 1], [t1, c1] = stops[i]; if (t <= t1) { const u = (t - t0) / (t1 - t0 || 1), a = hex(c0), b = hex(c1); return a.map((v, k) => v + (b[k] - v) * u); } } return hex(stops[stops.length - 1][1]); };
+const avgLum = (stops) => { let s = 0; for (let i = 0; i <= 20; i++) s += lum(at(stops, i / 20)); return s / 21; };
+const ratio = (a, b) => { const [x, y] = a > b ? [a, b] : [b, a]; return (x + .05) / (y + .05); };
+const fmt = (r) => r.toFixed(1).replace('.', ',');
+const cls = (r) => (r >= 4.5 ? 'ok' : r >= 3 ? 'mid' : 'bad');
+function contrasts(p) {
+  const f = avgLum(p.frame), s = avgLum(p.screen), out = [];
+  if (!p.bezel) out.push(['Cadre ↔ écran', ratio(f, s)]);
+  if (p.bezel) { const z = lum(hex(p.bezel)); out.push(['Cadre ↔ bordure', ratio(f, z)], ['Bordure ↔ écran', ratio(z, s)]); }
+  out.push(['Cadre ↔ fond de la bannière', ratio(f, lum(hex(BANNER_MID)))]);
+  return out;
+}
+
+/* ---------- Mark builder ---------- */
+let uidN = 0;
+const uid = () => 'u' + (++uidN);
+const grad = (id, stops, dir, extra = '') => `<linearGradient id="${id}" ${dir === 'v' ? 'x1="0" y1="0" x2="0" y2="1"' : 'x1="0" y1="0" x2="1" y2="1"'}${extra}>${stops.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join('')}</linearGradient>`;
+
+/* Returns { defs, body } in logo units (0..860 × 0..725). opts: glow, led (force), loader (l1..l4) */
+function mark(key, mode, opts = {}) {
+  const p = V[key][mode];
+  const id = uid();
+  const gap = p.gap || 0;
+  const led = p.led || opts.forceLed;
+  let defs = grad(id + 'f', p.frame, 'v') + grad(id + 's', p.screen, 'd')
+    + `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="${p.glossSoft ? .2 : .34}"/><stop offset="1" stop-color="#fff" stop-opacity="${p.glossSoft ? .03 : .06}"/></linearGradient>`
+    + `<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}" rx="${SR}"/></clipPath>`;
+  let body = '';
+  if (opts.glow && p.glow) {
+    defs += `<filter id="${id}b" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="28"/></filter>`;
+    body += `<rect x="-6" y="-6" width="872" height="737" rx="281" fill="${p.glow[0]}" opacity="${p.glow[1]}" filter="url(#${id}b)"/>`;
+  }
+  body += `<rect x="0" y="0" width="${FW}" height="${FH}" rx="${FR}" fill="url(#${id}f)"/>`;
+  if (p.rim) body += `<rect x="7" y="7" width="${FW - 14}" height="${FH - 14}" rx="${FR - 7}" fill="none" stroke="${p.rim}" stroke-opacity=".6" stroke-width="14"/>`;
+  if (gap) body += `<rect x="${SX - gap}" y="${SY - gap}" width="${SW + 2 * gap}" height="${SH + 2 * gap}" rx="${SR + gap}" fill="${p.bezel}"/>`;
+  const L = opts.loader;
+
+  /* Comet trail: in the bezel when there is one, else along the middle of the frame */
+  if (L === 'l1') {
+    const d = gap ? ring(SX - gap / 2, SY - gap / 2, SW + gap, SH + gap, SR + gap / 2) : ring(75, 59, 710, 607, 205);
+    const w = gap ? gap - 4 : 56;
+    const trackCol = gap ? 'rgba(120,245,190,.14)' : (mode === 'dark' && p.frame === W ? 'rgba(11,127,125,.10)' : 'rgba(120,245,190,.12)');
+    body += `<path d="${d}" fill="none" stroke="${trackCol}" stroke-width="${w}"/>`
+      + `<path class="tail" d="${d}" pathLength="100" fill="none" stroke="#78f5be" stroke-opacity=".45" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="26 74"/>`
+      + `<path class="body" d="${d}" pathLength="100" fill="none" stroke="#2fe3f0" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="13 87"/>`
+      + `<path class="head" d="${d}" pathLength="100" fill="none" stroke="${APR.main}" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="7 93"/>`;
+  }
+
+  /* Screen */
+  const S = `<rect x="${SX}" y="${SY}" width="${SW}" height="${SH}" rx="${SR}"`;
+  let screen = `${S} fill="url(#${id}s)"/>`;
+  if (p.screenGlow) {
+    defs += `<radialGradient id="${id}r" cx=".3" cy=".28" r=".7"><stop offset="0" stop-color="#2fe3f0" stop-opacity=".55"/><stop offset="1" stop-color="#2fe3f0" stop-opacity="0"/></radialGradient>`;
+    screen += `${S} fill="url(#${id}r)"/>`;
+  }
+  screen += `<path clip-path="url(#${id}c)" d="${GLOSS}" fill="url(#${id}g)"/>`;
+
+  if (L === 'l1') {
+    body += screen + `<g class="scr-breathe">${S} fill="${APR.light}" opacity=".5"/></g>`;
+  } else if (L === 'l2') {
+    body += `${S} fill="#05181c"/>`
+      + `<g class="lit">${screen}<g clip-path="url(#${id}c)"><g class="band"><path fill="#fff" fill-opacity=".30" d="M-100 638 L960 13 L960 88 L-100 713 Z"/></g></g></g>`
+      + `<g clip-path="url(#${id}c)"><rect class="line" x="${SX}" y="${SY + SH / 2 - 9}" width="${SW}" height="18" rx="9" fill="${APR.light}"/></g>`;
+    defs += `<radialGradient id="${id}w"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="${APR.light}"/><stop offset=".6" stop-color="${APR.main}" stop-opacity=".55"/><stop offset="1" stop-color="${APR.main}" stop-opacity="0"/></radialGradient>`;
+    body += `<circle class="glint" cx="${SX + SW - 120}" cy="${SY + 92}" r="70" fill="url(#${id}w)"/>`;
+  } else if (L === 'l4') {
+    body += screen + `<g class="shim">${S} fill="#78f5be" opacity=".35"/></g>`
+      + `<g clip-path="url(#${id}c)"><g class="band"><path fill="#fff" fill-opacity=".26" d="M-100 638 L960 13 L960 120 L-100 745 Z"/></g></g>`;
+  } else {
+    body += screen;
+  }
+
+  /* Standby LED, centered in the frame's bottom band */
+  if (led) {
+    const cy = (SY + SH + gap + FH) / 2;
+    if (L === 'l4') {
+      defs += `<filter id="${id}lb" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="16"/></filter>`;
+      body += `<circle class="ledglow" cx="430" cy="${cy}" r="30" fill="${APR.main}" filter="url(#${id}lb)"/>`;
+    }
+    body += `<circle cx="430" cy="${cy}" r="29" fill="${mode === 'dark' ? '#0b333a' : '#062a31'}"/>`
+      + `<circle class="led" cx="430" cy="${cy}" r="19" fill="${APR.main}"/>`
+      + `<circle cx="424" cy="${cy - 6}" r="6.5" fill="${APR.light}" class="led"/>`;
+  }
+
+  if (L === 'l3') {
+    defs += `<filter id="${id}h" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="46"/></filter>`;
+    const halo = (c, k) => `<rect class="${k}" x="10" y="10" width="840" height="705" rx="270" fill="${c}" filter="url(#${id}h)"/>`;
+    body = halo('#22d3c8', 'halo-t') + halo(APR.main, 'halo-a')
+      + `<g class="o">${body}<g class="warm">${S} fill="${APR.main}"/></g><path clip-path="url(#${id}c)" d="${GLOSS}" fill="url(#${id}g)"/></g>`;
+  }
+  return { defs, body };
+}
+
+function wordmark(key, mode, cls = 'wm') {
+  const m = mark(key, mode);
+  return `<svg class="${cls}" viewBox="-40 -765 2945 805" role="img" aria-label="Oculo"><defs>${m.defs}</defs><g transform="translate(0 -725)">${m.body}</g><use href="#culo" fill="${V[key][mode].ink}"/></svg>`;
+}
+
+/* Launcher icon: adaptive 108 dp canvas, visible 72 dp disc, mark 46 dp wide (64 %) as gen_icon.py */
+function icon(key, size) {
+  const m = mark(key, 'dark', { glow: true });
+  const id = uid(), S = 46 / FW, OX = 54 - 23, OY = 54 - FH * S / 2;
+  return `<svg viewBox="18 18 72 72" width="${size}" height="${size}" role="img" aria-label="Icône Oculo"><defs>${m.defs}`
+    + `<linearGradient id="${id}bg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="108" y2="108"><stop offset="0" stop-color="#0F5E67"/><stop offset=".5" stop-color="#0B4952"/><stop offset="1" stop-color="#062A31"/></linearGradient>`
+    + `<radialGradient id="${id}bl" gradientUnits="userSpaceOnUse" cx="20" cy="16" r="70"><stop offset="0" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>`
+    + `<clipPath id="${id}d"><circle cx="54" cy="54" r="36"/></clipPath></defs>`
+    + `<g clip-path="url(#${id}d)"><rect width="108" height="108" fill="url(#${id}bg)"/><rect width="108" height="108" fill="url(#${id}bl)"/>`
+    + `<g transform="translate(${OX} ${OY.toFixed(3)}) scale(${S.toFixed(6)})">${m.body}</g></g></svg>`;
+}
+
+function loaderSvg(key, L, size) {
+  const m = mark(key, 'dark', { loader: L, forceLed: L === 'l4' });
+  const sz = size ? ` width="${size}" height="${size}"` : '';
+  return `<svg class="${L}" viewBox="-70 -137.5 1000 1000"${sz} role="img" aria-label="Chargement"><defs>${m.defs}</defs>${m.body}</svg>`;
+}
+
+/* ---------- Section A ---------- */
+document.getElementById('compare').innerHTML = ORDER.map((k, i) =>
+  `<a class="cmp${k === PICK_LOGO ? ' pick' : ''}" href="#v-${k}">${icon(k, 104)}<b>${i ? i + ' · ' : ''}${V[k].name}</b><small>${V[k].short}</small></a>`).join('');
+
+const swatches = (p) => {
+  const c = [['cadre', p.frame], ['écran', p.screen]];
+  let h = c.map(([n, s]) => `<span><i style="background:linear-gradient(135deg,${s.map((x) => x[1]).join(',')})"></i>${n} ${s.map((x) => x[1]).join(' → ')}</span>`).join('');
+  if (p.bezel) h += `<span><i style="background:${p.bezel}"></i>bordure ${p.bezel}</span>`;
+  if (p.rim) h += `<span><i style="background:${p.rim}"></i>liséré ${p.rim} à 60 %</span>`;
+  if (p.led) h += `<span><i style="background:${APR.main}"></i>voyant ${APR.main}</span>`;
+  return h;
+};
+
+document.getElementById('variants').innerHTML = ORDER.map((k, i) => {
+  const v = V[k];
+  const badge = k === 'actuel' ? '<span class="badge now">Actuel</span>' : k === PICK_LOGO ? '<span class="badge pick">Recommandé</span>' : '';
+  const chips = contrasts(v.dark).map(([n, r]) => `<span class="chip ${cls(r)}">${n} <b>${fmt(r)} : 1</b></span>`).join('');
+  return `<article class="var${k === PICK_LOGO ? ' is-pick' : ''}" id="v-${k}">
+    <h3><span class="tag">${i || '0'}</span>${v.name}${badge}</h3>
+    <p>${v.why}</p>
+    <div class="chips">${chips}</div>
+    <div class="colors">${swatches(v.dark)}</div>
+    <div class="two">
+      <div class="tile banner">${wordmark(k, 'dark')}</div>
+      <div class="tile light">${wordmark(k, 'light')}</div>
+    </div>
+    <div class="three">
+      <div class="tile page"><div class="row"><figure>${icon(k, 120)}120 px</figure><figure>${icon(k, 48)}48</figure><figure>${icon(k, 32)}32</figure></div></div>
+      <div class="tile light"><div class="row"><figure>${icon(k, 120)}120 px</figure><figure>${icon(k, 48)}48</figure><figure>${icon(k, 32)}32</figure></div></div>
+      <div class="tile page mini">
+        <div class="b">${wordmark(k, 'dark', '')}<span>32 px</span></div>
+        <div class="l">${wordmark(k, 'light', '')}<span>32 px</span></div>
+        <div class="b">${wordmark(k, 'dark', 'h24')}<span>24 px</span></div>
+      </div>
+    </div>
+  </article>`;
+}).join('');
+
+/* ---------- Section B ---------- */
+const LOADERS = {
+  l1: { name: 'Comète', why: 'Une petite comète fait le tour de l’écran : la tête abricot, suivie d’une traînée cyan puis menthe. Avec la Lunette, elle roule dans la bordure foncée, donc elle se voit très bien ; sans bordure, elle passe sur le cadre. L’écran se réchauffe à peine à chaque tour. C’est le Balayage d’aujourd’hui, mais sur le vrai logo.', feas: '<b>Oui</b>, tel quel en animation vectorielle d’Android (trois traits qui avancent). Très léger pour la télé.', loop: '1,4 s' },
+  l2: { name: 'Allumage', why: 'L’écran s’allume comme un vieux téléviseur : une ligne abricot s’ouvre au milieu, l’image apparaît, un reflet glisse, une petite étincelle chaude brille dans le coin, puis l’écran s’éteint doucement.', feas: '<b>Oui</b>, en animation vectorielle d’Android (un écran qui grandit, un reflet qui glisse, des fondus). Léger.', loop: '1,6 s' },
+  l3: { name: 'Respiration', why: 'Le logo respire doucement, et la lueur autour de lui passe de la sarcelle à l’abricot, une respiration sur deux ; l’écran se réchauffe quand la lueur devient abricot.', feas: '<b class="mid">Oui, avec une astuce</b> : le flou de la lueur ne se fait pas en vectoriel ; on met deux images de lueur déjà floues et on les fait apparaître tour à tour. Léger quand même.', loop: '1,6 s par respiration' },
+  l4: { name: 'Veille', why: 'Un voyant abricot clignote au bas du cadre, comme une télé qui se réveille, pendant qu’un reflet balaie l’écran et que le dégradé scintille vers la menthe. Le voyant s’ajoute même si le logo choisi n’en a pas.', feas: '<b>Oui</b>, en animation vectorielle d’Android (un point qui clignote, un reflet qui glisse). Très léger.', loop: '1,2 s' },
+};
+let currentVar = PICK_LOGO;
+
+function renderLoaders() {
+  uidN = 1000;
+  document.getElementById('loaders').innerHTML = Object.entries(LOADERS).map(([L, d], i) => `
+    <article class="ld${L === PICK_LOADER ? ' is-pick' : ''}">
+      <h3><span class="tag">${i + 1}</span>${d.name}${L === PICK_LOADER ? '<span class="badge pick">Recommandé</span>' : ''}</h3>
+      <p>${d.why} Une boucle dure ${d.loop}.</p>
+      <p class="feas">Faisable dans l’app : ${d.feas}</p>
+      <div class="ldgrid">
+        <div class="stage big">${loaderSvg(currentVar, L)}</div>
+        <div class="real">
+          <div class="stage"><div class="pair"><figure>${loaderSvg(currentVar, L, 140)}140 px</figure><figure>${loaderSvg(currentVar, L, 96)}96 px</figure></div></div>
+          <figure><div class="tvshot"><div class="bar"></div><div class="rows"><div class="r"><b></b><b></b><b></b><b></b><b></b></div><div class="r"><b></b><b></b><b></b><b></b><b></b></div></div><div class="spot">${loaderSvg(currentVar, L)}</div></div><figcaption>Sur l’accueil de la télé, à la taille de l’app (environ 130 px sur 1080p).</figcaption></figure>
+        </div>
+      </div>
+    </article>`).join('');
+}
+const varSeg = document.getElementById('varSeg');
+varSeg.innerHTML = ORDER.map((k) => `<button data-v="${k}" aria-pressed="${k === currentVar}">${V[k].name}</button>`).join('');
+varSeg.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  varSeg.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+  currentVar = b.dataset.v; renderLoaders();
+});
+const speedSeg = document.getElementById('speedSeg');
+speedSeg.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  speedSeg.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+  document.body.classList.toggle('paused', b.dataset.v === '0');
+  if (b.dataset.v !== '0') document.documentElement.style.setProperty('--k', b.dataset.v);
+});
+renderLoaders();
+
+/* ---------- Section C ---------- */
+uidN = 5000;
+document.getElementById('recoIcon').innerHTML = icon(PICK_LOGO, 120);
+document.getElementById('recoLoader').innerHTML = loaderSvg(PICK_LOGO, PICK_LOADER, 130);
+const rc = contrasts(V[PICK_LOGO].dark);
+document.getElementById('recoText').innerHTML = `
+  <p><b>Logo : ${V[PICK_LOGO].name}.</b> C’est le seul qui règle le problème sans toucher à ce que tu as approuvé : le blanc et le cyan restent, la forme reste, mais une fine bordure foncée les sépare (${fmt(rc[0][1])} : 1 et ${fmt(rc[1][1])} : 1 au lieu de ${fmt(contrasts(V.actuel.dark)[0][1])} : 1), comme sur une vraie télé. Le petit voyant abricot ajoute la touche chaude sans prendre de place, et il s’efface tout seul aux petites tailles.</p>
+  <p><b>Chargement : ${LOADERS[PICK_LOADER].name}.</b> C’est le plus proche de ce que tu as déjà dans l’app et le plus simple à faire sur la vieille télé ; avec la Lunette, la comète abricot et cyan roule dans la bordure foncée, donc l’animation <em>est</em> le logo, avec juste du mouvement en plus.</p>`;
+</script>
+</body>
+</html>
