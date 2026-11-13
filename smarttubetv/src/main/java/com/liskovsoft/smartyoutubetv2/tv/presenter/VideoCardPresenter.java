@@ -131,7 +131,7 @@ public class VideoCardPresenter extends LongClickPresenter {
         Context context = cardView.getContext();
 
         cardView.setTitleText(video.getTitle());
-        cardView.setContentText(video.getSecondTitle());
+        cardView.setContentText(OculoUi.accentCardMeta(context, video.getSecondTitle())); // Oculo: Abricot accents
         // Count progress that very close to zero. E.g. when user closed video immediately.
         cardView.setProgress(video.percentWatched > 0 && video.percentWatched < 1 ? 1 : Math.round(video.percentWatched));
         cardView.setBadgeText(

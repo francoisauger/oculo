@@ -18,6 +18,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.SeekBarSegme
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.UiOptionItem;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.AppDialogPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.settings.SponsorBlockSettingsPresenter;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoSkipNotice;
 import com.liskovsoft.smartyoutubetv2.common.prefs.SponsorBlockData;
 import com.liskovsoft.sharedutils.rx.RxHelper;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
@@ -271,8 +272,10 @@ public class SponsorBlockController extends BasePlayerController {
             return;
         }
 
+        if (!OculoSkipNotice.show(getActivity(), getContext().getString(R.string.oculo_segment_skipped, category))) { // Oculo: in-player notice
         MessageHelpers.showMessage(getContext(),
                 String.format("%s: %s", getContext().getString(R.string.content_block_provider), getContext().getString(R.string.msg_skipping_segment, category)));
+        }
         setPositionMs(skipPosMs);
         closeTransparentDialog();
     }

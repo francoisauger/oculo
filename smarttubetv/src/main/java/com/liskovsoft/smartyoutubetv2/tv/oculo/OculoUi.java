@@ -13,13 +13,19 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoCardMeta;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+
+import java.util.List;
 
 /**
  * Oculo: small view tweaks called from upstream code through one-line hooks. Colors come from resources
@@ -68,6 +74,38 @@ public final class OculoUi {
         if (color != 0) {
             view.setTextColor(color);
         }
+    }
+
+    /**
+     * A card's meta line with the Abricot accent on the live viewer count ({@code R.color.oculo_card_live_viewers})
+     * and on a relative publish time under 24 h ({@code R.color.oculo_card_recent_time}), see {@link OculoCardMeta}.
+     * Only those segments are colored; the rest keeps the card's text color (focused or not). Transparent colors
+     * (upstream flavors) = text returned unchanged.
+     */
+    public static CharSequence accentCardMeta(Context context, CharSequence meta) {
+        if (context == null || meta == null || meta.length() == 0) {
+            return meta;
+        }
+
+        int liveColor = ContextCompat.getColor(context, R.color.oculo_card_live_viewers);
+        int recentColor = ContextCompat.getColor(context, R.color.oculo_card_recent_time);
+        if (liveColor == 0 && recentColor == 0) {
+            return meta;
+        }
+
+        List<OculoCardMeta.Range> ranges = OculoCardMeta.findAccents(meta);
+        if (ranges.isEmpty()) {
+            return meta;
+        }
+
+        SpannableString result = new SpannableString(meta);
+        for (OculoCardMeta.Range range : ranges) {
+            int color = range.kind == OculoCardMeta.KIND_LIVE_VIEWERS ? liveColor : recentColor;
+            if (color != 0) {
+                result.setSpan(new ForegroundColorSpan(color), range.start, range.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return result;
     }
 
     /**

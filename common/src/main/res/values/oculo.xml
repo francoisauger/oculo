@@ -26,6 +26,13 @@
     <color name="oculo_sb_poi_highlight">@color/light_pink</color>
     <color name="oculo_sb_filler">@color/electric_violet</color>
 
+    <!-- Player: in-player notice when SponsorBlock auto-skips a segment (OculoSkipNotice) instead of the toast.
+         Off upstream; the oculo flavor turns it on with an Abricot bar. -->
+    <bool name="oculo_skip_notice">false</bool>
+    <color name="oculo_skip_notice_background">#E0141414</color>
+    <color name="oculo_skip_notice_accent">#FFFFFFFF</color>
+    <item name="oculo_skip_notice_hide" type="id"/>
+
     <string name="oculo_home_rows_filter">Hide news and sports rows</string>
     <string name="oculo_home_hide_watched">Hide watched videos in the first row</string>
     <string name="oculo_home_continue_watching">Show Continue watching</string>
@@ -34,4 +41,6 @@
     <string name="oculo_thumbnail_glow">Glow from the thumbnail</string>
     <!-- Top bar mic button (OculoTopBar) -->
     <string name="oculo_voice_search">Search by voice</string>
+    <!-- In-player SponsorBlock notice (OculoSkipNotice); %s = segment category -->
+    <string name="oculo_segment_skipped">Skipped: %s</string>
 </resources>

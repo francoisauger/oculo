@@ -8,4 +8,6 @@
     <string name="oculo_thumbnail_glow">Lueur selon la vignette</string>
     <!-- Top bar mic button (OculoTopBar) -->
     <string name="oculo_voice_search">Recherche vocale</string>
+    <!-- In-player SponsorBlock notice (OculoSkipNotice); %s = segment category -->
+    <string name="oculo_segment_skipped">Segment passé : %s</string>
 </resources>

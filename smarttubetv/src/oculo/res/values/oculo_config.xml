@@ -35,6 +35,15 @@
     <color name="oculo_signin_code">@color/oculo_abricot</color>
     <color name="oculo_signin_link">@color/oculo_abricot_light</color>
 
+    <!-- Card meta line (docs/mockups/couleur-secondaire.html, .viewers): live viewer count ("1.4K watching")
+         and a publish time under 24 h ("3 hours ago") in Abricot main; the rest of the line unchanged -->
+    <color name="oculo_card_live_viewers">@color/oculo_abricot</color>
+    <color name="oculo_card_recent_time">@color/oculo_abricot</color>
+
+    <!-- Player: SponsorBlock auto-skip notice in the player (board's « Commandite passée »: 4 x 18dp Abricot bar) -->
+    <bool name="oculo_skip_notice">true</bool>
+    <color name="oculo_skip_notice_accent">@color/oculo_abricot</color>
+
     <!-- Focused card ring pulse, as on the Google TV home screen: white 100% -> 45% -> 100% every 2 s -->
     <integer name="oculo_card_focus_pulse_period">2000</integer>
     <item name="oculo_card_focus_pulse_min_alpha" type="fraction">45%</item>
