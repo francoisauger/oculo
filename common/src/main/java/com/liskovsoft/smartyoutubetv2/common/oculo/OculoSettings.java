@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Oculo: settings added to the "Main UI" screen (MainUISettingsPresenter). Changes apply the next time Home loads.
+ * Oculo: settings added to the "Main UI" screen (MainUISettingsPresenter). Changes apply the next time Home loads
+ * (the thumbnail glow: on the next focused card).
  */
 public class OculoSettings {
     public static void appendHomeCategory(Context context, AppDialogPresenter settingsPresenter) {
@@ -25,6 +26,10 @@ public class OculoSettings {
         options.add(UiOptionItem.from(context.getString(R.string.oculo_home_hide_watched),
                 option -> data.setHomeHideWatchedEnabled(option.isSelected()),
                 data.isHomeHideWatchedEnabled()));
+
+        options.add(UiOptionItem.from(context.getString(R.string.oculo_thumbnail_glow),
+                option -> data.setThumbnailGlowEnabled(option.isSelected()),
+                data.isThumbnailGlowEnabled()));
 
         settingsPresenter.appendCheckedCategory(context.getString(R.string.header_home), options);
     }

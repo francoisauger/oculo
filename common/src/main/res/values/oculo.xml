@@ -6,6 +6,9 @@
     <integer name="oculo_home_refresh_minutes">180</integer>
     <bool name="oculo_home_rows_filter_default">true</bool>
     <bool name="oculo_home_hide_watched_default">true</bool>
+    <!-- Home's background glow takes the focused thumbnail's color (OculoGlow; only where the theme uses
+         Oculo's glow background, i.e. the oculo flavor's Dark Grey scheme) -->
+    <bool name="oculo_thumbnail_glow_default">false</bool>
     <!-- About: "Install bridge" button (ATV/Amazon voice-search bridge) -->
     <bool name="oculo_show_install_bridge">true</bool>
 
@@ -23,6 +26,7 @@
 
     <string name="oculo_home_rows_filter">Hide news and sports rows</string>
     <string name="oculo_home_hide_watched">Hide watched videos in the first row</string>
+    <string name="oculo_thumbnail_glow">Glow from the thumbnail</string>
     <!-- Top bar mic button (OculoTopBar) -->
     <string name="oculo_voice_search">Search by voice</string>
 </resources>

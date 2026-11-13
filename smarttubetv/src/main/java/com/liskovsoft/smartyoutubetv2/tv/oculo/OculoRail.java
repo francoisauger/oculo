@@ -123,6 +123,9 @@ public final class OculoRail implements AccountChangeListener {
         // No panel behind the rail: the browse background shows through, as in YouTube.
         mFragment.setBrandColor(Color.TRANSPARENT);
 
+        // Background glow that takes the focused thumbnail's color (Google TV style)
+        OculoGlow.attach(root);
+
         // Search and account move from the title bar into the rail; the title becomes a YouTube-style top bar.
         mTopBar = OculoTopBar.attach(mFragment.getTitleView());
 
