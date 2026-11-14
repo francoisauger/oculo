@@ -243,4 +243,152 @@ public class OculoContinueWatchingRulesTest {
         assertEquals(Collections.singletonList("a@l"), merged(
                 Collections.singletonList(video("a", 1, 5 * MIN, 20 * MIN)), Collections.<HistoryItem>emptyList(), null));
     }
+
+    // ---- 32.74-16: in-place update plan ----
+
+    private static OculoContinueWatchingRules.RowPlan plan(List<String> shown, List<String> fresh) {
+        return OculoContinueWatchingRules.planInPlace(shown, fresh);
+    }
+
+    @Test
+    public void planSameIdsIsNotStructural() {
+        OculoContinueWatchingRules.RowPlan p = plan(Arrays.asList("a", "b"), Arrays.asList("a", "b"));
+        assertFalse(p.isStructural());
+        assertEquals(Arrays.asList("a", "b"), p.kept);
+    }
+
+    @Test
+    public void planNewVideoOnTopIsPrepended() {
+        OculoContinueWatchingRules.RowPlan p = plan(Arrays.asList("a", "b", "c"), Arrays.asList("x", "a", "b", "c"));
+        assertEquals(Collections.emptyList(), p.remove);
+        assertEquals(Arrays.asList("x"), p.prepend);
+        assertEquals(Collections.emptyList(), p.append);
+    }
+
+    @Test
+    public void planFinishedVideoIsRemovedAndNewOnesAppended() {
+        OculoContinueWatchingRules.RowPlan p = plan(Arrays.asList("a", "b", "c"), Arrays.asList("a", "c", "d"));
+        assertEquals(Arrays.asList("b"), p.remove);
+        assertEquals(Arrays.asList("a", "c"), p.kept);
+        assertEquals(Collections.emptyList(), p.prepend);
+        assertEquals(Arrays.asList("d"), p.append);
+    }
+
+    @Test
+    public void planVideoMovedToTop() {
+        // b watched again on the phone: back at the top
+        OculoContinueWatchingRules.RowPlan p = plan(Arrays.asList("a", "b", "c"), Arrays.asList("b", "a", "c"));
+        assertEquals(Arrays.asList("b"), p.remove);
+        assertEquals(Arrays.asList("a", "c"), p.kept);
+        assertEquals(Arrays.asList("b"), p.prepend);
+        assertEquals(Collections.emptyList(), p.append);
+    }
+
+    @Test
+    public void planNothingInCommonReplacesTheItemsOnly() {
+        OculoContinueWatchingRules.RowPlan p = plan(Arrays.asList("a", "b"), Arrays.asList("x", "y"));
+        assertEquals(Arrays.asList("a", "b"), p.remove);
+        assertEquals(Collections.emptyList(), p.kept);
+        assertEquals(Collections.emptyList(), p.prepend);
+        assertEquals(Arrays.asList("x", "y"), p.append);
+    }
+
+    @Test
+    public void planResultAlwaysGivesTheFreshOrder() {
+        List<String> shown = Arrays.asList("a", "b", "c", "d", "e");
+        List<String> fresh = Arrays.asList("d", "a", "x", "b", "c", "y");
+        OculoContinueWatchingRules.RowPlan p = plan(shown, fresh);
+        List<String> result = new ArrayList<>(p.prepend);
+        result.addAll(p.kept);
+        result.addAll(p.append);
+        assertEquals(fresh, result);
+        for (String id : p.kept) {
+            assertFalse(p.remove.contains(id));
+        }
+    }
+
+    // ---- 32.74-16: history kept between launches ----
+
+    @Test
+    public void historyCacheRoundTrip() {
+        List<HistoryItem> items = Arrays.asList(
+                new HistoryItem("a", 40f, 120_000, 600_000, false, false),
+                new HistoryItem("b", -1f, -1, 300_000, true, false),
+                new HistoryItem("c", 10f, -1, 300_000, false, true));
+        Map<String, String> specs = new HashMap<>();
+        specs.put("a", "spec&vi;title\twith tab\nand line");
+        specs.put("b", "spec b");
+        // c has no card: skipped
+        String data = OculoContinueWatchingRules.formatHistoryCache(
+                new OculoContinueWatchingRules.HistoryCache("k1", NOW, items, specs));
+        OculoContinueWatchingRules.HistoryCache back = OculoContinueWatchingRules.parseHistoryCache(data);
+        assertEquals("k1", back.accountKey);
+        assertEquals(NOW, back.savedMs);
+        assertEquals(2, back.items.size());
+        HistoryItem a = back.items.get(0);
+        assertEquals("a", a.videoId);
+        assertEquals(40f, a.percent, 0.001f);
+        assertEquals(120_000, a.positionMs);
+        assertEquals(600_000, a.durationMs);
+        assertFalse(a.isLive);
+        assertTrue(back.items.get(1).isLive);
+        assertEquals("spec&vi;title with tab and line", back.specs.get("a"));
+        assertEquals("spec b", back.specs.get("b"));
+    }
+
+    @Test
+    public void historyCacheKeepsOnlyTheTopItems() {
+        List<HistoryItem> items = new ArrayList<>();
+        Map<String, String> specs = new HashMap<>();
+        for (int i = 0; i < OculoContinueWatchingRules.HISTORY_TOP + 5; i++) {
+            items.add(new HistoryItem("v" + i, 50f, -1, 600_000, false, false));
+            specs.put("v" + i, "s" + i);
+        }
+        OculoContinueWatchingRules.HistoryCache back = OculoContinueWatchingRules.parseHistoryCache(
+                OculoContinueWatchingRules.formatHistoryCache(new OculoContinueWatchingRules.HistoryCache("k", NOW, items, specs)));
+        assertEquals(OculoContinueWatchingRules.HISTORY_TOP, back.items.size());
+        assertEquals("v0", back.items.get(0).videoId);
+    }
+
+    @Test
+    public void historyCacheDamagedOrEmpty() {
+        assertEquals(null, OculoContinueWatchingRules.parseHistoryCache(null));
+        assertEquals(null, OculoContinueWatchingRules.parseHistoryCache(""));
+        assertEquals(null, OculoContinueWatchingRules.parseHistoryCache("garbage"));
+        assertEquals(null, OculoContinueWatchingRules.parseHistoryCache("cw1\tk\tnot-a-number"));
+        OculoContinueWatchingRules.HistoryCache c = OculoContinueWatchingRules.parseHistoryCache(
+                "cw1\tk\t5\nbad line\na\tx\t1\t2\t0\tspec\nb\t1\t1\t2\t0\tspec b");
+        assertEquals(1, c.items.size());
+        assertEquals("b", c.items.get(0).videoId);
+    }
+
+    @Test
+    public void historyCacheUsableOnlyForTheSameAccountAndRecent() {
+        OculoContinueWatchingRules.HistoryCache c = new OculoContinueWatchingRules.HistoryCache("k", NOW - HOUR,
+                Collections.<HistoryItem>emptyList(), Collections.<String, String>emptyMap());
+        assertTrue(c.isUsable("k", NOW));
+        assertFalse(c.isUsable("other", NOW));
+        assertFalse(c.isUsable(null, NOW));
+        assertFalse(c.isUsable("k", NOW + OculoContinueWatchingRules.HISTORY_CACHE_MAX_AGE_MS));
+    }
+
+    // ---- Selection with the cached history gives the same row as with the fetched one ----
+
+    @Test
+    public void cachedHistoryGivesTheSameSelection() {
+        List<HistoryItem> items = Arrays.asList(
+                new HistoryItem("a", 40f, 120_000, 600_000, false, false),
+                new HistoryItem("b", 95f, -1, 600_000, false, false),
+                new HistoryItem("c", 20f, -1, 600_000, false, false));
+        Map<String, String> specs = new HashMap<>();
+        for (HistoryItem h : items) {
+            specs.put(h.videoId, "s");
+        }
+        OculoContinueWatchingRules.HistoryCache back = OculoContinueWatchingRules.parseHistoryCache(
+                OculoContinueWatchingRules.formatHistoryCache(new OculoContinueWatchingRules.HistoryCache("k", NOW, items, specs)));
+        List<Candidate> none = Collections.emptyList();
+        assertEquals(
+                OculoContinueWatchingRules.selectMerged(none, items, Collections.<String, Mark>emptyMap(), NOW).toString(),
+                OculoContinueWatchingRules.selectMerged(none, back.items, Collections.<String, Mark>emptyMap(), NOW).toString());
+    }
 }

@@ -1,66 +1,45 @@
 package com.liskovsoft.smartyoutubetv2.tv.oculo;
 
-import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Shader;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.Rect;
 import android.view.View;
-import android.view.ViewParent;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.view.ViewTreeObserver;
 import androidx.leanback.widget.HorizontalGridView;
-import androidx.recyclerview.widget.RecyclerView;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 
 /**
- * Oculo: cards that scroll out of a row on the left are cut at the content's start line, with a short soft fade,
- * as on the Google TV home screen (32.74-15). Until 32.74-14 they stayed visible up to the browse content's clip
- * line ({@code oculo_rail_content_clip_start}, just right of the rail's icons, about 30dp left of where the first
- * card sits).
+ * Oculo: cards that scroll out of a row on the left are cut at the content's start line, so they are never drawn
+ * next to the rail's icons (32.74-15, reworked in 32.74-16). Until 32.74-14 they stayed visible up to the browse
+ * content's clip line ({@code oculo_rail_content_clip_start}, just right of the rail's icons).
  *
- * <p>An {@link RecyclerView.ItemDecoration} on each row's {@link HorizontalGridView}, active only while the row is
- * scrolled (a card starts left of the row's start padding, which is the content's start line). Leanback rows keep
- * the focused card centered as soon as they scroll ({@code WINDOW_ALIGN_BOTH_EDGE}, offset 50 %), so the focused
- * card, its ring and its glow are never near this edge while it is active; when the row is not scrolled nothing is
- * cut, so the first card's ring and glow keep the room up to the content clip.</p>
+ * <p>32.74-16: a hard cut through the row grid's own clip bounds ({@link View#setClipBounds}), set only while the
+ * row is scrolled (a card starts left of the row's start padding, which is the content's start line) and removed
+ * as soon as it is back at rest. The clip is a property of the grid's render node: nothing is drawn by Oculo, no
+ * canvas clip or layer, no card view is touched, and nothing is added to the RecyclerView itself. The state is
+ * checked right before each frame (a pre-draw listener, only while the grid is attached), so it follows scrolls,
+ * layouts and recycling without any RecyclerView callback.</p>
  *
- * <ul>
- *     <li>Hard cut: {@code onDraw()} (before the children) clips the canvas at
- *     {@code start - oculo_row_edge_fade_outside}; {@code onDrawOver()} restores it. No layer, no allocation.</li>
- *     <li>Fade: from that line to {@code start + oculo_row_edge_fade_inside}, the page background is painted over
- *     the cards with its alpha going from 100 % to 0 % (a band-sized layer). The background is the one really behind
- *     the row: Home's {@link OculoGlow} view, else the first ancestor background (search and channel screens: the
- *     window background). No background found: hard cut at the start line, no fade.</li>
- * </ul>
+ * <p>32.74-15 used an {@code ItemDecoration} (canvas clip + background repainted through a layer for a fade),
+ * added from the card's setup. {@code RecyclerView.addItemDecoration()} throws while the grid is in a layout or
+ * scroll, which is exactly when cards are attached: the exception left cards half attached (thumbnails not loaded,
+ * cards misplaced or doubled, focus ring without its rounded corners) and could crash the app on a key press.</p>
+ *
+ * <p>Leanback rows keep the focused card centered as soon as they scroll ({@code WINDOW_ALIGN_BOTH_EDGE}, 50 %),
+ * so the focused card, its ring and its glow are never near this edge while the cut is active; at rest nothing is
+ * cut, so the first card's ring and glow keep their room up to the content clip. Above, below and right of the
+ * grid the clip is far outside (rings and glows extend beyond the grid's bounds).</p>
+ *
  * Flag {@code oculo_row_edge_clip} (false upstream, true in the flavor). Installed from {@link OculoUi} when a card
- * is set up (every card with the focus ring), once per grid.
+ * is set up, once per grid; never throws.
  */
-final class OculoRowEdge extends RecyclerView.ItemDecoration {
-    private final int mFadeOutside;
-    private final int mFadeInside;
-    private final Paint mFadePaint = new Paint();
-    private final int[] mGridLocation = new int[2];
-    private final int[] mSourceLocation = new int[2];
-    private int mShaderLeft = Integer.MIN_VALUE;
-    private int mShaderRight = Integer.MIN_VALUE;
-    private int mSave = -1;
-    private boolean mActive;
-    @Nullable
-    private View mSourceView;
-    @Nullable
-    private Drawable mSourceDrawable;
+final class OculoRowEdge implements ViewTreeObserver.OnPreDrawListener, View.OnAttachStateChangeListener {
+    private final HorizontalGridView mGrid;
+    private final Rect mClip = new Rect();
+    private boolean mClipped;
+    private boolean mListening;
+    private ViewTreeObserver mObserver;
 
-    private OculoRowEdge(Resources res) {
-        mFadeOutside = res.getDimensionPixelSize(R.dimen.oculo_row_edge_fade_outside);
-        mFadeInside = res.getDimensionPixelSize(R.dimen.oculo_row_edge_fade_inside);
-        mFadePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-        mFadePaint.setDither(true);
+    private OculoRowEdge(HorizontalGridView grid) {
+        mGrid = grid;
     }
 
     static void install(View grid) {
@@ -70,140 +49,89 @@ final class OculoRowEdge extends RecyclerView.ItemDecoration {
             return;
         }
 
-        OculoRowEdge edge = new OculoRowEdge(grid.getResources());
-        ((HorizontalGridView) grid).addItemDecoration(edge);
+        OculoRowEdge edge = new OculoRowEdge((HorizontalGridView) grid);
         grid.setTag(R.id.oculo_row_edge, edge);
+        grid.addOnAttachStateChangeListener(edge);
+        if (grid.isAttachedToWindow()) {
+            edge.startListening();
+        }
     }
 
     @Override
-    public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        mSave = -1;
-        mActive = isScrolled(parent);
-        if (!mActive) {
+    public void onViewAttachedToWindow(View v) {
+        startListening();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(View v) {
+        stopListening();
+    }
+
+    private void startListening() {
+        if (mListening) {
+            return;
+        }
+        mObserver = mGrid.getViewTreeObserver();
+        mObserver.addOnPreDrawListener(this);
+        mListening = true;
+    }
+
+    private void stopListening() {
+        if (!mListening) {
+            return;
+        }
+        if (mObserver != null && mObserver.isAlive()) {
+            mObserver.removeOnPreDrawListener(this);
+        } else {
+            mGrid.getViewTreeObserver().removeOnPreDrawListener(this);
+        }
+        mObserver = null;
+        mListening = false;
+    }
+
+    @Override
+    public boolean onPreDraw() {
+        update();
+        return true; // never cancels the frame
+    }
+
+    private void update() {
+        int start = mGrid.getPaddingLeft();
+        int width = mGrid.getWidth();
+        int height = mGrid.getHeight();
+        boolean scrolled = width > 0 && isScrolled(start);
+
+        if (!scrolled) {
+            if (mClipped) {
+                mGrid.setClipBounds(null);
+                mClipped = false;
+            }
             return;
         }
 
-        findBackground(parent);
-        int start = parent.getPaddingLeft();
-        int clip = hasBackground() ? start - mFadeOutside : start;
-        mSave = c.save();
         // Only the left side: the cards' ring and glow may still draw above, below and right of the grid
-        c.clipRect(clip, -parent.getHeight(), Integer.MAX_VALUE / 4, parent.getHeight() * 2);
-    }
-
-    @Override
-    public void onDrawOver(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        if (mSave >= 0) {
-            c.restoreToCount(mSave);
-            mSave = -1;
+        int left = start;
+        int top = -height - height / 2;
+        int right = width * 2 + start;
+        int bottom = height * 3;
+        if (!mClipped || mClip.left != left || mClip.top != top || mClip.right != right || mClip.bottom != bottom) {
+            mClip.set(left, top, right, bottom);
+            mGrid.setClipBounds(mClip);
+            mClipped = true;
         }
-
-        if (!mActive || !hasBackground()) {
-            clearBackground();
-            return;
-        }
-
-        int start = parent.getPaddingLeft();
-        int left = start - mFadeOutside;
-        int right = start + mFadeInside;
-        int height = parent.getHeight();
-        if (right <= left || height <= 0) {
-            clearBackground();
-            return;
-        }
-
-        if (left != mShaderLeft || right != mShaderRight) {
-            // DST_IN keeps the background painted below with this alpha: opaque at the cut, clear inside the content
-            mFadePaint.setShader(new LinearGradient(left, 0, right, 0, Color.BLACK, Color.TRANSPARENT,
-                    Shader.TileMode.CLAMP));
-            mShaderLeft = left;
-            mShaderRight = right;
-        }
-
-        int layer = c.saveLayer(left, 0, right, height, null);
-        drawBackground(c, parent);
-        c.drawRect(left, 0, right, height, mFadePaint);
-        c.restoreToCount(layer);
-        clearBackground();
     }
 
     /**
      * Scrolled = a card starts left of the start line (at rest, the first card starts exactly on it).
      */
-    private static boolean isScrolled(RecyclerView grid) {
-        int start = grid.getPaddingLeft() - 1;
-        for (int i = 0; i < grid.getChildCount(); i++) {
-            View child = grid.getChildAt(i);
-            if (child.getVisibility() == View.VISIBLE && child.getLeft() < start) {
+    private boolean isScrolled(int start) {
+        int line = start - 1;
+        for (int i = 0; i < mGrid.getChildCount(); i++) {
+            View child = mGrid.getChildAt(i);
+            if (child.getVisibility() == View.VISIBLE && child.getLeft() + child.getTranslationX() < line) {
                 return true;
             }
         }
         return false;
-    }
-
-    private boolean hasBackground() {
-        return mSourceView != null || mSourceDrawable != null;
-    }
-
-    private void clearBackground() {
-        mSourceView = null;
-        mSourceDrawable = null;
-    }
-
-    private void findBackground(RecyclerView grid) {
-        clearBackground();
-
-        View glow = OculoGlow.backgroundView();
-        if (glow != null && glow.isAttachedToWindow() && glow.isShown() && glow.getRootView() == grid.getRootView()) {
-            mSourceView = glow;
-            return;
-        }
-
-        for (ViewParent parent = grid.getParent(); parent instanceof View; parent = parent.getParent()) {
-            View view = (View) parent;
-            Drawable background = view.getBackground();
-            if (background != null && !(background instanceof ColorDrawable && ((ColorDrawable) background).getAlpha() == 0)) {
-                mSourceView = view;
-                mSourceDrawable = background;
-                return;
-            }
-        }
-    }
-
-    /**
-     * Paints the background behind the grid in the grid's coordinates (translation and scale of the content, e.g.
-     * while the rail expands).
-     */
-    private void drawBackground(Canvas c, RecyclerView grid) {
-        View owner = mSourceView;
-        if (owner == null) {
-            return;
-        }
-
-        grid.getLocationInWindow(mGridLocation);
-        owner.getLocationInWindow(mSourceLocation);
-        float scale = windowScale(grid) / windowScale(owner);
-        if (scale <= 0) {
-            return;
-        }
-
-        int save = c.save();
-        c.scale(1 / scale, 1 / scale);
-        c.translate(mSourceLocation[0] - mGridLocation[0], mSourceLocation[1] - mGridLocation[1]);
-        if (mSourceDrawable != null) {
-            mSourceDrawable.draw(c);
-        } else {
-            OculoGlow.drawBackground(owner, c);
-        }
-        c.restoreToCount(save);
-    }
-
-    private static float windowScale(View view) {
-        float scale = 1;
-        for (View current = view; current != null;
-             current = current.getParent() instanceof View ? (View) current.getParent() : null) {
-            scale *= current.getScaleX();
-        }
-        return scale;
     }
 }

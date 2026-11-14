@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
 import com.liskovsoft.mediaserviceinterfaces.data.MediaItem;
+import com.liskovsoft.mediaserviceinterfaces.oauth.Account;
 import com.liskovsoft.sharedutils.rx.RxHelper;
 import com.liskovsoft.smartyoutubetv2.common.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.BrowseSection;
@@ -49,7 +50,10 @@ import io.reactivex.disposables.Disposable;
  * position) but no date. 32.74-15: the row = unfinished videos among the history's 20 most recent items, plus the
  * unfinished videos played in Oculo in the last 48 h ({@link OculoContinueWatchingRules#selectMerged}); no first-fetch
  * baseline (32.74-14 estimated a 48 h window and left out everything seen on the first fetch). Signed out or request
- * failed: local log only. Each history arrival writes one line to logcat (tag {@code OculoCW}). Videos removed
+ * failed: local log only. Each history arrival writes one line to logcat (tag {@code OculoCW}).
+ * 32.74-16: the last history result is kept on disk (top 20 items with their cards, per account), so the row is built
+ * with Home's first row at launch; the fresh history then updates it with item changes on this row only (never a
+ * rows rebuild, and never while the focus is on one of its cards). Videos removed
  * with « Remove from Continue watching » are kept in a hidden list (30 days). Nothing here touches YouTube's
  * history or the watched state.
  */
@@ -62,12 +66,15 @@ public class OculoContinueWatching {
     private static final String KEY_HIDDEN = "OculoContinueHidden";
     /** 32.74-14's store of estimated history dates, no longer used: cleared once. */
     private static final String KEY_HISTORY_SEEN = "OculoHistorySeen";
+    /** 32.74-16: the last account history (top items + cards), so that the row shows at launch. */
+    private static final String KEY_HISTORY_CACHE = "OculoHistoryCache";
     private static final String TAG = "OculoCW";
     /** Home may be built twice in a row (load, section re-selected): at most one history request per 30 s. */
     private static final long HISTORY_MIN_INTERVAL_MS = 30_000;
-    /** History arrived while Home rows were still loading: retry the in-place update. */
+    /** New selection not applicable yet (Home rows still loading for a row insert/removal, focus in the row): retry. */
     private static final long APPLY_RETRY_MS = 1_500;
-    private static final int APPLY_MAX_RETRIES = 20;
+    /** About 5 minutes; afterwards Home's next resume or build applies it. */
+    private static final int APPLY_MAX_RETRIES = 200;
     private static final long PERSIST_DELAY_MS = 3_000;
     @SuppressLint("StaticFieldLeak")
     private static OculoContinueWatching sInstance;
@@ -78,6 +85,9 @@ public class OculoContinueWatching {
     /** Last history page of the account, most recent first (empty: signed out, error, not loaded yet). */
     private final List<HistoryItem> mHistory = new ArrayList<>();
     private final Map<String, Video> mHistoryVideos = new HashMap<>();
+    /** The history above was fetched in this run (false: none yet, or the cached copy from the last run). */
+    private boolean mHistoryFresh;
+    private boolean mCacheLoaded;
     private Disposable mHistoryAction;
     private long mLastHistoryRequestMs;
     private int mApplyRetries;
@@ -141,23 +151,22 @@ public class OculoContinueWatching {
         mView = new WeakReference<>(view);
         mSection = section;
         mShown.clear();
+        loadHistoryCache();
 
         List<Video> videos = isEnabled() ? compute() : Collections.emptyList();
         VideoGroup group = createGroup(videos, VideoGroup.ACTION_REPLACE); // also removes an older copy of the row
         view.updateSection(group);
 
-        if (!videos.isEmpty()) {
-            mShown.addAll(group.getVideos());
-        }
+        mShown.addAll(group.getVideos()); // blocked channels may have been filtered out
 
         requestHistory(); // Home load and 10-minute refresh: the row is updated in place when it arrives
 
-        return !videos.isEmpty();
+        return !mShown.isEmpty();
     }
 
     /**
      * BrowsePresenter.onViewResumed() on a loaded Home (e.g. back from the player): updates the row in place
-     * when its content changed: progress only (sync), videos gone (remove) or anything else (replace).
+     * when its content changed (see {@link #applyHistory()}).
      */
     public void onHomeResumed(BrowseView view, BrowseSection section, boolean isHomeLoaded) {
         if (view == null || section == null || !isHomeLoaded || mSection == null) {
@@ -167,31 +176,124 @@ public class OculoContinueWatching {
         mView = new WeakReference<>(view);
         mSection = section;
 
-        updateInPlace(view, section);
+        mApplyRetries = 0;
+        applyHistory();
     }
 
-    /** Updates the shown row to the current selection: progress only (sync), videos gone (remove), else replace. */
-    private void updateInPlace(BrowseView view, BrowseSection section) {
-        List<Video> videos = isEnabled() ? compute() : Collections.emptyList();
+    /**
+     * Updates the shown row to the current selection with item changes on this row only (32.74-16): progress only
+     * (sync), otherwise remove the videos gone and add the new ones before / after the videos kept
+     * ({@link OculoContinueWatchingRules#planInPlace}). The row is only inserted or removed as a whole when it
+     * appears or becomes empty.
+     *
+     * @return false when the change has to wait: the row must be inserted or removed while Home's rows are still
+     * loading (the next rows' positions depend on it), or the focus is on one of its cards (adding or removing
+     * cards there would move it)
+     */
+    private boolean updateInPlace(BrowseView view, BrowseSection section, BrowsePresenter presenter) {
+        List<Video> videos = isEnabled() ? compute() : Collections.<Video>emptyList();
         List<String> newIds = ids(videos);
         List<String> shownIds = ids(mShown);
 
         if (newIds.equals(shownIds)) {
             if (!videos.isEmpty()) {
-                for (int i = 0; i < videos.size(); i++) {
-                    mShown.get(i).percentWatched = videos.get(i).percentWatched;
-                }
-                view.updateSection(createGroupOf(new ArrayList<>(mShown), VideoGroup.ACTION_SYNC));
+                syncProgress(view, videos);
             }
-        } else if (!newIds.isEmpty() && isSubsequence(newIds, shownIds)) {
-            removeShown(view, newIds);
-            for (int i = 0; i < videos.size(); i++) {
-                mShown.get(i).percentWatched = videos.get(i).percentWatched;
-            }
-            view.updateSection(createGroupOf(new ArrayList<>(mShown), VideoGroup.ACTION_SYNC));
-        } else {
-            showRow(view, section);
+            return true;
         }
+
+        if (mShown.isEmpty() || videos.isEmpty()) {
+            // The row appears or disappears: Home's other rows shift by one
+            if (presenter.hasPendingActions()) {
+                return false;
+            }
+            if (videos.isEmpty()) {
+                if (isFocusInRow(presenter)) {
+                    return false;
+                }
+                mShown.clear();
+                view.updateSection(createGroup(Collections.<Video>emptyList(), VideoGroup.ACTION_REPLACE)); // removes the row
+            } else {
+                showRowNow(view, section, videos);
+            }
+            return true;
+        }
+
+        if (isFocusInRow(presenter)) {
+            return false;
+        }
+
+        OculoContinueWatchingRules.RowPlan plan = OculoContinueWatchingRules.planInPlace(shownIds, newIds);
+        Map<String, Video> byId = new HashMap<>();
+        for (Video video : videos) {
+            byId.put(video.videoId, video);
+        }
+
+        removeShown(view, plan.kept, false); // new cards are added right after: the row stays
+
+        if (!plan.prepend.isEmpty()) {
+            VideoGroup group = createGroupOf(pick(plan.prepend, byId), VideoGroup.ACTION_PREPEND);
+            view.updateSection(group);
+            mShown.addAll(0, group.getVideos());
+        }
+        if (!plan.append.isEmpty()) {
+            VideoGroup group = createGroupOf(pick(plan.append, byId), VideoGroup.ACTION_APPEND);
+            view.updateSection(group);
+            mShown.addAll(group.getVideos());
+        }
+
+        if (mShown.isEmpty()) {
+            // Everything filtered out on the way (e.g. blocked channels): no row
+            view.updateSection(createGroup(Collections.<Video>emptyList(), VideoGroup.ACTION_REPLACE));
+            return true;
+        }
+
+        syncProgress(view, videos);
+        return true;
+    }
+
+    /** First appearance of the row after Home was built (it had nothing to show then). */
+    private void showRowNow(BrowseView view, BrowseSection section, List<Video> videos) {
+        mShown.clear();
+        VideoGroup group = createGroup(videos, VideoGroup.ACTION_REPLACE);
+        view.updateSection(group);
+        mShown.addAll(group.getVideos());
+    }
+
+    /** Progress of the shown cards from the new selection (same videos), one item change each. */
+    private void syncProgress(BrowseView view, List<Video> videos) {
+        Map<String, Video> byId = new HashMap<>();
+        for (Video video : videos) {
+            byId.put(video.videoId, video);
+        }
+        List<Video> changed = new ArrayList<>();
+        for (Video shown : mShown) {
+            Video fresh = byId.get(shown.videoId);
+            if (fresh != null && fresh.percentWatched != shown.percentWatched) {
+                shown.percentWatched = fresh.percentWatched;
+                shown.startTimeSeconds = fresh.startTimeSeconds;
+                changed.add(shown);
+            }
+        }
+        if (!changed.isEmpty()) {
+            view.updateSection(createGroupOf(changed, VideoGroup.ACTION_SYNC));
+        }
+    }
+
+    private static List<Video> pick(List<String> ids, Map<String, Video> byId) {
+        List<Video> result = new ArrayList<>();
+        for (String id : ids) {
+            Video video = byId.get(id);
+            if (video != null) {
+                result.add(video);
+            }
+        }
+        return result;
+    }
+
+    /** The selected card (focus, or the last card focused before the rail) is one of this row's. */
+    private static boolean isFocusInRow(BrowsePresenter presenter) {
+        return isRowItem(presenter.getCurrentVideo());
     }
 
     /**
@@ -232,6 +334,10 @@ public class OculoContinueWatching {
 
     /** Removes from the row every shown video not in {@code keepIds}; drops the row when it becomes empty. */
     private void removeShown(BrowseView view, List<String> keepIds) {
+        removeShown(view, keepIds, true);
+    }
+
+    private void removeShown(BrowseView view, List<String> keepIds, boolean dropEmptyRow) {
         List<Video> removed = new ArrayList<>();
         for (Video video : mShown) {
             if (!keepIds.contains(video.videoId)) {
@@ -244,7 +350,7 @@ public class OculoContinueWatching {
 
         mShown.removeAll(removed);
 
-        if (mShown.isEmpty()) {
+        if (mShown.isEmpty() && dropEmptyRow) {
             view.updateSection(createGroup(Collections.emptyList(), VideoGroup.ACTION_REPLACE)); // removes the row
         } else {
             view.updateSection(createGroupOf(removed, VideoGroup.ACTION_REMOVE));
@@ -264,7 +370,7 @@ public class OculoContinueWatching {
         mLastHistoryRequestMs = now;
 
         if (MediaServiceManager.instance().getSelectedAccount() == null) {
-            onHistory(null); // signed out: local log only
+            onSignedOut();
             return;
         }
 
@@ -272,13 +378,102 @@ public class OculoContinueWatching {
             mHistoryAction = RxHelper.execute(
                     YouTubeServiceManager.instance().getContentService().getHistoryObserve(),
                     group -> Utils.post(() -> onHistory(group)),
-                    error -> Utils.post(() -> onHistory(null)));
+                    error -> Utils.post(this::onHistoryFailed));
         } catch (RuntimeException e) {
-            onHistory(null);
+            onHistoryFailed();
         }
     }
 
-    /** Main thread. {@code group} null = signed out or failed: local log only. */
+    /** Signed out: local log only, and the cached history (another account's, maybe) is dropped. */
+    private void onSignedOut() {
+        Log.i(TAG, "history: signed out, local log only");
+        mPrefs.setData(KEY_HISTORY_CACHE, "");
+        boolean changed = !mHistory.isEmpty();
+        mHistory.clear();
+        mHistoryVideos.clear();
+        mHistoryFresh = false;
+        if (changed) {
+            mApplyRetries = 0;
+            applyHistory();
+        }
+    }
+
+    /** Request failed (network): the history shown so far (cached or older) stays. */
+    private void onHistoryFailed() {
+        Log.i(TAG, "history: request failed, keeping the last one (" + mHistory.size() + " items, "
+                + (mHistoryFresh ? "fetched" : "cached") + ")");
+    }
+
+    /**
+     * Before Home's row is first built: the history fetched at the last run (same account, 7 days at most), so the
+     * row is complete from the start; replaced by the fresh one as soon as it arrives.
+     */
+    private void loadHistoryCache() {
+        if (mCacheLoaded || mHistoryFresh) {
+            return;
+        }
+        mCacheLoaded = true;
+        OculoContinueWatchingRules.HistoryCache cache;
+        try {
+            cache = OculoContinueWatchingRules.parseHistoryCache(mPrefs.getData(KEY_HISTORY_CACHE));
+        } catch (RuntimeException e) {
+            cache = null;
+        }
+        if (cache == null || !cache.isUsable(accountKey(), System.currentTimeMillis())) {
+            return;
+        }
+        List<HistoryItem> items = new ArrayList<>();
+        Map<String, Video> videos = new HashMap<>();
+        for (HistoryItem item : cache.items) {
+            Video video = Video.fromString(cache.specs.get(item.videoId));
+            if (video == null || TextUtils.isEmpty(video.videoId)) {
+                continue;
+            }
+            video.percentWatched = item.percent;
+            video.startTimeSeconds = item.positionMs > 0 ? (int) (item.positionMs / 1_000) : video.startTimeSeconds;
+            videos.put(item.videoId, video);
+            items.add(item);
+        }
+        mHistory.clear();
+        mHistory.addAll(items);
+        mHistoryVideos.clear();
+        mHistoryVideos.putAll(videos);
+        Log.i(TAG, "history: " + items.size() + " cached items from the last run");
+    }
+
+    private void saveHistoryCache() {
+        String key = accountKey();
+        if (key == null) {
+            return;
+        }
+        Map<String, String> specs = new HashMap<>();
+        for (int i = 0; i < mHistory.size() && i < OculoContinueWatchingRules.HISTORY_TOP; i++) {
+            Video video = mHistoryVideos.get(mHistory.get(i).videoId);
+            if (video != null) {
+                specs.put(video.videoId, video.toString());
+            }
+        }
+        mPrefs.setData(KEY_HISTORY_CACHE, OculoContinueWatchingRules.formatHistoryCache(
+                new OculoContinueWatchingRules.HistoryCache(key, System.currentTimeMillis(), mHistory, specs)));
+    }
+
+    /** The signed-in account, as a hash (no name or e-mail on disk); null when signed out. */
+    private static String accountKey() {
+        Account account;
+        try {
+            account = MediaServiceManager.instance().getSelectedAccount();
+        } catch (RuntimeException e) {
+            return null;
+        }
+        if (account == null) {
+            return null;
+        }
+        String id = !TextUtils.isEmpty(account.getEmail()) ? account.getEmail()
+                : !TextUtils.isEmpty(account.getName()) ? account.getName() : String.valueOf(account.getId());
+        return Integer.toHexString(id.hashCode());
+    }
+
+    /** Main thread: the account's history arrived. */
     private void onHistory(MediaGroup group) {
         List<HistoryItem> history = new ArrayList<>();
         Map<String, Video> videos = new HashMap<>();
@@ -296,24 +491,22 @@ public class OculoContinueWatching {
             }
         }
 
-        boolean changed = !(mHistory.isEmpty() && history.isEmpty());
         mHistory.clear();
         mHistory.addAll(history);
         mHistoryVideos.clear();
         mHistoryVideos.putAll(videos);
+        mHistoryFresh = true;
+        saveHistoryCache();
 
         mLogHistory = true; // the next compute() writes one diagnostic line
-        if (group == null) {
-            Log.i(TAG, "history: none (signed out or request failed), local log only");
-        }
-
-        if (changed) {
-            mApplyRetries = 0;
-            applyHistory();
-        }
+        mApplyRetries = 0;
+        applyHistory();
     }
 
-    /** Shows the new selection on Home, now if Home is on screen and loaded, else at its next build/resume. */
+    /**
+     * Shows the new selection on Home, now if Home is on screen and the change can be made in place, else retried
+     * (see {@link #updateInPlace}) or left to Home's next build / resume.
+     */
     private void applyHistory() {
         Utils.removeCallbacks(mApplyHistory);
         BrowseView view = mView.get();
@@ -322,16 +515,11 @@ public class OculoContinueWatching {
         }
         BrowsePresenter presenter = BrowsePresenter.instance(mContext);
         if (!presenter.isHomeSection() || ViewManager.instance(mContext).getTopView() != BrowseView.class) {
-            return; // Home's next build (or onHomeResumed) uses the cached history
+            return; // Home's next build (or onHomeResumed) uses the latest history
         }
-        if (presenter.hasPendingActions()) {
-            // Rows still loading: inserting the row now would shift the rows being added
-            if (mApplyRetries++ < APPLY_MAX_RETRIES) {
-                Utils.postDelayed(mApplyHistory, APPLY_RETRY_MS);
-            }
-            return;
+        if (!updateInPlace(view, mSection, presenter) && mApplyRetries++ < APPLY_MAX_RETRIES) {
+            Utils.postDelayed(mApplyHistory, APPLY_RETRY_MS);
         }
-        updateInPlace(view, mSection);
     }
 
     private boolean mLogHistory;
@@ -365,7 +553,7 @@ public class OculoContinueWatching {
                     local48h++;
                 }
             }
-            Log.i(TAG, "history items=" + mHistory.size()
+            Log.i(TAG, "history (" + (mHistoryFresh ? "fetched" : "cached") + ") items=" + mHistory.size()
                     + " unfinishedInTop" + OculoContinueWatchingRules.HISTORY_TOP + "=" + OculoContinueWatchingRules.countHistoryUnfinished(mHistory)
                     + " localLogged=" + candidates.size() + " localUnfinished48h=" + local48h
                     + " hidden=" + mHidden.size() + " shown=" + picks);
@@ -436,6 +624,7 @@ public class OculoContinueWatching {
         VideoGroup group = VideoGroup.from(mSection, ROW_POSITION);
         group.setId(GROUP_ID);
         group.setAction(action);
+        group.setPosition(ROW_POSITION); // ACTION_PREPEND resets it to 0; the cards keep the row's position
         for (Video video : videos) {
             group.add(video);
         }

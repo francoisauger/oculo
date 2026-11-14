@@ -391,8 +391,6 @@ public final class OculoUi {
 
             if (host.getParent() instanceof ViewGroup) {
                 ((ViewGroup) host.getParent()).setClipChildren(false);
-                // Rows: cards scrolled out on the left are cut (with a fade) at the content's start line
-                OculoRowEdge.install((View) host.getParent());
             }
 
             mHost = host;
@@ -401,6 +399,17 @@ public final class OculoUi {
             tile.addOnLayoutChangeListener(this);
             host.getOverlay().add(this);
             updateGeometry();
+
+            // Rows: cards scrolled out on the left are cut at the content's start line. Last, and never allowed to
+            // throw: this runs from the card's onViewAttachedToWindow(), in the middle of the grid's layout (32.74-15
+            // added an ItemDecoration here, which RecyclerView refuses during a layout: half-attached cards).
+            if (host.getParent() instanceof View) {
+                try {
+                    OculoRowEdge.install((View) host.getParent());
+                } catch (RuntimeException e) {
+                    android.util.Log.w("OculoRowEdge", "install failed", e);
+                }
+            }
         }
 
         @Override

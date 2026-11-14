@@ -382,4 +382,162 @@ public final class OculoContinueWatchingRules {
             }
         }
     }
+
+    // ---- In-place update of the shown row (32.74-16) ----
+
+    /**
+     * How to turn the row on screen ({@code shown}) into the new selection ({@code fresh}) with item changes on
+     * that row only: remove {@link #remove}, then add {@link #prepend} before and {@link #append} after the kept
+     * block {@link #kept} (the longest run of {@code fresh} already on screen in the same order). The row itself is
+     * never removed and re-added, so the other rows do not move.
+     */
+    public static final class RowPlan {
+        public final List<String> remove;
+        public final List<String> kept;
+        public final List<String> prepend;
+        public final List<String> append;
+
+        RowPlan(List<String> remove, List<String> kept, List<String> prepend, List<String> append) {
+            this.remove = remove;
+            this.kept = kept;
+            this.prepend = prepend;
+            this.append = append;
+        }
+
+        public boolean isStructural() {
+            return !remove.isEmpty() || !prepend.isEmpty() || !append.isEmpty();
+        }
+    }
+
+    public static RowPlan planInPlace(List<String> shown, List<String> fresh) {
+        Map<String, Integer> shownPos = new HashMap<>();
+        for (int i = 0; i < shown.size(); i++) {
+            if (!shownPos.containsKey(shown.get(i))) {
+                shownPos.put(shown.get(i), i);
+            }
+        }
+
+        // Longest run fresh[start, end) whose items are on screen in increasing order
+        int bestStart = 0;
+        int bestEnd = 0;
+        for (int start = 0; start < fresh.size(); start++) {
+            int end = start;
+            int last = -1;
+            while (end < fresh.size()) {
+                Integer pos = shownPos.get(fresh.get(end));
+                if (pos == null || pos <= last) {
+                    break;
+                }
+                last = pos;
+                end++;
+            }
+            if (end - start > bestEnd - bestStart) {
+                bestStart = start;
+                bestEnd = end;
+            }
+        }
+
+        List<String> kept = new ArrayList<>(fresh.subList(bestStart, bestEnd));
+        Set<String> keptSet = new HashSet<>(kept);
+        List<String> remove = new ArrayList<>();
+        for (String id : shown) {
+            if (!keptSet.contains(id)) {
+                remove.add(id);
+            }
+        }
+        return new RowPlan(remove, kept, new ArrayList<>(fresh.subList(0, bestStart)),
+                new ArrayList<>(fresh.subList(bestEnd, fresh.size())));
+    }
+
+    // ---- Last account history, kept between launches (32.74-16) ----
+
+    /** A cached history older than this is not shown at launch. */
+    public static final long HISTORY_CACHE_MAX_AGE_MS = 7L * 24 * 60 * 60 * 1_000;
+    private static final String HISTORY_CACHE_VERSION = "cw1";
+
+    /** The account history as last fetched: its items (most recent first) and each item's card ({@code Video} spec). */
+    public static final class HistoryCache {
+        public final String accountKey;
+        public final long savedMs;
+        public final List<HistoryItem> items;
+        /** video id → card spec (SmartTube's {@code Video.toString()}). */
+        public final Map<String, String> specs;
+
+        public HistoryCache(String accountKey, long savedMs, List<HistoryItem> items, Map<String, String> specs) {
+            this.accountKey = accountKey;
+            this.savedMs = savedMs;
+            this.items = items;
+            this.specs = specs;
+        }
+
+        /** Usable at launch: same account, not too old, not from the future. */
+        public boolean isUsable(String currentAccountKey, long nowMs) {
+            return accountKey != null && accountKey.equals(currentAccountKey) && savedMs <= nowMs + WINDOW_MS
+                    && nowMs - savedMs <= HISTORY_CACHE_MAX_AGE_MS;
+        }
+    }
+
+    /**
+     * One line per item: {@code id TAB percent TAB positionMs TAB durationMs TAB flags TAB spec}, after a header line
+     * {@code cw1 TAB accountKey TAB savedMs}. Only the {@link #HISTORY_TOP} first items (the only ones the row uses),
+     * items without a card spec are skipped. Tabs and line breaks inside a spec (titles) become spaces.
+     */
+    public static String formatHistoryCache(HistoryCache cache) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(HISTORY_CACHE_VERSION).append('\t').append(clean(cache.accountKey)).append('\t').append(cache.savedMs);
+        int count = 0;
+        for (HistoryItem h : cache.items) {
+            if (count >= HISTORY_TOP) {
+                break;
+            }
+            String spec = h != null && h.videoId != null ? cache.specs.get(h.videoId) : null;
+            if (spec == null || spec.isEmpty() || h.videoId.isEmpty()) {
+                continue;
+            }
+            int flags = (h.isLive ? FLAG_LIVE : 0) | (h.isShorts ? FLAG_SHORTS : 0);
+            sb.append('\n').append(clean(h.videoId)).append('\t').append(h.percent).append('\t').append(h.positionMs)
+                    .append('\t').append(h.durationMs).append('\t').append(flags).append('\t').append(clean(spec));
+            count++;
+        }
+        return sb.toString();
+    }
+
+    /** @return null when empty or damaged */
+    public static HistoryCache parseHistoryCache(String data) {
+        if (data == null || data.isEmpty()) {
+            return null;
+        }
+        String[] lines = data.split("\n");
+        String[] header = lines[0].split("\t", -1);
+        if (header.length != 3 || !HISTORY_CACHE_VERSION.equals(header[0])) {
+            return null;
+        }
+        long savedMs;
+        try {
+            savedMs = Long.parseLong(header[2]);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        List<HistoryItem> items = new ArrayList<>();
+        Map<String, String> specs = new HashMap<>();
+        for (int i = 1; i < lines.length; i++) {
+            String[] parts = lines[i].split("\t", 6);
+            if (parts.length != 6 || parts[0].isEmpty() || parts[5].isEmpty() || specs.containsKey(parts[0])) {
+                continue;
+            }
+            try {
+                int flags = Integer.parseInt(parts[4]);
+                items.add(new HistoryItem(parts[0], Float.parseFloat(parts[1]), Long.parseLong(parts[2]),
+                        Long.parseLong(parts[3]), (flags & FLAG_LIVE) != 0, (flags & FLAG_SHORTS) != 0));
+                specs.put(parts[0], parts[5]);
+            } catch (NumberFormatException e) {
+                // skip a damaged line
+            }
+        }
+        return new HistoryCache(header[1], savedMs, items, specs);
+    }
+
+    private static String clean(String value) {
+        return value == null ? "" : value.replace('\t', ' ').replace('\n', ' ').replace('\r', ' ');
+    }
 }
