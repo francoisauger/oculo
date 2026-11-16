@@ -116,9 +116,11 @@ final class OculoTopBar {
         TextView date = mTitleView.findViewById(R.id.global_date);
         if (time != null) {
             time.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimension(R.dimen.oculo_top_bar_time_size));
+            OculoUi.setInfoTypeface(time);
         }
         if (date != null) {
             date.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimension(R.dimen.oculo_top_bar_date_size));
+            OculoUi.setInfoTypeface(date);
         }
 
         View badge = mTitleView.findViewById(R.id.title_badge);

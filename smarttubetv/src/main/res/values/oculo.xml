@@ -192,4 +192,14 @@
     <string name="oculo_signin_open_browser">Open in browser</string>
     <!-- Oculo screens' background (sign-in): black upstream, the browse glow in the oculo flavor -->
     <item name="oculo_screen_background" type="drawable">@android:color/black</item>
+    <!-- Typography (0.10.0, see OCULO.md « Typography »): prose read through styles so the oculo flavor can switch
+         it to Roboto Regular. Upstream look here (sans-serif-condensed, theme text size). -->
+    <!-- Dialog message (video description, video info, other long texts): leanback_list_preference_fragment.xml -->
+    <style name="OculoParagraphText">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+    <!-- Settings summary lines: leanback_preference.xml -->
+    <style name="OculoSummaryText">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
 </resources>

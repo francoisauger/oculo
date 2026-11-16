@@ -8,7 +8,7 @@ import groovy.json.JsonSlurper
 // batch of features asked for by François (0.9.0 -> 0.10.0 -> 0.11.0), PATCH = a rebuild picking up a new upstream
 // SmartTube (0.10.0 -> 0.10.1). Every published build changes it. The upstream version (defaultConfig's versionName,
 // « 32.74 ») is only shown in About.
-def oculoVersion = '0.9.0'
+def oculoVersion = '0.10.0'
 
 // versionCode from oculoVersion alone: 1,000,000 + MAJOR x 1,000,000 + MINOR x 1,000 + PATCH (0.9.0 -> 1009000,
 // 0.10.1 -> 1010001, 1.0.0 -> 2000000). Strictly increasing as the version increases, above every 32.74-N build

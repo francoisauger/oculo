@@ -66,7 +66,7 @@
             android:id="@android:id/summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
+            style="@style/OculoSummaryText"
             android:textColor="@color/lb_preference_item_secondary_text_color"
             android:textSize="@dimen/lb_preference_item_secondary_text_size"
             android:maxLines="4" />

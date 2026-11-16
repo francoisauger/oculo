@@ -17,6 +17,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -49,6 +50,19 @@ import java.util.List;
  */
 public final class OculoUi {
     private OculoUi() {
+    }
+
+    /**
+     * Small info text (clock, date) in Roboto Regular, keeping the view's bold/italic style (OCULO.md
+     * « Typography »; upstream: the title's sans-serif-light).
+     */
+    public static void setInfoTypeface(@Nullable TextView view) {
+        if (view == null) {
+            return;
+        }
+
+        Typeface current = view.getTypeface();
+        view.setTypeface(Typeface.create("sans-serif", current != null ? current.getStyle() : Typeface.NORMAL));
     }
 
     /**

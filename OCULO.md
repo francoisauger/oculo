@@ -18,7 +18,7 @@ Kept untouched: `MediaServiceCore`, `SharedModules` (submodules), `exoplayer-amz
 
 | File | Change |
 |---|---|
-| `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, Oculo's own version (`oculoVersion`, see « Version numbers »: versionName `0.9.0`, versionCode computed from it, the upstream version only in About), libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
+| `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, Oculo's own version (`oculoVersion`, see « Version numbers »: versionName `0.10.0`, versionCode computed from it, the upstream version only in About), libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
 | `smarttubetv/build.gradle` | One line at the end: `apply from: "oculo.gradle"`. |
 | `smarttubetv/src/oculo/res/` | Name "Oculo", launcher icon (see « Launcher icon »), Android TV banner, browse logo, global search label and authority (`xml/searchable.xml`, `search_authority`), update manifest URL (`update_urls`), About links and upstream credit (`feedback`, `releases_url`, `sources_url`). |
 | `smarttubetv/src/oculo/res/values/colors.xml`, `values/styles.xml`, `drawable/progress_bar_oculo.xml` | Oculo accents (palette from the approved logo, preview in `docs/mockups/colors.html`): the default "Dark Grey" scheme's styles are restated with turquoise `#22D3C8` instead of red (toggles; until 32.74-7 also the focused card's fill, see « Card focus »), badges (`dark_red`) and search orb in teal `#0B7F7D`, "Teal" scheme re-tinted to `#0B7F7D`/`#0F4A52`. Dark backgrounds unchanged except the browse glow below; Red and Blue schemes untouched (`scheme_red_background_dark` pinned to `#B31217`). Seek bar, card progress and player buttons: see « Player » below. If upstream changes these styles, re-sync the restated copies. |
@@ -125,9 +125,30 @@ Keep this list current: these are the only upstream files Oculo edits (each chan
 | `smarttubetv/.../tv/util/GlideCachingModule.java` (32.74-18) | Disk cache 80 MB instead of 10 MB. CRLF file. |
 | `common/.../app/presenters/settings/AboutSettingsPresenter.java` (0.9.0) | `show()`: title from `OculoVersion.aboutTitle()` (« Oculo 0.9.0 · basé sur SmartTube 32.74 »), import. CRLF file. |
 | `common/.../prefs/GeneralData.java` (32.74-21) | `restoreState()`: screen dimming delay default and one-time migration through `OculoScreensaver` (4 lines + `persistNow()` when migrated), import. CRLF file. |
+| `smarttubetv/src/main/res/layout/leanback_list_preference_fragment.xml` (0.10.0) | Dialog message (video description): `style="@style/OculoParagraphText"` instead of `android:fontFamily="sans-serif-condensed"` (1 line; see « Typography »). |
+| `smarttubetv/src/main/res/layout/leanback_preference.xml` (0.10.0) | Settings summary: `style="@style/OculoSummaryText"` instead of `android:fontFamily="sans-serif-condensed"` (1 line). |
 
 New files outside the flavor (not upstream): `common/.../oculo/`, `common/src/test/.../oculo/`, `common/src/main/res/values/oculo.xml`,
-`common/src/main/res/values-fr/oculo.xml`, `smarttubetv/src/main/res/values/oculo.xml`, `smarttubetv/.../tv/oculo/` (`OculoRail`, `OculoTopBar`, `OculoUi`, `OculoGlow`, `OculoRowEdge` since 32.74-15 (clip bounds since 32.74-16), `OculoComments` since 32.74-17, `OculoSearchBar`, `OculoErrorState`, `OculoSignIn`, `OculoDot` since 32.74-18; `common/.../oculo/OculoNewContent*` since 32.74-13, `OculoBackground`, `OculoSections`, `OculoStore` since 32.74-18, `OculoScreensaver` since 32.74-21, `OculoVersion` since 0.9.0), `smarttubetv/src/main/res/drawable/oculo_*.xml`, `layout/oculo_comment_item.xml` (32.74-17), `layout/oculo_signin.xml`, `values/oculo_perf.xml`, `color/oculo_*_button_text.xml` (32.74-18) and `color/oculo_top_bar_content.xml` The flavor's `layout/settings_card.xml` (32.74-11) is a copy of upstream's, wrapped in a FrameLayout since 32.74-13. Flavor copies since 32.74-18: `layout/lb_error_fragment.xml` (leanback's) and `layout/search_field.xml`; flavor manifest `smarttubetv/src/oculo/AndroidManifest.xml` (removes `UpdateChannelsReceiver`).
+`common/src/main/res/values-fr/oculo.xml`, `smarttubetv/src/main/res/values/oculo.xml`, `smarttubetv/.../tv/oculo/` (`OculoRail`, `OculoTopBar`, `OculoUi`, `OculoGlow`, `OculoRowEdge` since 32.74-15 (clip bounds since 32.74-16), `OculoComments` since 32.74-17, `OculoSearchBar`, `OculoErrorState`, `OculoSignIn`, `OculoDot` since 32.74-18; `common/.../oculo/OculoNewContent*` since 32.74-13, `OculoBackground`, `OculoSections`, `OculoStore` since 32.74-18, `OculoScreensaver` since 32.74-21, `OculoVersion` since 0.9.0), `smarttubetv/src/main/res/drawable/oculo_*.xml`, `layout/oculo_comment_item.xml` (32.74-17), `layout/oculo_signin.xml`, `values/oculo_perf.xml`, `color/oculo_*_button_text.xml` (32.74-18) and `color/oculo_top_bar_content.xml` The flavor's `layout/settings_card.xml` (32.74-11) is a copy of upstream's, wrapped in a FrameLayout since 32.74-13. Flavor copies since 32.74-18: `layout/lb_error_fragment.xml` (leanback's) and `layout/search_field.xml`; flavor manifest `smarttubetv/src/oculo/AndroidManifest.xml` (removes `UpdateChannelsReceiver`). Since 0.10.0: flavor `values/oculo_typography.xml` and `layout/item_incoming_text_message.xml` (copy of chatkit's live chat item, font only: re-sync it if chatkit's changes).
+
+## Typography
+
+Rule approved by François (0.10.0, 15 Nov. 2026). New screens follow it.
+
+| Text type | Font |
+|---|---|
+| Titles and short labels: card titles, row titles (« Recommended »), left rail items, buttons, a video's title, dialog and panel titles | Roboto Condensed (`sans-serif-condensed`, leanback's `TextAppearance.Leanback`), kept as upstream |
+| Sentences and paragraphs: video description, comments, empty and error state explanations, settings summaries, sign-in steps, any multi-line prose | Roboto Regular (`sans-serif`); long prose with the comments' line spacing, `lineSpacingMultiplier` 1.28, at 16sp |
+| Small info text: channel · views · date, clock, duration, timestamps | Roboto Regular (`sans-serif`) |
+
+Where it is applied: `smarttubetv/src/oculo/res/values/oculo_typography.xml` (`OculoParagraphText` for dialog messages
+such as the video description, `OculoSummaryText` for settings summaries, `TextAppearance.Leanback.ImageCardView.Content`
+restated for the card info line and the duration / LIVE badge); `smarttubetv/src/main/res/values/oculo.xml` keeps the
+upstream look of the two Oculo styles for the other flavors. Comments: `layout/oculo_comment_item.xml` (sans-serif, 1.28,
+author in `sans-serif-medium`). Live chat: flavor `layout/item_incoming_text_message.xml`. Clock and date in the top bar:
+`OculoUi.setInfoTypeface()` (from `OculoTopBar`, `OculoSearchBar`). Sign-in (`oculo_signin.xml`) and error states
+(flavor `lb_error_fragment.xml`) were already sans-serif. A new prose or info `TextView` sets `android:fontFamily="sans-serif"`
+(or one of these styles) explicitly: without it, anything styled from `TextAppearance.Leanback` inherits condensed.
 
 ## Build
 
@@ -186,7 +207,7 @@ After merging a new upstream SmartTube, bump the PATCH of `oculoVersion` in `sma
 Since 0.9.0 (15 Nov. 2026, François's decision of 12 Nov.), Oculo has its own numbers; until then builds were
 `32.74-1` to `32.74-21` (upstream versionName + Oculo revision, versionCode = upstream 2464 × 100 + revision).
 
-- One place: `def oculoVersion = '0.9.0'` at the top of `smarttubetv/oculo.gradle`. MAJOR.MINOR.PATCH: 1.0.0 is
+- One place: `def oculoVersion = '0.10.0'` at the top of `smarttubetv/oculo.gradle`. MAJOR.MINOR.PATCH: 1.0.0 is
   reserved for the public release; MINOR = a new batch of features asked for by François (0.9.0 -> 0.10.0 ->
   0.11.0); PATCH = a rebuild picking up a new upstream SmartTube (0.10.0 -> 0.10.1). Every published build changes it.
 - versionName (shown everywhere) = `oculoVersion`; APK names `Oculo_0.9.0_<abi>.apk`.

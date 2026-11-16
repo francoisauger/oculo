@@ -285,12 +285,14 @@ public final class OculoSearchBar {
         if (time != null) {
             time.showDate(false);
             time.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimension(R.dimen.oculo_top_bar_time_size));
+            OculoUi.setInfoTypeface(time);
             time.setVisibility(clock ? View.VISIBLE : View.GONE);
         }
         if (date != null) {
             date.showTime(false);
             date.showDate(true);
             date.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimension(R.dimen.oculo_top_bar_date_size));
+            OculoUi.setInfoTypeface(date);
             date.setVisibility(clock ? View.VISIBLE : View.GONE);
         }
 

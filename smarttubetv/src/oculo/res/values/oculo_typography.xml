@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo typography (0.10.0, François's rule, see OCULO.md « Typography »):
+     titles and short labels stay Roboto Condensed (leanback's TextAppearance.Leanback, untouched);
+     sentences, paragraphs and small info text are Roboto Regular (sans-serif); long prose gets the comments'
+     airy line spacing (1.28, layout/oculo_comment_item.xml). -->
+<resources>
+    <!-- Dialog message: the video description (VideoMenuPresenter / PlayerUIController appendLongTextCategory),
+         video info and other long texts. 16sp like the comments (chatkit message_text_size), readable at 3 m;
+         upstream: condensed at the theme's default size. -->
+    <style name="OculoParagraphText">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineSpacingMultiplier">1.28</item>
+    </style>
+    <!-- Settings summary lines (size unchanged, lb_preference_item_secondary_text_size) -->
+    <style name="OculoSummaryText">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    <!-- Card info line (channel · views · date) and the duration / LIVE badge on thumbnails
+         (text_badge_image_view*.xml). Restates leanback's style of the same name (same items) plus the font;
+         its parent TextAppearance.Leanback stays condensed for titles. -->
+    <style name="TextAppearance.Leanback.ImageCardView.Content">
+        <item name="android:textColor">@color/lb_basic_card_content_text_color</item>
+        <item name="android:textSize">@dimen/lb_basic_card_content_text_size</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+</resources>
