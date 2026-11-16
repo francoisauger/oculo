@@ -18,7 +18,7 @@ Kept untouched: `MediaServiceCore`, `SharedModules` (submodules), `exoplayer-amz
 
 | File | Change |
 |---|---|
-| `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, Oculo's own version (`oculoVersion`, see « Version numbers »: versionName `0.11.0`, versionCode computed from it, the upstream version only in About), libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
+| `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, Oculo's own version (`oculoVersion`, see « Version numbers »: versionName `0.12.0`, versionCode computed from it, the upstream version only in About), libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
 | `smarttubetv/build.gradle` | One line at the end: `apply from: "oculo.gradle"`. |
 | `smarttubetv/src/oculo/res/` | Name "Oculo", launcher icon (see « Launcher icon »), Android TV banner, browse logo, global search label and authority (`xml/searchable.xml`, `search_authority`), update manifest URL (`update_urls`), About links and upstream credit (`feedback`, `releases_url`, `sources_url`). |
 | `smarttubetv/src/oculo/res/values/colors.xml`, `values/styles.xml`, `drawable/progress_bar_oculo.xml` | Oculo accents (palette from the approved logo, preview in `docs/mockups/colors.html`): the default "Dark Grey" scheme's styles are restated with turquoise `#22D3C8` instead of red (toggles; until 32.74-7 also the focused card's fill, see « Card focus »), badges (`dark_red`) and search orb in teal `#0B7F7D`, "Teal" scheme re-tinted to `#0B7F7D`/`#0F4A52`. Dark backgrounds unchanged except the browse glow below; Red and Blue schemes untouched (`scheme_red_background_dark` pinned to `#B31217`). Seek bar, card progress and player buttons: see « Player » below. If upstream changes these styles, re-sync the restated copies. |
@@ -60,6 +60,7 @@ Kept untouched: `MediaServiceCore`, `SharedModules` (submodules), `exoplayer-amz
 | Efficiency (32.74-18) | From `docs/analyse/efficacite.md` (items 3–8 and 10 of its top 10; items 1 and 9 are not code, 9 not wanted). **Ring pulse:** the focused card's ring pulses `oculo_card_focus_pulse_cycles` times (2 × 2.4 s = 4.8 s; 0 = endless upstream, in `smarttubetv/src/main/res/values/oculo_perf.xml`, flavor `oculo_perf_config.xml`), then stays a steady full ring; `CardFrame.draw()` no longer restarts a finished pulse, so a resting focus no longer forces 60 frames a second (each cycle starts and ends at full white, so it ends without a jump); a new focus starts it again. **One background on Home:** leanback's `BackgroundManager` puts the browse gradient on the decor view (in place of the window background), under `OculoGlow.GlowView`, which repaints the same picture opaquely; a pre-draw listener on the glow view sets the decor background aside while the glow view is shown, covers the window and no ancestor is faded, translated or scaled, and puts it back otherwise or on detach (a new drawable set by BackgroundManager on `onStart` is set aside before it is drawn). No visual change. **Thumbnails from memory:** `ViewUtil.glideOptions()` no longer skips Glide's memory cache (upstream skipped it so animated previews start from the first frame); the animated card preview uses `ViewUtil.glideAnimationOptions()`, which still does. Glide's disk cache is 80 MB (`GlideCachingModule`, upstream 10 MB; the TV has 17 GB free). **Glow color per video:** `OculoGlow` caches the Palette color per video (id, else thumbnail URL, else channel; LRU 500, read from the card's `ItemBridgeAdapter.ViewHolder`), so a card scrolled back gets its color without scaling or copying its bitmap (a hardware bitmap copy waits on the render thread); failed analyses are not cached. **Continue watching:** the selection is computed once per real change (history arrival, Home resume, sign-out) and kept until it can be shown; a focus in the row no longer polls (any card focus, `OculoUi` → `OculoContinueWatching.onAnyCardFocused()`, re-checks without recomputing); only « Home rows still loading » is re-checked every 1.5 s, at most 40 times. **Disk writes:** Oculo's own data files (watch log, hidden list, history cache, seen channels) are written by `common/.../oculo/OculoStore.java` on one background thread (temp file renamed over the target), same files as `AppPrefs` (`files/app_prefs/<key>`), whose `setData()` writes synchronously on the calling thread. **Recycled cards:** leanback rows share one `RecycledViewPool`, so a card set up in one row can be re-attached to another; the grid's part of `CardFrame.setup()` (no child clipping, `OculoRowEdge.install()`, both idempotent) now runs on every attach, so every row keeps overflowing rings and glows and its left-edge cut. Not checked on the TV (build only). |
 | Screen dimming after 5 min (32.74-21) | François: the idle dimming (upstream's screensaver: a black overlay, 80 % by default, after a delay without a key press, on every screen) came after 60 s. Default now 5 minutes (`oculo_screensaver_timeout_default_sec`: 60 upstream in common's `oculo.xml`, 300 in `oculo_config.xml`), read by `GeneralData.restoreState()` through `common/.../oculo/OculoScreensaver.java`. « 5 min » was already in Settings > General > screen dimming (Never, 5/15/30 s, 1 to 15 min). Existing installs: GeneralData saves all its fields as one string, rewritten whole whenever any general setting changes, so a stored 60 s cannot be told apart from a deliberate « 1 min »; once per install (AppPrefs key `oculo_screensaver_default_migrated`), a stored 60 s becomes 5 min and is saved at once, any other stored value (Never, seconds, 2 to 15 min) is kept; afterwards every value is the user's, including 1 min chosen again. |
 | Settings (0.11.0) | `docs/mockups/settings/settings-redesign.html`, approved whole by François (16 Nov. 2026), all five steps; structure and rules in « Settings » below. **1** `common/.../oculo/settings/OculoSettingsCleanup.java` leaves dead and duplicated settings out of upstream's screens (flag `oculo_settings_cleanup`) and keeps two themes, « Oculo » (Dark Grey) and « Oculo black (OLED) » (Dark Grey OLED; names overridden in the flavor's strings); a removed scheme read from the prefs falls back to Oculo. **2** 7 categories by intention + Advanced (advanced mode), simple mode by default (`OculoSettingsModel`, `OculoSettingsMap`, `OculoSettingsTiles`, flag `oculo_settings_tiles`), same items and callbacks as upstream so stored preferences are untouched; test `OculoSettingsMapTest`. **3** White focus pill in settings lists and menus (design.md M1): flavor copies of `leanback_preference.xml`, `leanback_list_preference_item_single.xml`, `leanback_list_preference_item_multi.xml`, `dialog_list_preference_item_multi.xml` and `preference_widget_checkbox.xml` (re-sync if upstream changes them), `drawable/oculo_list_focus.xml`, `color/oculo_list_{title,summary,control}.xml`. **4** Gear right of the top bar's Search pill (M11, `OculoTopBar`), outline icons (M10, `common/src/main/res/drawable/oculo_settings_ic_*.xml`, `oculo_ic_settings.xml`, generated by `docs/mockups/settings/gen_icons.py`), « Recent » (`OculoSettingsRecent`), « More settings » at the end of the player's quick settings and of the search filters. **5** List at left, detail at right (`smarttubetv/.../tv/oculo/OculoSettingsFragment.java`, layouts `oculo_settings_*.xml`, `values/oculo_settings_screen.xml`, flag `oculo_settings_screen`). Previews: `docs/mockups/settings/built/` (emulator, 1080p, French). Not checked on the TV (build only). |
+| Oculo panel (0.12.0) | `docs/mockups/drawers/drawers-redesign.html`, approved by François (16 Nov. 2026), all three phases; see « Oculo panel » below. Every drawer of the app (menus, player settings, speed, subtitles, comments, video info, accounts, confirmations, search filters, classic settings…) is the Settings card floating at the right: `smarttubetv/.../tv/oculo/OculoPanel.java`, `OculoNotice.java`, `common/.../oculo/OculoPanelInfo.java` (test `OculoPanelInfoTest`), flag `oculo_panel`; card tokens shared with the Settings screen in `values/oculo_card.xml`. Previews: `docs/mockups/drawers/built/` (emulator, 1080p). Not checked on the TV (build only). |
 | `smarttubetv/google-services.json` | Removed (upstream's Firebase project; only used by the `stbeta`/`ststable` flavors). |
 | `.gitignore` | Keystores and signing files. |
 | `docs/` | Logo work (`docs/mockups/logos-v3/` holds the approved assets). |
@@ -134,9 +135,18 @@ Keep this list current: these are the only upstream files Oculo edits (each chan
 | `common/.../app/models/playback/controllers/HQDialogController.java` (0.11.0) | `onHighQualityClicked()`: one call to `OculoSettingsTiles.appendMoreSettings()` (« More settings » opens Playback), import. CRLF file. |
 | `common/.../app/presenters/SearchPresenter.java` (0.11.0) | `showSettingsDialog()` (search filters): one call to `OculoSettingsTiles.appendMoreSettings()` (opens the Settings section), import. CRLF file. |
 | `smarttubetv/.../ui/browse/BrowseSectionFragmentFactory.java` (0.11.0) | Settings section: `OculoSettingsFragment` instead of `SettingsGridFragment` when `OculoSettingsFragment.isEnabled()` (1 line), import. CRLF file. |
+| `smarttubetv/.../ui/dialogs/AppDialogFragment.java` (0.12.0) | Oculo panel: `show()` calls `OculoPanel.applyFrame()`; `startPreferenceFragment()` calls `OculoPanel.onStartFragment()` before the transaction; `AppPreferenceFragment`: new `onViewCreated()` override calling `OculoPanel.bindHeader()`, `addPreferences()` wraps each row in `OculoPanel.decorate()`; import. LF file. |
+| `smarttubetv/.../ui/mod/leanback/preference/LeanbackPreferenceDialogFragment.java` (0.12.0) | New `onViewCreated()` override calling `OculoPanel.bindHeader()` (value lists, confirmations, long texts, comments, live chat), imports. |
+| `common/.../app/presenters/dialogs/menu/VideoMenuPresenter.java` (0.12.0) | `prepareAndShowDialogSigned()` / `Unsigned()`: one call each to `OculoPanelInfo.forVideo()` before `showDialog()`. CRLF file. |
+| `common/.../app/models/playback/controllers/PlayerUIController.java` (0.12.0) | Video info: one call to `OculoPanelInfo.forVideoInfo()` before `showDialog()`, import. CRLF file. |
+| `common/.../app/presenters/settings/AccountSettingsPresenter.java` (0.12.0) | `createAndShowDialog()`: the dialog title in a local, one call to `OculoPanelInfo.forAccount()`, import. CRLF file. |
+| `common/.../app/presenters/SearchPresenter.java` (0.12.0) | `showSettingsDialog()`: one call to `OculoPanelInfo.forLabel()`, import. CRLF file. |
+| `common/.../app/presenters/dialogs/menu/ChannelUploadsMenuPresenter.java` (0.12.0) | `prepareAndShowDialog()`: one call to `OculoPanelInfo.forChannel()`, import. CRLF file. |
+| `common/.../app/presenters/dialogs/AppUpdatePresenter.java` (0.12.0) | `showUpdateDialog()`: the dialog title in a local, one call to `OculoPanelInfo.forLabel()`, import. CRLF file. |
+| `common/.../app/presenters/dialogs/AccountSelectionPresenter.java` (0.12.0) | `createAndShowDialog()`: one call to `OculoPanelInfo.forAccount()`, import. CRLF file. |
 
 New files outside the flavor (not upstream): `common/.../oculo/`, `common/src/test/.../oculo/`, `common/src/main/res/values/oculo.xml`,
-`common/src/main/res/values-fr/oculo.xml`, `smarttubetv/src/main/res/values/oculo.xml`, `smarttubetv/.../tv/oculo/` (`OculoRail`, `OculoTopBar`, `OculoUi`, `OculoGlow`, `OculoRowEdge` since 32.74-15 (clip bounds since 32.74-16), `OculoComments` since 32.74-17, `OculoSearchBar`, `OculoErrorState`, `OculoSignIn`, `OculoDot` since 32.74-18; `common/.../oculo/OculoNewContent*` since 32.74-13, `OculoBackground`, `OculoSections`, `OculoStore` since 32.74-18, `OculoScreensaver` since 32.74-21, `OculoVersion` since 0.9.0), `smarttubetv/src/main/res/drawable/oculo_*.xml`, `layout/oculo_comment_item.xml` (32.74-17), `layout/oculo_signin.xml`, `values/oculo_perf.xml`, `color/oculo_*_button_text.xml` (32.74-18) and `color/oculo_top_bar_content.xml` The flavor's `layout/settings_card.xml` (32.74-11) is a copy of upstream's, wrapped in a FrameLayout since 32.74-13. Flavor copies since 32.74-18: `layout/lb_error_fragment.xml` (leanback's) and `layout/search_field.xml`; flavor manifest `smarttubetv/src/oculo/AndroidManifest.xml` (removes `UpdateChannelsReceiver`). Since 0.10.0: flavor `values/oculo_typography.xml` and `layout/item_incoming_text_message.xml` (copy of chatkit's live chat item, font only: re-sync it if chatkit's changes). Since 0.11.0: `common/.../oculo/settings/` (`OculoSettingsCapture`, `OculoSettingsCleanup`, `OculoSettingsMap`, `OculoSettingsModel`, `OculoSettingsNode`, `OculoOptionItem`, `OculoSettingsTiles`, `OculoSettingsRecent`), test `common/src/test/.../oculo/settings/OculoSettingsMapTest.java`, `common/src/main/res/values/oculo_settings.xml` (EN labels), `common/src/main/res/drawable/oculo_settings_ic_*.xml` and `oculo_ic_settings.xml`, `smarttubetv/.../tv/oculo/OculoSettingsFragment.java`, `smarttubetv/src/main/res/layout/oculo_settings_*.xml`, `drawable/oculo_settings_*.xml`, `color/oculo_settings_*.xml`, `values/oculo_settings_screen.xml`; flavor copies of the five settings list layouts (step 3) and `drawable/oculo_list_focus.xml`, `color/oculo_list_*.xml`.
+`common/src/main/res/values-fr/oculo.xml`, `smarttubetv/src/main/res/values/oculo.xml`, `smarttubetv/.../tv/oculo/` (`OculoRail`, `OculoTopBar`, `OculoUi`, `OculoGlow`, `OculoRowEdge` since 32.74-15 (clip bounds since 32.74-16), `OculoComments` since 32.74-17, `OculoSearchBar`, `OculoErrorState`, `OculoSignIn`, `OculoDot` since 32.74-18; `common/.../oculo/OculoNewContent*` since 32.74-13, `OculoBackground`, `OculoSections`, `OculoStore` since 32.74-18, `OculoScreensaver` since 32.74-21, `OculoVersion` since 0.9.0), `smarttubetv/src/main/res/drawable/oculo_*.xml`, `layout/oculo_comment_item.xml` (32.74-17), `layout/oculo_signin.xml`, `values/oculo_perf.xml`, `color/oculo_*_button_text.xml` (32.74-18) and `color/oculo_top_bar_content.xml` The flavor's `layout/settings_card.xml` (32.74-11) is a copy of upstream's, wrapped in a FrameLayout since 32.74-13. Flavor copies since 32.74-18: `layout/lb_error_fragment.xml` (leanback's) and `layout/search_field.xml`; flavor manifest `smarttubetv/src/oculo/AndroidManifest.xml` (removes `UpdateChannelsReceiver`). Since 0.10.0: flavor `values/oculo_typography.xml` and `layout/item_incoming_text_message.xml` (copy of chatkit's live chat item, font only: re-sync it if chatkit's changes). Since 0.11.0: `common/.../oculo/settings/` (`OculoSettingsCapture`, `OculoSettingsCleanup`, `OculoSettingsMap`, `OculoSettingsModel`, `OculoSettingsNode`, `OculoOptionItem`, `OculoSettingsTiles`, `OculoSettingsRecent`), test `common/src/test/.../oculo/settings/OculoSettingsMapTest.java`, `common/src/main/res/values/oculo_settings.xml` (EN labels), `common/src/main/res/drawable/oculo_settings_ic_*.xml` and `oculo_ic_settings.xml`, `smarttubetv/.../tv/oculo/OculoSettingsFragment.java`, `smarttubetv/src/main/res/layout/oculo_settings_*.xml`, `drawable/oculo_settings_*.xml`, `color/oculo_settings_*.xml`, `values/oculo_settings_screen.xml`; flavor copies of the five settings list layouts (step 3) and `drawable/oculo_list_focus.xml`, `color/oculo_list_*.xml`. Since 0.12.0 (Oculo panel): `smarttubetv/.../tv/oculo/OculoPanel.java`, `OculoNotice.java`, `common/.../oculo/OculoPanelInfo.java` and its test, `values/oculo_card.xml` (tokens shared with the Settings screen, which aliases them), `values/oculo_panel.xml`, `layout/oculo_panel_header.xml`, `layout/oculo_panel_chevron.xml`, `drawable/oculo_panel_*.xml`, `drawable/oculo_dialog_*.xml`, `color/oculo_dialog_button_text.xml`; flavor copies of `leanback_preference_fragment.xml`, `leanback_list_preference_fragment.xml`, `chat_preference_fragment.xml` (upstream's main layouts), `leanback_preference_category.xml` (leanback's), `simple_edit_dialog.xml` and `web_proxy_dialog.xml` (common's), the flavor's `AppDialog` / `AppDialogButtonStyle` styles (sharedutils', restated) — re-sync them if upstream changes the originals.
 
 ## Settings
 
@@ -194,7 +204,7 @@ row), as pills next to the title; OK opens the category on that row. The last ca
 password (General › Misc) is asked before entering a category, as `SettingsGridFragment` does before opening a tile; the
 pane then says the settings are protected. A setting that rebuilds the browse sections (Sidebar sections…) recreates the
 fragment: the new one reopens the same place. Rows that open upstream dialogs (account, passwords, segment actions,
-backups…) keep upstream's dialogs, with the white pill of step 3. The settings grid and its dialogs remain the fallback
+backups…) keep upstream's dialogs, with the white pill of step 3 (the Oculo panel since 0.12.0). The settings grid and its dialogs remain the fallback
 (flags off) and are still used by « More settings » from the player (Playback, as an upstream dialog).
 
 **Merge net.** `OculoSettingsMapTest` (plain JVM) reads upstream's settings presenters and fails when they use a string,
@@ -206,6 +216,66 @@ two rows (per-segment merge not done: it would mean rebuilding SponsorBlock's pe
 advanced mode is the system toast, not Oculo's skip-notice pill; the search screen's gear still opens the search filters
 (it is the only way to them), with « More settings » at their end; the rail's own icons are unchanged (M10 here covers the
 Settings categories and the top bar gear).
+
+## Oculo panel
+
+Since 0.12.0 (`docs/mockups/drawers/drawers-redesign.html`, approved by François on 16 Nov. 2026: inventory of the 45
+places, mocks, three phases; he asked to match the mocks' and the Settings card's spacing, colors and fonts everywhere,
+comments and video info included).
+
+**One component.** Nearly every drawer of SmartTube goes through `AppDialogFragment` (a `LeanbackSettingsFragment` in
+`AppDialogActivity`, translucent, over the current screen). `OculoPanel` restyles it once, so all callers change:
+
+- **Frame** (`applyFrame()`, from `show()`): the container (`settings_preference_fragment_container`, upstream a 360dp
+  grey strip glued to the right) becomes the Settings card: 328dp wide, 24dp from the screen edge, the top and the
+  bottom, 8dp towards the content, so it stays inside SmartTube's 360dp band (37.5 % of a 960dp screen). The player's
+  video-fit maths (`BasePlayerController.mFitVideoStart`, 37 % × interface size) is untouched and the card never
+  covers the shrunk video, at any interface size (the band and the card scale together). Card: opaque `#0C1112` with
+  the Settings glow at the top right, 15dp corners, hairline border (`drawable/oculo_panel_card.xml`; in the player
+  `#0E1011` and less glow), clipped to its outline. Scrim: black 58 % on Home, search, channels; none in the player,
+  where the video already shrinks left; when it does not (« Don't resize the video to fit the dialog », overlays) a
+  gradient on the card's side only (transparent to 45 %, 62 % from 66 %). Comments placed left: the same card,
+  mirrored.
+- **Header** (`layout/oculo_panel_header.xml`, `bindHeader()` from each level's `onViewCreated()`): grey label
+  (Roboto 10.5sp), title (Roboto Condensed 19sp, two lines at most, upstream's `decor_title`), one line of Roboto
+  description. Label: the context put by the caller (`OculoPanelInfo`, keyed by the title the drawer is shown with),
+  or the path for a nested level (« Playback › Advanced playback settings »), or « Playback » in the player.
+  Description: the caller's, or the playing video's title in the player.
+- **Rows** (flavor copies of the item layouts): the Settings card's sizes (40dp + 1dp, Roboto Condensed 14.5sp, text
+  20dp from the card edge), white focus pill 7dp in from the card edge, Settings radios at the left, switches at the
+  right instead of check boxes at the left, the current value at the right in Roboto 12.5sp for rows that open a value
+  list (`decorate()`: the summary, first line of the chosen entry, follows changes), a chevron for rows that open a
+  list. Fades at the top and bottom when rows scroll (`OculoPanel.Fades`: leanback's grids do not compute their
+  scroll range, so it reads the laid out rows; gradient drawables in the list's overlay).
+- **Levels**: a nested list replaces the previous one in place with a 150 ms fade (instead of upstream's slide), its
+  label is the path; Back goes up one level (upstream).
+- **Confirmations** (`AppDialogUtil.showConfirmationDialog()`): in the panel, « Cancel » first and focused (upstream).
+- **Long text** (video description, update notes): Roboto 16sp, line spacing 1.28 (`OculoParagraphText`), links and
+  time codes as upstream (focusable, scrolls by itself), fading edges.
+
+**Places with their own header** (`OculoPanelInfo`, one-line hooks): video menu (label channel, description views ·
+date), video info in the player (« About this video », the video's title in Roboto Condensed instead of upstream's
+« Title - Channel », channel · views · date, then the description), comments (« Comments », replies « Replies » with
+the path, the video's title below; 32.74-17 bubbles unchanged, aligned with the header, `oculo_comment_item.xml`),
+account and account picker at boot (« Account », number of accounts), search filters (« Search »), channel menu
+(« Channel », its meta line), update available (« Update available »). Player drawers without a hook (quality,
+speed, subtitles, repeat, dimming…) get « Playback » and the video's title.
+
+**Notices over the video** (`OculoNotice`): SponsorBlock « ask before skipping » and the chapter notice (upstream's
+transparent overlay drawers) become a 300dp card at the bottom right with the Abricot bar before the label
+(`oculo_skip_notice_accent`), the button as a row with the white pill, no scrim; keys as upstream (OK presses it, the
+other keys close it and reach the player).
+
+**Android dialogs** that remain (`SimpleEditDialog`: playlist, group and section names, passwords, custom audio delay;
+`WebProxyDialog`): the flavor's `AppDialog` theme (card window, Roboto Condensed title, buttons as pills, white when
+focused, dim 58 %) and flavor copies of their layouts (fields as pills, turquoise outline when focused). The TV's
+keyboard is unchanged.
+
+**Not on the new look, and why:** the system share chooser (Android's); the voice search bridge (never shown in Oculo);
+toasts. Not done from the proposal: the SponsorBlock card's countdown (« in 8 s »: the close timeout is private to
+`AppDialogPresenter`; the card still closes on time), the comments count in the header (the comments service does
+not give it before loading), icons in the video menu (the approved mock has none; the outline set has no icons for
+« Not interested », « Block the channel »…).
 
 ## Typography
 
@@ -283,9 +353,9 @@ After merging a new upstream SmartTube, bump the PATCH of `oculoVersion` in `sma
 Since 0.9.0 (15 Nov. 2026, François's decision of 12 Nov.), Oculo has its own numbers; until then builds were
 `32.74-1` to `32.74-21` (upstream versionName + Oculo revision, versionCode = upstream 2464 × 100 + revision).
 
-- One place: `def oculoVersion = '0.11.0'` at the top of `smarttubetv/oculo.gradle`. MAJOR.MINOR.PATCH: 1.0.0 is
+- One place: `def oculoVersion = '0.12.0'` at the top of `smarttubetv/oculo.gradle`. MAJOR.MINOR.PATCH: 1.0.0 is
   reserved for the public release; MINOR = a new batch of features asked for by François (0.9.0 -> 0.10.0 ->
-  0.11.0); PATCH = a rebuild picking up a new upstream SmartTube (0.10.0 -> 0.10.1). Every published build changes it.
+  0.11.0 -> 0.12.0); PATCH = a rebuild picking up a new upstream SmartTube (0.10.0 -> 0.10.1). Every published build changes it.
 - versionName (shown everywhere) = `oculoVersion`; APK names `Oculo_0.9.0_<abi>.apk`.
 - versionCode, computed by `oculoVersionCode()` in `oculo.gradle`: 1,000,000 + MAJOR × 1,000,000 + MINOR × 1,000
   + PATCH (0.9.0 = 1009000, 0.10.1 = 1010001, 1.0.0 = 2000000). It grows with the version whatever part changes
