@@ -15,6 +15,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.errors.CategoryEmptyErro
 import com.liskovsoft.smartyoutubetv2.common.app.models.errors.ErrorFragmentData;
 import com.liskovsoft.smartyoutubetv2.common.app.models.errors.SignInError;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoErrorState;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.fragments.ErrorSupportFragment;
 
 public class ErrorDialogFragment extends ErrorSupportFragment implements BrowseSupportFragment.MainFragmentAdapterProvider {
@@ -57,6 +58,10 @@ public class ErrorDialogFragment extends ErrorSupportFragment implements BrowseS
 
     private void setDialogContent() {
         if (mDialogData == null || getActivity() == null) {
+            return;
+        }
+
+        if (OculoErrorState.apply(this, getView(), mDialogData)) { // Oculo: empty / error state in Oculo's style
             return;
         }
 

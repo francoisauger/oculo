@@ -154,7 +154,7 @@ public final class OculoNewContent {
     }
 
     private void persist() {
-        mPrefs.setData(KEY_SEEN, OculoNewContentRules.format(mSeen));
+        OculoStore.write(mContext, KEY_SEEN, OculoNewContentRules.format(mSeen));
     }
 
     private void notifyListener() {

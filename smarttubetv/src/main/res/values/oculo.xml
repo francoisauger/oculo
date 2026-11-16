@@ -125,4 +125,67 @@
     <!-- Comments panel (OculoComments): airy layout `layout/oculo_comment_item.xml`, smaller grey meta line,
          regular body font. Off upstream (chatkit's default item and upstream's bold header). -->
     <bool name="oculo_comments_airy">false</bool>
+
+    <!-- 32.74-18. Channels list (M5): channels with new content get a small Abricot dot after their name instead of
+         a colored background (OculoDot, same dot as the rail's Subscriptions icon). Off upstream. -->
+    <bool name="oculo_channel_new_content_dot">false</bool>
+    <dimen name="oculo_channel_dot_size">8dp</dimen>
+    <dimen name="oculo_channel_dot_gap">10dp</dimen>
+    <!-- Channels list filter field: a white 15 % pill, like the top bar's -->
+    <dimen name="oculo_filter_field_height">36dp</dimen>
+
+    <!-- Search screen (M3, OculoSearchBar): the bar sits where Home's top bar is. Content start = collapsed rail
+         (oculo_rail_collapsed_width 38dp) + the rows' 56dp padding; the search rows start 56dp from the edge
+         (leanback's padding), so the results are shifted by the difference. Field wider than Home's pill (it
+         "opens"), same start, same height. Clock and wordmark 56dp from the right edge, as on Home. -->
+    <dimen name="oculo_search_content_start">94dp</dimen>
+    <dimen name="oculo_search_rows_padding_start">56dp</dimen>
+    <dimen name="oculo_search_field_width">600dp</dimen>
+    <dimen name="oculo_search_branding_end">56dp</dimen>
+    <!-- Mic while listening: turquoise disc, dark mic (no red) -->
+    <color name="oculo_search_listening">#22D3C8</color>
+
+    <!-- Empty and error states (M9, OculoErrorState): the logo's TV outline in grey, title, explanation, pill
+         button; on the page background (no black veil). -->
+    <dimen name="oculo_state_icon_width">64dp</dimen>
+    <dimen name="oculo_state_title_size">22sp</dimen>
+    <dimen name="oculo_state_text_size">16sp</dimen>
+    <dimen name="oculo_state_detail_size">12sp</dimen>
+    <dimen name="oculo_state_text_width">560dp</dimen>
+    <dimen name="oculo_pill_button_height">40dp</dimen>
+    <dimen name="oculo_pill_button_padding">24dp</dimen>
+    <dimen name="oculo_pill_button_text_size">16sp</dimen>
+    <dimen name="oculo_state_gap_small">8dp</dimen>
+    <dimen name="oculo_state_gap_large">24dp</dimen>
+    <dimen name="oculo_state_gap_button">28dp</dimen>
+    <item name="oculo_error_title" type="id" />
+    <item name="oculo_error_detail" type="id" />
+    <color name="oculo_state_icon">#5E5E5E</color>
+    <color name="oculo_state_text">#AAAAAA</color>
+    <string name="oculo_state_empty_title">Nothing to show here</string>
+    <string name="oculo_state_empty_text">This section is empty for now.</string>
+    <string name="oculo_state_error_title">Couldn\'t load this section</string>
+    <string name="oculo_state_error_text">Check the network connection, then try again.</string>
+    <string name="oculo_state_signin_title">Sign in</string>
+    <string name="oculo_state_signin_text">Sign in to your YouTube account to see your subscriptions, history and playlists.</string>
+    <string name="oculo_state_retry">Try again</string>
+    <string name="oculo_state_signin_button">Sign in</string>
+
+    <!-- Sign-in screen (M8, OculoSignIn): QR on white at left, three numbered steps at right -->
+    <dimen name="oculo_signin_qr_size">280dp</dimen>
+    <dimen name="oculo_signin_qr_padding">12dp</dimen>
+    <dimen name="oculo_signin_gap">64dp</dimen>
+    <dimen name="oculo_signin_column_width">540dp</dimen>
+    <dimen name="oculo_signin_step_size">20sp</dimen>
+    <dimen name="oculo_signin_url_size">26sp</dimen>
+    <dimen name="oculo_signin_code_size">56sp</dimen>
+    <color name="oculo_signin_code_color">#FFA25C</color>
+    <color name="oculo_signin_url_color">#FFC896</color>
+    <string name="oculo_signin_step_open">1. On your phone, open</string>
+    <string name="oculo_signin_step_code">2. Enter this code</string>
+    <string name="oculo_signin_step_account">3. Choose your account</string>
+    <string name="oculo_signin_done">Done</string>
+    <string name="oculo_signin_open_browser">Open in browser</string>
+    <!-- Oculo screens' background (sign-in): black upstream, the browse glow in the oculo flavor -->
+    <item name="oculo_screen_background" type="drawable">@android:color/black</item>
 </resources>

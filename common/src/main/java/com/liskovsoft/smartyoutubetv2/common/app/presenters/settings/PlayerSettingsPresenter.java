@@ -647,9 +647,11 @@ public class PlayerSettingsPresenter extends BasePresenter<Void> {
                 option -> mPlayerTweaksData.setKeepFinishedActivityEnabled(option.isSelected()),
                 mPlayerTweaksData.isKeepFinishedActivityEnabled()));
 
-        options.add(UiOptionItem.from(getContext().getString(R.string.disable_channels_service),
-                option -> GlobalPreferences.instance(getContext()).setChannelsServiceEnabled(!option.isSelected()),
-                !GlobalPreferences.instance(getContext()).isChannelsServiceEnabled()));
+        if (com.liskovsoft.smartyoutubetv2.common.oculo.OculoBackground.isTvChannelsEnabled(getContext())) { // Oculo: channels always off
+            options.add(UiOptionItem.from(getContext().getString(R.string.disable_channels_service),
+                    option -> GlobalPreferences.instance(getContext()).setChannelsServiceEnabled(!option.isSelected()),
+                    !GlobalPreferences.instance(getContext()).isChannelsServiceEnabled()));
+        }
 
         options.add(UiOptionItem.from(getContext().getString(R.string.hide_settings_section),
                 option -> {

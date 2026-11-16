@@ -146,6 +146,8 @@ public class ChannelHeaderPresenter extends RowPresenter {
                 previousListener.onFocusChange(v, focused);
             }
         });
+
+        com.liskovsoft.smartyoutubetv2.tv.oculo.OculoSearchBar.styleOrbs(searchBar); // Oculo: top bar style
     }
 
     @Override

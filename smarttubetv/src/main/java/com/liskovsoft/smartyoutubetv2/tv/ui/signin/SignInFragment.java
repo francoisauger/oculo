@@ -3,6 +3,9 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.signin;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -20,6 +23,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.views.SignInView;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoQr;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoSignIn;
 import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoUi;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
@@ -31,6 +35,27 @@ public class SignInFragment extends GuidedStepSupportFragment implements SignInV
     private static final int OPEN_BROWSER = 3;
     private SignInPresenter mSignInPresenter;
     private String mFullSignInUrl;
+    private OculoSignIn mOculoSignIn;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        // Oculo: own layout over the (hidden) GuidedStep views
+        mOculoSignIn = OculoSignIn.wrap(view, v -> mSignInPresenter.onActionClicked(), v -> {
+            if (mFullSignInUrl != null) {
+                Utils.openLinkExt(getContext(), mFullSignInUrl);
+            }
+        });
+        return mOculoSignIn != null ? mOculoSignIn.getRoot() : view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mOculoSignIn != null) {
+            mOculoSignIn.focus();
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,10 +93,15 @@ public class SignInFragment extends GuidedStepSupportFragment implements SignInV
             return;
         }
 
+        mFullSignInUrl = fullSignInUrl != null ? fullSignInUrl : signInUrl;
+
+        if (mOculoSignIn != null) { // Oculo: two-column sign-in screen
+            mOculoSignIn.showCode(userCode, signInUrl, mFullSignInUrl);
+            return;
+        }
+
         getGuidanceStylist().getTitleView().setText(userCode);
         OculoUi.setTextColorIfSet(getGuidanceStylist().getTitleView(), R.color.oculo_signin_code); // Oculo
-
-        mFullSignInUrl = fullSignInUrl != null ? fullSignInUrl : signInUrl;
 
         Glide.with(getContext())
                 .load(OculoQr.toBitmap(mFullSignInUrl, 600)) // Oculo: generated on the device (was api.qrserver.com)

@@ -49,7 +49,9 @@ public class MainUISettingsPresenter extends BasePresenter<Void> {
     public void show() {
         AppDialogPresenter settingsPresenter = AppDialogPresenter.instance(getContext());
 
-        appendTopButtonsCategory(settingsPresenter);
+        if (!OculoSettings.isTopButtonsCategoryHidden(getContext())) { // Oculo: no effect with the rail and top bar
+            appendTopButtonsCategory(settingsPresenter);
+        }
         appendColorScheme(settingsPresenter);
         if (Build.VERSION.SDK_INT > 19) {
             appendCardTextScrollSpeed(settingsPresenter);

@@ -235,6 +235,7 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
         if (OculoRail.isEnabled(getContext())) { // Oculo: search and account live in the left rail
             mIsSearchOrbEnabled = true; // true = search orb hidden (upstream naming)
             mIsAccountViewEnabled = false;
+            mIsLanguageViewEnabled = false; // after the Search pill, out of the D-pad's reach (OculoTopBar)
         }
 
         mSearchOrbView.setVisibility(mIsSearchOrbEnabled ? View.VISIBLE : View.GONE);

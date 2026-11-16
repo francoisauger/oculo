@@ -7,6 +7,7 @@ import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.smartyoutubetv2.common.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoSections;
 import com.liskovsoft.smartyoutubetv2.common.prefs.AppPrefs;
 import com.liskovsoft.smartyoutubetv2.common.prefs.AppPrefs.ProfileChangeListener;
 import com.liskovsoft.smartyoutubetv2.common.prefs.GeneralData;
@@ -306,6 +307,8 @@ public class SidebarService implements ProfileChangeListener {
         enableSection(MediaGroup.TYPE_SETTINGS, true);
 
         cleanupPinnedItems();
+
+        OculoSections.hideDeadSectionsOnce(mContext, this); // Oculo: Kids and My videos can't show anything
     }
 
     private void transferOldPinnedItems() {

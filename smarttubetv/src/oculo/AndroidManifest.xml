@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (32.74-18): no Android TV home-screen channels. leanbackassistant's UpdateChannelsReceiver (boot,
+     quick boot, screen on) only schedules the « Update channels » periodic work, which the TCL's Google TV home never
+     shows; the receiver is removed so nothing wakes Oculo to reschedule it (OculoBackground cancels an already
+     scheduled one at startup). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <receiver
+            android:name="com.liskovsoft.leanbackassistant.channels.UpdateChannelsReceiver"
+            tools:node="remove" />
+    </application>
+</manifest>

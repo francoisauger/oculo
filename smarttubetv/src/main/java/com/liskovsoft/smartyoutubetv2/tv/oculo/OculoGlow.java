@@ -18,12 +18,16 @@ import android.util.LruCache;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.leanback.widget.ItemBridgeAdapter;
 import androidx.palette.graphics.Palette;
+import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoData;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoGlowColor;
 import com.liskovsoft.smartyoutubetv2.tv.R;
@@ -69,7 +73,15 @@ public final class OculoGlow {
     private static final float RADIUS_OF_SHORT_SIDE = 0.8444f;
 
     private static final LruCache<Long, Integer> sColors = new LruCache<>(300);
+    /**
+     * 32.74-18: colors by video (id, else thumbnail URL, else channel), for the whole session. Thumbnails are decoded
+     * again each time a card comes back on screen, so the per-bitmap cache above rarely hits; this one does, and
+     * then no bitmap is scaled or copied at all (a hardware bitmap copy waits on the render thread).
+     */
+    private static final LruCache<String, Integer> sVideoColors = new LruCache<>(500);
     private static final Integer NO_COLOR = 0;
+    /** Analysis failed (bitmap recycled meanwhile, out of memory): shown as no color, never cached. */
+    private static final int FAILED = 1;
     private static ExecutorService sExecutor;
     private static WeakReference<GlowView> sView = new WeakReference<>(null);
     private static WeakReference<View> sFocusedCard = new WeakReference<>(null);
@@ -160,8 +172,16 @@ public final class OculoGlow {
             return;
         }
 
+        String videoKey = videoKey(card);
+        Integer known = videoKey != null ? sVideoColors.get(videoKey) : null;
+        if (known != null) {
+            deliver(card, known);
+            return;
+        }
+
         Bitmap bitmap = findBitmap(card);
         if (bitmap == null || bitmap.isRecycled()) {
+            // Not loaded yet (or failed): not cached, so the next focus tries again
             deliver(card, 0);
             return;
         }
@@ -170,6 +190,9 @@ public final class OculoGlow {
         long key = ((long) System.identityHashCode(bitmap) << 32) | (bitmap.getGenerationId() & 0xFFFFFFFFL);
         Integer cached = sColors.get(key);
         if (cached != null) {
+            if (videoKey != null) {
+                sVideoColors.put(videoKey, cached);
+            }
             deliver(card, cached);
             return;
         }
@@ -184,10 +207,15 @@ public final class OculoGlow {
         executor().execute(() -> {
             int color = computeColor(sample, source);
             sHandler.post(() -> {
-                sColors.put(key, color);
+                if (color != FAILED) {
+                    sColors.put(key, color);
+                    if (videoKey != null) {
+                        sVideoColors.put(videoKey, color);
+                    }
+                }
                 View current = sFocusedCard.get();
                 if (current != null && request == sRequest) {
-                    deliver(current, color);
+                    deliver(current, color != FAILED ? color : 0);
                 }
             });
         });
@@ -202,7 +230,7 @@ public final class OculoGlow {
             if (bitmap == null && hardware != null) {
                 Bitmap copy = hardware.copy(Bitmap.Config.ARGB_8888, false);
                 if (copy == null) {
-                    return 0;
+                    return FAILED;
                 }
                 bitmap = scale(copy);
                 if (bitmap != copy) {
@@ -210,7 +238,7 @@ public final class OculoGlow {
                 }
             }
             if (bitmap == null) {
-                return 0;
+                return FAILED;
             }
 
             Palette palette = Palette.from(bitmap)
@@ -243,7 +271,7 @@ public final class OculoGlow {
             return OculoGlowColor.pick(rgbs, populations, total);
         } catch (RuntimeException e) {
             // Recycled meanwhile, out of memory...: keep the default glow
-            return 0;
+            return FAILED;
         } finally {
             if (bitmap != null && !bitmap.isRecycled()) {
                 bitmap.recycle();
@@ -266,6 +294,33 @@ public final class OculoGlow {
         }
         return Bitmap.createScaledBitmap(bitmap, Math.max(1, Math.round(width * ratio)),
                 Math.max(1, Math.round(height * ratio)), true);
+    }
+
+    /**
+     * The card's item (a {@link Video}) through its grid's view holder: video id, else thumbnail URL, else channel.
+     */
+    @Nullable
+    private static String videoKey(View card) {
+        View host = card;
+        while (host != null && !(host.getParent() instanceof RecyclerView)) {
+            host = host.getParent() instanceof View ? (View) host.getParent() : null;
+        }
+        if (host == null) {
+            return null;
+        }
+        RecyclerView.ViewHolder holder = ((RecyclerView) host.getParent()).getChildViewHolder(host);
+        Object item = holder instanceof ItemBridgeAdapter.ViewHolder ? ((ItemBridgeAdapter.ViewHolder) holder).getItem() : null;
+        if (!(item instanceof Video)) {
+            return null;
+        }
+        Video video = (Video) item;
+        if (video.videoId != null) {
+            return "v:" + video.videoId;
+        }
+        if (video.cardImageUrl != null) {
+            return "u:" + video.cardImageUrl;
+        }
+        return video.channelId != null ? "c:" + video.channelId : null;
     }
 
     @Nullable
@@ -311,8 +366,12 @@ public final class OculoGlow {
      * The browse background with an animatable glow color. Two gradient layers (current and previous color): a
      * color change rebuilds one shader and crossfades the layers' paint alpha.
      */
-    static final class GlowView extends View {
+    static final class GlowView extends View implements ViewTreeObserver.OnPreDrawListener {
         private final int mBaseColor;
+        /** The window's background (leanback BackgroundManager's layer drawable) while hidden under this view. */
+        @Nullable
+        private Drawable mHiddenWindowBackground;
+        private final int[] mLocation = new int[2];
         private final Paint[] mPaints = {new Paint(), new Paint()};
         private final int[] mColors = {OculoGlowColor.DEFAULT_GLOW, 0};
         private final float[] mWeights = {1, 0};
@@ -405,9 +464,70 @@ public final class OculoGlow {
         }
 
         @Override
+        protected void onAttachedToWindow() {
+            super.onAttachedToWindow();
+            getViewTreeObserver().addOnPreDrawListener(this);
+        }
+
+        @Override
         protected void onDetachedFromWindow() {
             mAnimator.cancel();
+            getViewTreeObserver().removeOnPreDrawListener(this);
+            restoreWindowBackground();
             super.onDetachedFromWindow();
+        }
+
+        /**
+         * 32.74-18 (overdraw): this view is opaque and, on Home, covers the whole window, so the window's own
+         * background (leanback's BackgroundManager puts the same full-screen gradient there) is painted for nothing
+         * on every frame. While this view is shown, fully opaque (no fading ancestor) and covers the window, the
+         * decor view's background is set aside; it comes back as soon as one of these stops being true, so nothing
+         * changes on screen. Checked right before each frame; when BackgroundManager puts a new drawable back
+         * (onStart after onStop), it is set aside again before it is drawn.
+         */
+        @Override
+        public boolean onPreDraw() {
+            View decor = getRootView();
+            if (decor == null || decor == this) {
+                return true;
+            }
+            if (coversWindow(decor)) {
+                Drawable background = decor.getBackground();
+                if (background != null) {
+                    mHiddenWindowBackground = background;
+                    decor.setBackground(null);
+                }
+            } else {
+                restoreWindowBackground();
+            }
+            return true;
+        }
+
+        private boolean coversWindow(View decor) {
+            if (!isShown() || getWidth() < decor.getWidth() || getHeight() < decor.getHeight()) {
+                return false;
+            }
+            for (View view = this; view != null;
+                 view = view.getParent() instanceof View ? (View) view.getParent() : null) {
+                if (view.getAlpha() < 1f || view.getTranslationX() != 0 || view.getTranslationY() != 0
+                        || view.getScaleX() != 1f || view.getScaleY() != 1f) {
+                    return false;
+                }
+            }
+            getLocationInWindow(mLocation);
+            return mLocation[0] <= 0 && mLocation[1] <= 0 && mLocation[0] + getWidth() >= decor.getWidth()
+                    && mLocation[1] + getHeight() >= decor.getHeight();
+        }
+
+        private void restoreWindowBackground() {
+            if (mHiddenWindowBackground == null) {
+                return;
+            }
+            View decor = getRootView();
+            if (decor != null && decor != this && decor.getBackground() == null) {
+                decor.setBackground(mHiddenWindowBackground);
+            }
+            mHiddenWindowBackground = null;
         }
     }
 }

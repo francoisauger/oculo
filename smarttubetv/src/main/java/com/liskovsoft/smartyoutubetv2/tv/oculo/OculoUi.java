@@ -1,5 +1,7 @@
 package com.liskovsoft.smartyoutubetv2.tv.oculo;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -35,6 +37,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoCardMeta;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatching;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 
 import java.util.List;
@@ -183,6 +186,10 @@ public final class OculoUi {
         }
 
         OculoGlow.onCardFocusChanged(wrapper, focused);
+        if (focused) {
+            // Continue watching may be waiting for the focus to leave its row (32.74-18: no timer for that)
+            OculoContinueWatching.onAnyCardFocused();
+        }
 
         if (!hasCardFocusRing(wrapper.getContext())) {
             return;
@@ -257,6 +264,9 @@ public final class OculoUi {
         private float mGlowColorAlpha;
         @Nullable
         private final ValueAnimator mPulseAnimator;
+        // 32.74-18: the pulse runs a few cycles after focus lands, then the ring stays steady (no redraws at rest)
+        private boolean mPulseDone;
+        private boolean mPulseCancelled;
         private final ValueAnimator mGlowAnimator;
 
         CardFrame(View wrapper) {
@@ -270,6 +280,7 @@ public final class OculoUi {
             mGlowFallbackAlpha = res.getFraction(R.fraction.oculo_card_glow_fallback_alpha, 1, 1);
             mPulseMinAlpha = res.getFraction(R.fraction.oculo_card_focus_pulse_min_alpha, 1, 1);
             int pulsePeriod = res.getInteger(R.integer.oculo_card_focus_pulse_period);
+            int pulseCycles = res.getInteger(R.integer.oculo_card_focus_pulse_cycles);
 
             mRingPaint.setStyle(Paint.Style.STROKE);
             mRingPaint.setStrokeWidth(mRing);
@@ -279,7 +290,8 @@ public final class OculoUi {
             if (pulsePeriod > 0 && mPulseMinAlpha < 1) {
                 mPulseAnimator = ValueAnimator.ofFloat(0, 1);
                 mPulseAnimator.setDuration(pulsePeriod);
-                mPulseAnimator.setRepeatCount(ValueAnimator.INFINITE);
+                // 0 = endless (32.74-12 to -17); each cycle starts and ends at full white
+                mPulseAnimator.setRepeatCount(pulseCycles > 0 ? pulseCycles - 1 : ValueAnimator.INFINITE);
                 mPulseAnimator.setInterpolator(new LinearInterpolator());
                 mPulseAnimator.addUpdateListener(animation -> {
                     if (!mFocused || mHost == null || !mHost.isShown()) {
@@ -291,6 +303,27 @@ public final class OculoUi {
                     double wave = 0.5 + 0.5 * Math.cos(2 * Math.PI * animation.getAnimatedFraction());
                     mPulse = (float) (mPulseMinAlpha + (1 - mPulseMinAlpha) * wave);
                     invalidateSelf();
+                });
+                mPulseAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        mPulseCancelled = false;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        mPulseCancelled = true;
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (!mPulseCancelled) {
+                            // All cycles played: steady full ring until the next focus
+                            mPulseDone = true;
+                            mPulse = 1;
+                            invalidateSelf();
+                        }
+                    }
                 });
             } else {
                 mPulseAnimator = null;
@@ -325,6 +358,9 @@ public final class OculoUi {
 
         private void setup() {
             if (mHost != null) {
+                // Leanback rows share one RecycledViewPool: a card set up in one row can be re-attached to another
+                // row's grid, which then also needs to let rings and glows overflow and to get the left-edge cut
+                prepareGrid(mHost);
                 return;
             }
 
@@ -389,10 +425,6 @@ public final class OculoUi {
                 host.setOutlineProvider(null);
             }
 
-            if (host.getParent() instanceof ViewGroup) {
-                ((ViewGroup) host.getParent()).setClipChildren(false);
-            }
-
             mHost = host;
             mTile = tile;
             mRingRadius = mRadius + mGap + mRing / 2f;
@@ -400,15 +432,29 @@ public final class OculoUi {
             host.getOverlay().add(this);
             updateGeometry();
 
+            prepareGrid(host);
+        }
+
+        /**
+         * The grid holding the card (its current parent): no child clipping, so rings and glows overflow the cards,
+         * and the row's left-edge cut. Both are idempotent; run on every attach (recycled cards change grids).
+         */
+        private static void prepareGrid(View host) {
+            if (!(host.getParent() instanceof ViewGroup)) {
+                return;
+            }
+            ViewGroup grid = (ViewGroup) host.getParent();
+            if (grid.getClipChildren()) {
+                grid.setClipChildren(false);
+            }
+
             // Rows: cards scrolled out on the left are cut at the content's start line. Last, and never allowed to
             // throw: this runs from the card's onViewAttachedToWindow(), in the middle of the grid's layout (32.74-15
             // added an ItemDecoration here, which RecyclerView refuses during a layout: half-attached cards).
-            if (host.getParent() instanceof View) {
-                try {
-                    OculoRowEdge.install((View) host.getParent());
-                } catch (RuntimeException e) {
-                    android.util.Log.w("OculoRowEdge", "install failed", e);
-                }
+            try {
+                OculoRowEdge.install(grid);
+            } catch (RuntimeException e) {
+                android.util.Log.w("OculoRowEdge", "install failed", e);
             }
         }
 
@@ -493,6 +539,7 @@ public final class OculoUi {
                 mPulseAnimator.cancel();
             }
             mPulse = 1;
+            mPulseDone = false;
             if (focused) {
                 if (mHost == null) {
                     setup();
@@ -523,8 +570,8 @@ public final class OculoUi {
         }
 
         private void startPulse() {
-            if (mPulseAnimator != null && mFocused && mHost != null && mHost.isShown() && animatorsEnabled()
-                    && !mPulseAnimator.isStarted()) {
+            if (mPulseAnimator != null && mFocused && !mPulseDone && mHost != null && mHost.isShown()
+                    && animatorsEnabled() && !mPulseAnimator.isStarted()) {
                 mPulseAnimator.start();
             }
         }
@@ -541,7 +588,7 @@ public final class OculoUi {
             }
             mRingPaint.setAlpha(Math.round(mRingAlpha * mPulse));
             canvas.drawRoundRect(mRingRect, mRingRadius, mRingRadius, mRingPaint);
-            if (mPulseAnimator != null && !mPulseAnimator.isStarted()) {
+            if (mPulseAnimator != null && !mPulseDone && !mPulseAnimator.isStarted()) {
                 // Paused while hidden: resume once drawn again
                 mHost.post(this::startPulse);
             }

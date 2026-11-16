@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (32.74-18, design.md M8): sign-in screen. Centered, two columns: the QR code on a white 12dp card at left,
+     three numbered steps at right (the URL in light Abricot, the code large in Abricot), « Done » as the primary pill
+     and « Open in browser » as a secondary text button. Filled by OculoSignIn (SignInFragment keeps the code, URL and
+     actions). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/oculo_signin_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/oculo_screen_background">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="@dimen/oculo_signin_qr_size"
+            android:layout_height="@dimen/oculo_signin_qr_size"
+            android:background="@drawable/oculo_signin_qr_background"
+            android:padding="@dimen/oculo_signin_qr_padding">
+            <ImageView
+                android:id="@+id/oculo_signin_qr"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:importantForAccessibility="no" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/oculo_signin_column_width"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/oculo_signin_gap"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@string/oculo_signin_step_open"
+                android:textColor="@color/oculo_white_focus"
+                android:textSize="@dimen/oculo_signin_step_size" />
+            <TextView
+                android:id="@+id/oculo_signin_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="sans-serif-medium"
+                android:singleLine="true"
+                android:ellipsize="middle"
+                android:textColor="@color/oculo_signin_url_color"
+                android:textSize="@dimen/oculo_signin_url_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/oculo_signin_step_code"
+                android:textColor="@color/oculo_white_focus"
+                android:textSize="@dimen/oculo_signin_step_size" />
+            <TextView
+                android:id="@+id/oculo_signin_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.1"
+                android:singleLine="true"
+                android:text="…"
+                android:textColor="@color/oculo_signin_code_color"
+                android:textSize="@dimen/oculo_signin_code_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/oculo_signin_step_account"
+                android:textColor="@color/oculo_white_focus"
+                android:textSize="@dimen/oculo_signin_step_size" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/oculo_signin_done"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/oculo_pill_button_height"
+                    android:minHeight="0dp"
+                    android:minWidth="120dp"
+                    android:paddingStart="@dimen/oculo_pill_button_padding"
+                    android:paddingEnd="@dimen/oculo_pill_button_padding"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:background="@drawable/oculo_pill_button_background"
+                    android:stateListAnimator="@null"
+                    android:textAllCaps="false"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/oculo_signin_done"
+                    android:textColor="@color/oculo_pill_button_text"
+                    android:textSize="@dimen/oculo_pill_button_text_size"
+                    android:nextFocusRight="@+id/oculo_signin_browser"
+                    android:nextFocusLeft="@id/oculo_signin_done"
+                    android:nextFocusUp="@id/oculo_signin_done"
+                    android:nextFocusDown="@id/oculo_signin_done" />
+                <Button
+                    android:id="@+id/oculo_signin_browser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/oculo_pill_button_height"
+                    android:layout_marginStart="12dp"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:paddingStart="@dimen/oculo_pill_button_padding"
+                    android:paddingEnd="@dimen/oculo_pill_button_padding"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:background="@drawable/oculo_link_button_background"
+                    android:stateListAnimator="@null"
+                    android:textAllCaps="false"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/oculo_signin_open_browser"
+                    android:textColor="@color/oculo_link_button_text"
+                    android:textSize="@dimen/oculo_pill_button_text_size"
+                    android:nextFocusLeft="@id/oculo_signin_done"
+                    android:nextFocusRight="@id/oculo_signin_browser"
+                    android:nextFocusUp="@id/oculo_signin_browser"
+                    android:nextFocusDown="@id/oculo_signin_browser" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (32.74-18, design.md M9): copy of leanback-1.0.0's lb_error_fragment.xml (same ids: error_frame, image,
+     message, button) laid out as Oculo's empty / error state: the logo's TV outline, a title (oculo_error_title),
+     the explanation, a detail line (oculo_error_detail) and a pill button, centered. OculoErrorState fills it.
+     Re-sync if upstream changes that layout. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/error_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="afterDescendants"
+    android:nextFocusLeft="@id/error_frame"
+    android:nextFocusRight="@id/error_frame"
+    android:nextFocusUp="@id/error_frame"
+    android:nextFocusDown="@id/error_frame">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="@dimen/oculo_state_icon_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/oculo_error_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:maxWidth="@dimen/oculo_state_text_width"
+            android:gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/oculo_white_focus"
+            android:textSize="@dimen/oculo_state_title_size"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:maxWidth="@dimen/oculo_state_text_width"
+            android:gravity="center"
+            android:fontFamily="sans-serif"
+            android:lineSpacingMultiplier="1.2"
+            android:textColor="@color/oculo_state_text"
+            android:textSize="@dimen/oculo_state_text_size"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/oculo_error_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:maxWidth="@dimen/oculo_state_text_width"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:textColor="#7A7A7A"
+            android:textSize="@dimen/oculo_state_detail_size"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/oculo_pill_button_height"
+            android:minHeight="0dp"
+            android:minWidth="120dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="28dp"
+            android:paddingStart="@dimen/oculo_pill_button_padding"
+            android:paddingEnd="@dimen/oculo_pill_button_padding"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:background="@drawable/oculo_pill_button_background"
+            android:stateListAnimator="@null"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/oculo_pill_button_text"
+            android:textSize="@dimen/oculo_pill_button_text_size"
+            android:visibility="gone"
+            android:nextFocusLeft="@id/button"
+            android:nextFocusRight="@id/button"
+            android:nextFocusUp="@id/button"
+            android:nextFocusDown="@id/button"/>
+    </LinearLayout>
+
+</FrameLayout>

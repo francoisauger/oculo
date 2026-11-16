@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo: the logo's TV frame alone, as an outline (frame 860 x 725, rx 275; screen hole 560 x 489 at 150,118, rx 145,
+     from docs/mockups/icon/gen_icon.py), no screen, no eye. Empty and error states (OculoErrorState). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="54dp"
+    android:viewportWidth="860"
+    android:viewportHeight="725">
+    <path
+        android:fillColor="@color/oculo_state_icon"
+        android:fillType="evenOdd"
+        android:pathData="M275,0 H585 A275,275 0 0 1 860,275 V450 A275,275 0 0 1 585,725 H275 A275,275 0 0 1 0,450 V275 A275,275 0 0 1 275,0 Z M295,118 H565 A145,145 0 0 1 710,263 V462 A145,145 0 0 1 565,607 H295 A145,145 0 0 1 150,462 V263 A145,145 0 0 1 295,118 Z" />
+</vector>

@@ -17,6 +17,17 @@
     <bool name="oculo_row_edge_clip">true</bool>
     <!-- About: no "Install bridge" button (it installs a third-party APK) -->
     <bool name="oculo_show_install_bridge">false</bool>
+    <!-- Rail: Kids and My videos removed once (32.74-18, OculoSections) -->
+    <bool name="oculo_hide_dead_sections">true</bool>
+    <!-- No Android TV home-screen channels: the TCL's Google TV home never shows them (OculoBackground) -->
+    <bool name="oculo_tv_channels">false</bool>
+    <!-- No « Buttons at the top of the main window » settings: the rail and the top bar replace them -->
+    <bool name="oculo_hide_top_buttons_setting">true</bool>
+    <!-- Channels list: no Abricot background on channels with new content, a small Abricot dot instead (M5) -->
+    <bool name="oculo_channel_new_content_dot">true</bool>
+    <!-- Sign-in screen background: the browse glow, as on Home and search -->
+    <item name="oculo_screen_background" type="drawable">@drawable/oculo_browse_background</item>
+    <color name="oculo_channel_new_content">@android:color/transparent</color>
     <!-- Audio: default track = the original (no voice boost, no stable volume), clearer « Audio formats » names (OculoAudioTracks) -->
     <bool name="oculo_audio_original">true</bool>
 
@@ -35,8 +46,6 @@
 
     <!-- Accent badges (LIVE, NEW, upcoming): dark ink text on the Abricot badge -->
     <color name="oculo_badge_accent_text">@color/oculo_abricot_ink</color>
-    <!-- Channel cards with new content: dark Abricot, white text 5.1:1 -->
-    <color name="oculo_channel_new_content">@color/oculo_abricot_dark</color>
     <!-- Sign-in screen: activation code in Abricot, activation URL in light Abricot -->
     <color name="oculo_signin_code">@color/oculo_abricot</color>
     <color name="oculo_signin_link">@color/oculo_abricot_light</color>

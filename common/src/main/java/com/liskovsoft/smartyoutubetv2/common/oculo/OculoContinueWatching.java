@@ -71,10 +71,17 @@ public class OculoContinueWatching {
     private static final String TAG = "OculoCW";
     /** Home may be built twice in a row (load, section re-selected): at most one history request per 30 s. */
     private static final long HISTORY_MIN_INTERVAL_MS = 30_000;
-    /** New selection not applicable yet (Home rows still loading for a row insert/removal, focus in the row): retry. */
+    /**
+     * New selection not applicable yet because Home's rows are still loading (row insert/removal): check again.
+     * 32.74-18: only that cheap check is repeated, the selection is not recomputed; a focus in the row waits for the
+     * next card focus instead ({@link #onAnyCardFocused}), no timer.
+     */
     private static final long APPLY_RETRY_MS = 1_500;
-    /** About 5 minutes; afterwards Home's next resume or build applies it. */
-    private static final int APPLY_MAX_RETRIES = 200;
+    /** About 1 minute of loading; afterwards Home's next resume, build or card focus applies it. */
+    private static final int APPLY_MAX_RETRIES = 40;
+    private static final int APPLIED = 0;
+    private static final int WAIT_LOADING = 1;
+    private static final int WAIT_FOCUS = 2;
     private static final long PERSIST_DELAY_MS = 3_000;
     @SuppressLint("StaticFieldLeak")
     private static OculoContinueWatching sInstance;
@@ -91,7 +98,9 @@ public class OculoContinueWatching {
     private Disposable mHistoryAction;
     private long mLastHistoryRequestMs;
     private int mApplyRetries;
-    private final Runnable mApplyHistory = this::applyHistory;
+    private final Runnable mApplyPending = this::applyPending;
+    /** Selection computed but not shown yet (see {@link #updateInPlace}); null = nothing waiting. */
+    private List<Video> mPending;
     private final Runnable mPersist = this::persistNow;
     private WeakReference<BrowseView> mView = new WeakReference<>(null);
     private BrowseSection mSection;
@@ -107,7 +116,7 @@ public class OculoContinueWatching {
         mHidden = OculoContinueWatchingRules.parse(mPrefs.getData(KEY_HIDDEN));
         OculoContinueWatchingRules.prune(mHidden, now, OculoContinueWatchingRules.HIDDEN_RETENTION_MS, OculoContinueWatchingRules.HIDDEN_MAX_SIZE);
         if (!TextUtils.isEmpty(mPrefs.getData(KEY_HISTORY_SEEN))) {
-            mPrefs.setData(KEY_HISTORY_SEEN, "");
+            OculoStore.write(mContext, KEY_HISTORY_SEEN, "");
         }
     }
 
@@ -151,6 +160,8 @@ public class OculoContinueWatching {
         mView = new WeakReference<>(view);
         mSection = section;
         mShown.clear();
+        mPending = null;
+        Utils.removeCallbacks(mApplyPending);
         loadHistoryCache();
 
         List<Video> videos = isEnabled() ? compute() : Collections.emptyList();
@@ -190,8 +201,7 @@ public class OculoContinueWatching {
      * loading (the next rows' positions depend on it), or the focus is on one of its cards (adding or removing
      * cards there would move it)
      */
-    private boolean updateInPlace(BrowseView view, BrowseSection section, BrowsePresenter presenter) {
-        List<Video> videos = isEnabled() ? compute() : Collections.<Video>emptyList();
+    private int updateInPlace(BrowseView view, BrowseSection section, BrowsePresenter presenter, List<Video> videos) {
         List<String> newIds = ids(videos);
         List<String> shownIds = ids(mShown);
 
@@ -199,28 +209,28 @@ public class OculoContinueWatching {
             if (!videos.isEmpty()) {
                 syncProgress(view, videos);
             }
-            return true;
+            return APPLIED;
         }
 
         if (mShown.isEmpty() || videos.isEmpty()) {
             // The row appears or disappears: Home's other rows shift by one
             if (presenter.hasPendingActions()) {
-                return false;
+                return WAIT_LOADING;
             }
             if (videos.isEmpty()) {
                 if (isFocusInRow(presenter)) {
-                    return false;
+                    return WAIT_FOCUS;
                 }
                 mShown.clear();
                 view.updateSection(createGroup(Collections.<Video>emptyList(), VideoGroup.ACTION_REPLACE)); // removes the row
             } else {
                 showRowNow(view, section, videos);
             }
-            return true;
+            return APPLIED;
         }
 
         if (isFocusInRow(presenter)) {
-            return false;
+            return WAIT_FOCUS;
         }
 
         OculoContinueWatchingRules.RowPlan plan = OculoContinueWatchingRules.planInPlace(shownIds, newIds);
@@ -245,11 +255,11 @@ public class OculoContinueWatching {
         if (mShown.isEmpty()) {
             // Everything filtered out on the way (e.g. blocked channels): no row
             view.updateSection(createGroup(Collections.<Video>emptyList(), VideoGroup.ACTION_REPLACE));
-            return true;
+            return APPLIED;
         }
 
         syncProgress(view, videos);
-        return true;
+        return APPLIED;
     }
 
     /** First appearance of the row after Home was built (it had nothing to show then). */
@@ -322,6 +332,17 @@ public class OculoContinueWatching {
         OculoContinueWatchingRules.prune(mHidden, System.currentTimeMillis(), OculoContinueWatchingRules.HIDDEN_RETENTION_MS, OculoContinueWatchingRules.HIDDEN_MAX_SIZE);
         schedulePersist();
 
+        if (mPending != null) {
+            // A change waiting to be shown must not bring the card back
+            List<Video> pending = new ArrayList<>();
+            for (Video video : mPending) {
+                if (!videoId.equals(video.videoId)) {
+                    pending.add(video);
+                }
+            }
+            mPending = pending;
+        }
+
         BrowseView view = mView.get();
         if (view == null || mSection == null) {
             return;
@@ -387,7 +408,7 @@ public class OculoContinueWatching {
     /** Signed out: local log only, and the cached history (another account's, maybe) is dropped. */
     private void onSignedOut() {
         Log.i(TAG, "history: signed out, local log only");
-        mPrefs.setData(KEY_HISTORY_CACHE, "");
+        OculoStore.write(mContext, KEY_HISTORY_CACHE, "");
         boolean changed = !mHistory.isEmpty();
         mHistory.clear();
         mHistoryVideos.clear();
@@ -453,7 +474,7 @@ public class OculoContinueWatching {
                 specs.put(video.videoId, video.toString());
             }
         }
-        mPrefs.setData(KEY_HISTORY_CACHE, OculoContinueWatchingRules.formatHistoryCache(
+        OculoStore.write(mContext, KEY_HISTORY_CACHE, OculoContinueWatchingRules.formatHistoryCache(
                 new OculoContinueWatchingRules.HistoryCache(key, System.currentTimeMillis(), mHistory, specs)));
     }
 
@@ -508,7 +529,8 @@ public class OculoContinueWatching {
      * (see {@link #updateInPlace}) or left to Home's next build / resume.
      */
     private void applyHistory() {
-        Utils.removeCallbacks(mApplyHistory);
+        Utils.removeCallbacks(mApplyPending);
+        mPending = null;
         BrowseView view = mView.get();
         if (view == null || mSection == null) {
             return;
@@ -517,9 +539,43 @@ public class OculoContinueWatching {
         if (!presenter.isHomeSection() || ViewManager.instance(mContext).getTopView() != BrowseView.class) {
             return; // Home's next build (or onHomeResumed) uses the latest history
         }
-        if (!updateInPlace(view, mSection, presenter) && mApplyRetries++ < APPLY_MAX_RETRIES) {
-            Utils.postDelayed(mApplyHistory, APPLY_RETRY_MS);
+        mPending = isEnabled() ? compute() : Collections.<Video>emptyList(); // computed once per real change
+        applyPending();
+    }
+
+    /** Shows {@link #mPending} when possible; never recomputes it. */
+    private void applyPending() {
+        Utils.removeCallbacks(mApplyPending);
+        List<Video> pending = mPending;
+        BrowseView view = mView.get();
+        if (pending == null || view == null || mSection == null) {
+            return;
         }
+        BrowsePresenter presenter = BrowsePresenter.instance(mContext);
+        if (!presenter.isHomeSection() || ViewManager.instance(mContext).getTopView() != BrowseView.class) {
+            mPending = null; // Home's next build (or onHomeResumed) recomputes
+            return;
+        }
+        int result = updateInPlace(view, mSection, presenter, pending);
+        if (result == APPLIED) {
+            mPending = null;
+        } else if (result == WAIT_LOADING && mApplyRetries++ < APPLY_MAX_RETRIES) {
+            Utils.postDelayed(mApplyPending, APPLY_RETRY_MS);
+        }
+        // WAIT_FOCUS: the next card focus (onAnyCardFocused) tries again
+    }
+
+    /**
+     * Any card got the focus (OculoUi, smarttubetv): a change waiting for the focus to leave this row may be shown
+     * now. Posted, so the presenter's selected item is the new card. Cheap when nothing waits.
+     */
+    public static void onAnyCardFocused() {
+        OculoContinueWatching instance = sInstance;
+        if (instance == null || instance.mPending == null) {
+            return;
+        }
+        Utils.removeCallbacks(instance.mApplyPending);
+        Utils.post(instance.mApplyPending);
     }
 
     private boolean mLogHistory;
@@ -679,7 +735,7 @@ public class OculoContinueWatching {
     }
 
     public void persistNow() {
-        mPrefs.setData(KEY_WATCH_LOG, OculoContinueWatchingRules.format(mWatchLog));
-        mPrefs.setData(KEY_HIDDEN, OculoContinueWatchingRules.format(mHidden));
+        OculoStore.write(mContext, KEY_WATCH_LOG, OculoContinueWatchingRules.format(mWatchLog));
+        OculoStore.write(mContext, KEY_HIDDEN, OculoContinueWatchingRules.format(mHidden));
     }
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo: French strings of the oculo flavor (EN in smarttubetv/src/main/res/values/oculo.xml or values/strings.xml).
+     Casse normale, tutoiement. -->
+<resources>
+    <!-- common: normal case instead of upstream's ALL CAPS -->
+    <string name="action_signin">Se connecter</string>
+    <string name="subscriptions_signin_title">Les nouveautés de tes chaînes</string>
+    <string name="subscriptions_signin_subtitle">Connecte-toi pour voir tes abonnements</string>
+    <string name="subscriptions_signin_button_text">Se connecter</string>
+
+    <!-- Empty and error states (OculoErrorState) -->
+    <string name="oculo_state_empty_title">Rien à afficher ici</string>
+    <string name="oculo_state_empty_text">Cette section est vide pour le moment.</string>
+    <string name="oculo_state_error_title">Impossible de charger cette section</string>
+    <string name="oculo_state_error_text">Vérifie la connexion réseau, puis réessaie.</string>
+    <string name="oculo_state_signin_title">Connecte-toi</string>
+    <string name="oculo_state_signin_text">Connecte ton compte YouTube pour voir tes abonnements, ton historique et tes playlists.</string>
+    <string name="oculo_state_retry">Réessayer</string>
+    <string name="oculo_state_signin_button">Se connecter</string>
+
+    <!-- Sign-in screen (OculoSignIn) -->
+    <string name="oculo_signin_step_open">1. Sur ton téléphone, ouvre l\'adresse</string>
+    <string name="oculo_signin_step_code">2. Entre ce code</string>
+    <string name="oculo_signin_step_account">3. Choisis ton compte</string>
+    <string name="oculo_signin_done">Terminé</string>
+    <string name="oculo_signin_open_browser">Ouvrir dans le navigateur</string>
+</resources>

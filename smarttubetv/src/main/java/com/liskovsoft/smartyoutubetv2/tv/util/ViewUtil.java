@@ -173,8 +173,19 @@ public class ViewUtil {
     }
 
     public static RequestOptions glideOptions() {
+        // Oculo (32.74-18): static pictures (thumbnails, avatars, backgrounds) may come from Glide's memory cache, so
+        // a card scrolled back on screen is not decoded again. Animated previews keep skipping it: see
+        // glideAnimationOptions().
         return new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.NONE) // ensure start animation from beginning
+                .diskCacheStrategy(DiskCacheStrategy.NONE); // ensure start animation from beginning
+    }
+
+    /**
+     * Upstream's options for animated pictures (card previews): no memory cache, so a cached animated drawable is
+     * never shared and the animation starts from the beginning.
+     */
+    public static RequestOptions glideAnimationOptions() {
+        return glideOptions()
                 .skipMemoryCache(true); // ensure start animation from beginning
     }
 

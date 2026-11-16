@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (32.74-18, design.md M5): copy of smarttubetv/src/main/res/layout/search_field.xml (Channels section's
+     « Filter channels » field) as a white 15 % pill like the top bar's, with a white ring while focused, instead of an
+     underlined field. Same ids. Re-sync if upstream changes that layout. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/simple_edit_config"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/simple_edit_value"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/oculo_filter_field_height"
+        android:autofillHints=""
+        android:hint="@string/channel_filter_hint"
+        android:imeOptions="actionDone"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        android:gravity="center_vertical|start"
+        android:paddingStart="@dimen/oculo_top_bar_text_inset"
+        android:paddingEnd="@dimen/oculo_top_bar_text_inset"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:background="@drawable/oculo_search_field_background"
+        android:textSize="@dimen/oculo_top_bar_text_size"
+        android:textColor="@color/oculo_white_focus"
+        android:textCursorDrawable="@null"
+        android:textColorHint="@color/oculo_top_bar_text" />
+</LinearLayout>

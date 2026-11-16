@@ -567,11 +567,7 @@ public final class OculoRail implements AccountChangeListener {
         }
         Resources res = mContext.getResources();
         int size = res.getDimensionPixelSize(R.dimen.oculo_rail_dot_size);
-        GradientDrawable dot = new GradientDrawable();
-        dot.setShape(GradientDrawable.OVAL);
-        dot.setColor(ContextCompat.getColor(mContext, R.color.oculo_rail_dot));
-        dot.setStroke(res.getDimensionPixelSize(R.dimen.oculo_rail_dot_outline),
-                ContextCompat.getColor(mContext, R.color.oculo_rail_dot_outline));
+        GradientDrawable dot = OculoDot.create(mContext, size);
         int iconSize = res.getDimensionPixelSize(R.dimen.oculo_rail_icon_size);
         dot.setBounds(iconSize - size, 0, iconSize, size);
         icon.getOverlay().add(dot);

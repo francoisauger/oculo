@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- 32.74-18 mockups: values of the layouts (1dp = 2px at 1080p), Roboto-like system font, not a TV capture. ?s=signin|empty|search|channels -->
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;font-family:Roboto,"Helvetica Neue",Arial,sans-serif;color:#F1F1F1}
+body{background:radial-gradient(circle at 78% 25%, rgba(50,230,220,.20) 0, rgba(50,230,220,0) 912px),#0b0b0b}
+.screen{display:none;position:absolute;inset:0}
+.pill{background:rgba(255,255,255,.15);border-radius:36px;height:72px;display:flex;align-items:center;padding:0 34px;font-size:36px;color:rgba(255,255,255,.75);box-sizing:border-box}
+.disc{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+.btn{height:80px;border-radius:40px;padding:0 48px;font-size:32px;display:inline-flex;align-items:center;font-weight:500}
+.btn.f{background:#F1F1F1;color:#0F0F0F}.btn.r{background:rgba(255,255,255,.15)}.btn.l{color:rgba(255,255,255,.75)}
+.brand{position:absolute;right:112px;top:68px;display:flex;align-items:center;gap:28px}
+.brand .t{font-size:36px;font-weight:700;text-align:center;line-height:1}.brand .d{font-size:22px;font-weight:700}
+.wm{font:800 56px Nunito,sans-serif}
+</style></head><body>
+<div class="screen" id="signin">
+ <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:128px">
+  <div style="width:560px;height:560px;background:#fff;border-radius:24px;padding:24px;box-sizing:border-box">
+   <div style="width:100%;height:100%;background:repeating-conic-gradient(#000 0 25%,#fff 0 50%) 0 0/40px 40px;opacity:.9"></div></div>
+  <div style="width:1080px">
+   <div style="font-size:40px">1. Sur ton téléphone, ouvre l'adresse</div>
+   <div style="font-size:52px;font-weight:500;color:#FFC896;margin-top:8px">yt.be/activate</div>
+   <div style="font-size:40px;margin-top:48px">2. Entre ce code</div>
+   <div style="font-size:112px;font-weight:500;color:#FFA25C;letter-spacing:.1em">XKQ-TWB-LMN</div>
+   <div style="font-size:40px;margin-top:24px">3. Choisis ton compte</div>
+   <div style="margin-top:72px;display:flex;gap:24px"><span class="btn f">Terminé</span><span class="btn l">Ouvrir dans le navigateur</span></div>
+  </div></div></div>
+<div class="screen" id="empty">
+ <div style="position:absolute;left:0;top:0;bottom:0;width:188px"></div>
+ <div style="position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);text-align:center;width:1120px">
+  <svg width="128" height="108" viewBox="0 0 860 725"><path fill="#5E5E5E" fill-rule="evenodd" d="M275,0 H585 A275,275 0 0 1 860,275 V450 A275,275 0 0 1 585,725 H275 A275,275 0 0 1 0,450 V275 A275,275 0 0 1 275,0 Z M295,118 H565 A145,145 0 0 1 710,263 V462 A145,145 0 0 1 565,607 H295 A145,145 0 0 1 150,462 V263 A145,145 0 0 1 295,118 Z"/></svg>
+  <div style="font-size:44px;font-weight:500;margin-top:48px">Rien à afficher ici</div>
+  <div style="font-size:32px;color:#AAAAAA;margin-top:16px">Cette section est vide pour le moment.</div>
+  <div style="margin-top:56px"><span class="btn f">Réessayer</span></div></div></div>
+<div class="screen" id="search">
+ <div style="position:absolute;left:188px;top:65.5px;display:flex;gap:18px;align-items:center">
+  <div class="disc" style="background:#F1F1F1"><svg width="40" height="40" viewBox="0 0 24 24"><path fill="#0F0F0F" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11z"/></svg></div>
+  <div class="pill" style="width:1200px">Rechercher</div>
+  <div class="disc"><svg width="40" height="40" viewBox="0 0 24 24"><path fill="#F1F1F1" d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.7a7 7 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7 7 0 0 0 1.7 1L11 21h4l.4-2.7a7 7 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></div></div>
+ <div class="brand"><div><div class="t">10:34 PM</div><div class="d">Sun Nov 15</div></div><div class="wm">Oculo</div></div>
+ <div style="position:absolute;left:188px;top:330px;display:flex;gap:30px;font-size:34px">
+  <span style="background:#1a1a1a;border-radius:12px;padding:12px 16px">katt williams</span><span style="background:#1a1a1a;border-radius:12px;padding:12px 16px">the voice</span><span style="background:#1a1a1a;border-radius:12px;padding:12px 16px">u2</span></div></div>
+<div class="screen" id="channels">
+ <div style="position:absolute;left:188px;top:240px;width:776px">
+  <div class="pill" style="width:776px">Filtrer les chaînes</div>
+  <div id="list"></div></div></div>
+<script>
+const names=[["Vision IA",1,1],["Veritasium",1],["Marques Brownlee",1],["The Diary Of A CEO",1],["Rick Beato",0],["NetworkChuck",1],["2veritasium",0]];
+document.getElementById('list').innerHTML=names.map(([n,d,f])=>`<div style="margin-top:${f?36:22}px;height:84px;display:flex;align-items:center;gap:20px;padding:0 12px;${f?'outline:4px solid #F1F1F1;outline-offset:5px;border-radius:24px':''}"><div style="width:72px;height:72px;border-radius:50%;background:#555"></div><span style="font-size:40px">${n}</span>${d?'<span style="width:16px;height:16px;border-radius:50%;background:#FFA25C;border:3px solid #131313;margin-left:4px"></span>':''}</div>`).join('');
+const s=new URLSearchParams(location.search).get('s')||'signin';document.getElementById(s).style.display='block';
+</script></body></html>

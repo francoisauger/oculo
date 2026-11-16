@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (32.74-18): efficiency settings, upstream defaults. The oculo flavor overrides them in
+     smarttubetv/src/oculo/res/values/oculo_perf_config.xml. -->
+<resources>
+    <!-- Focused card ring pulse: number of cycles after focus lands, then a steady ring (no redraws at rest).
+         0 = endless (32.74-12 to 32.74-17). -->
+    <integer name="oculo_card_focus_pulse_cycles">0</integer>
+</resources>

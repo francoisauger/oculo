@@ -16,6 +16,14 @@
     <bool name="oculo_rail_new_content_dot">false</bool>
     <!-- About: "Install bridge" button (ATV/Amazon voice-search bridge) -->
     <bool name="oculo_show_install_bridge">true</bool>
+    <!-- Rail: remove Kids and My videos once (OculoSections: they can't show anything for a regular account) -->
+    <bool name="oculo_hide_dead_sections">false</bool>
+    <!-- Android TV home-screen channels (leanbackassistant's « Update channels » work, every 15 min in the
+         background). OculoBackground cancels it when false. -->
+    <bool name="oculo_tv_channels">true</bool>
+    <!-- Settings > User interface: « Buttons at the top of the main window » (Search, Language, Accounts).
+         With Oculo's rail and top bar none of them has an effect: the category is left out when true. -->
+    <bool name="oculo_hide_top_buttons_setting">false</bool>
 
     <!-- SponsorBlock segment colors on the seek bar (SponsorBlockData; upstream values). Users can only turn
          the markers on or off, not pick colors, so these are the colors. -->

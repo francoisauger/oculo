@@ -85,6 +85,7 @@ import com.liskovsoft.smartyoutubetv2.common.exoplayer.selector.track.MediaTrack
 import com.liskovsoft.smartyoutubetv2.common.misc.MotherActivity;
 import com.liskovsoft.smartyoutubetv2.common.misc.RemoteControlService;
 import com.liskovsoft.smartyoutubetv2.common.misc.RemoteControlWorker;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoBackground;
 import com.liskovsoft.smartyoutubetv2.common.misc.ScreensaverManager;
 import com.liskovsoft.smartyoutubetv2.common.prefs.BlockedChannelData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.GeneralData;
@@ -935,6 +936,9 @@ public class Utils {
     }
 
     public static void updateChannels(Context context) {
+        if (OculoBackground.cancelTvChannelsIfDisabled(context)) { // Oculo: no TV home channels
+            return;
+        }
         startReceiver(context, UPDATE_CHANNELS_RECEIVER_CLASS_NAME);
     }
 

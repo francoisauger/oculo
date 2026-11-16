@@ -18,6 +18,14 @@ public class CategoryEmptyError implements ErrorFragmentData {
         mError = error;
     }
 
+    /**
+     * Oculo: the load error, null when the section is just empty (OculoErrorState).
+     */
+    @Nullable
+    public Throwable getError() {
+        return mError;
+    }
+
     @Override
     public void onAction() {
         YTSignInPresenter.instance(mContext).start();

@@ -15,6 +15,15 @@ import java.util.List;
  * (the thumbnail glow: on the next focused card).
  */
 public class OculoSettings {
+    /**
+     * « Buttons at the top of the main window » (Search, Language, Accounts) has no effect with Oculo's rail and top
+     * bar: NavigateTitleView hides the search and account orbs, and the language orb would sit after the Search pill
+     * where the D-pad never reaches it (OculoTopBar), so it is hidden too. The category is left out (32.74-18).
+     */
+    public static boolean isTopButtonsCategoryHidden(Context context) {
+        return context != null && context.getResources().getBoolean(R.bool.oculo_hide_top_buttons_setting);
+    }
+
     public static void appendHomeCategory(Context context, AppDialogPresenter settingsPresenter) {
         OculoData data = OculoData.instance(context);
         List<OptionItem> options = new ArrayList<>();

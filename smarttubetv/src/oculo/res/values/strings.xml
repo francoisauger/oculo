@@ -13,4 +13,10 @@
     <!-- common: About screen links -->
     <string translatable="false" name="releases_url">https://github.com/francoisauger/oculo/releases</string>
     <string translatable="false" name="sources_url">https://github.com/francoisauger/oculo</string>
+
+    <!-- common: normal case instead of upstream's ALL CAPS (design.md M9); FR in values-fr/strings.xml -->
+    <string name="action_signin">Sign in</string>
+    <string name="subscriptions_signin_title">The latest from your channels</string>
+    <string name="subscriptions_signin_subtitle">Sign in to see your subscriptions</string>
+    <string name="subscriptions_signin_button_text">Sign in</string>
 </resources>

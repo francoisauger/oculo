@@ -9,6 +9,9 @@
     <dimen name="oculo_control_button_ring">3dp</dimen>
     <!-- Left rail: the focused section is a pill, not zoomed (leanback: 1.2) -->
     <item format="float" name="lb_browse_header_select_scale" type="dimen">1.0</item>
+    <!-- Search bars' round buttons (mic, gear, magnifier on a channel page): no zoom on focus, the white fill shows
+         the focus as on Home's top bar (32.74-18, OculoSearchBar; leanback: 120%) -->
+    <item name="lb_search_orb_focused_zoom" type="fraction">100%</item>
     <!-- Left rail and top bar (OculoRail, OculoTopBar), YouTube TV proportions: expanded content starts 267dp
          from the edge (211dp container margin + the rows' 56dp padding; upstream SmartTube 265dp + 56dp) and
          the first row title sits 18dp higher under the slimmer top bar (upstream SmartTube 130dp). -->

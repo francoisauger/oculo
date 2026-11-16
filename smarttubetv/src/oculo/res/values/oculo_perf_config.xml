@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo efficiency settings (resources declared in smarttubetv/src/main/res/values/oculo_perf.xml). -->
+<resources>
+    <!-- The ring pulses twice (2 x 2.4 s = 4.8 s) after focus lands, then stays steady: until 32.74-17 it pulsed
+         endlessly and forced a new frame 60 times a second while any card had focus (docs/analyse/efficacite.md 2.2) -->
+    <integer name="oculo_card_focus_pulse_cycles">2</integer>
+</resources>

@@ -417,6 +417,9 @@ public class SearchSupportFragment extends Fragment {
 
         // End MOD
 
+        // Oculo: the bar laid out like Home's top bar (mic, pill, gear, clock and logo)
+        com.liskovsoft.smartyoutubetv2.tv.oculo.OculoSearchBar.applySearchScreen(searchFrame, mSearchBar);
+
         readArguments(getArguments());
         if (null != mBadgeDrawable) {
             setBadgeDrawable(mBadgeDrawable);

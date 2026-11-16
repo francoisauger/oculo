@@ -13,7 +13,9 @@ import com.bumptech.glide.module.AppGlideModule;
  */
 @GlideModule
 public class GlideCachingModule extends AppGlideModule {
-    private final static long CACHE_SIZE = 10 * 1024 * 1024; // 10 MB
+    // Oculo (32.74-18): 80 MB (upstream 10 MB, about 300 card thumbnails): Home, Subscriptions and History come
+    // back from disk instead of the network. In the app's cache dir, so the system may still trim it when low.
+    private final static long CACHE_SIZE = 80 * 1024 * 1024; // 80 MB
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {

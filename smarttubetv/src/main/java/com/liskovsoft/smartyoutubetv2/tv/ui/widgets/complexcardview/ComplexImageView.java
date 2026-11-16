@@ -162,7 +162,7 @@ public class ComplexImageView extends RelativeLayout {
 
             Glide.with(getContext().getApplicationContext()) // FIX: "You cannot start a load for a destroyed activity"
                     .load(getVideo().previewUrl)
-                    .apply(ViewUtil.glideOptions())
+                    .apply(ViewUtil.glideAnimationOptions()) // Oculo: glideOptions() now uses the memory cache
                     .into(mPreviewImage);
         } else if (getVideo().videoId != null) {
             if (mCreateAndStartPlayer == null) {

@@ -22,6 +22,7 @@ import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoDot;
 import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoUi;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.base.LongClickPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.video.GridFragmentHelper;
@@ -113,6 +114,7 @@ public class ChannelCardPresenter extends LongClickPresenter {
         // We should setup props each time because object may be reused by the underlying RecyclerView
         textView.setBackgroundColor(video.hasNewContent ? mNewContentBackgroundColor : mDefaultBackgroundColor);
         textView.setTag(R.id.channel_new_content, video.hasNewContent ? true : null);
+        OculoDot.setChannelDot(textView, video.hasNewContent); // Oculo: Abricot dot instead of a colored row
 
 
         ImageView imageView = viewHolder.view.findViewById(R.id.channel_image);
