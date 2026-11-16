@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.11.0, design.md M1): focused row of a settings list or menu = white pill, as in the expanded rail and the
+     top bar. #F1F1F1, 8dp corners, 12dp in from each side of the panel. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <inset android:insetLeft="12dp" android:insetRight="12dp" android:insetTop="2dp" android:insetBottom="2dp">
+            <shape android:shape="rectangle">
+                <solid android:color="@color/oculo_white_focus" />
+                <corners android:radius="8dp" />
+            </shape>
+        </inset>
+    </item>
+    <item android:state_pressed="true">
+        <inset android:insetLeft="12dp" android:insetRight="12dp" android:insetTop="2dp" android:insetBottom="2dp">
+            <shape android:shape="rectangle">
+                <solid android:color="@color/oculo_white_focus" />
+                <corners android:radius="8dp" />
+            </shape>
+        </inset>
+    </item>
+    <item>
+        <color android:color="@android:color/transparent" />
+    </item>
+</selector>
