@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): flavor copy of common's layout (SimpleEditDialog), the field as a pill (OculoDialogField).
+     Same ids and input settings. Re-sync if upstream changes it. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/simple_edit_config"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="6dp">
+
+    <EditText
+        android:id="@+id/simple_edit_value"
+        style="@style/OculoDialogField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="12"
+        android:hint="@string/simple_edit_value_hint"
+        android:imeOptions="actionNext"
+        android:inputType="textUri|textPersonName"
+        android:textCursorDrawable="@null" />
+</LinearLayout>

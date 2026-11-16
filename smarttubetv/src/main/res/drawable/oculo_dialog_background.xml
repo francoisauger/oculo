@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): window of the remaining Android dialogs (text input, proxy) = the panel's card -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/oculo_panel_card"
+    android:inset="16dp" />

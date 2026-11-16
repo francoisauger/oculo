@@ -30,4 +30,5 @@
     <dimen name="oculo_notice_width">300dp</dimen>
     <color name="oculo_notice_background">#E6101314</color>
     <item name="oculo_panel_fades" type="id" />
+    <item name="oculo_panel_notice" type="id" />
 </resources>

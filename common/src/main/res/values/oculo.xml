@@ -95,4 +95,5 @@
     <string name="oculo_panel_accounts">Accounts on this TV: %d</string>
     <string name="oculo_panel_search">Search</string>
     <string name="oculo_panel_channel">Channel</string>
+    <string name="oculo_panel_update">Update available</string>
 </resources>

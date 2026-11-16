@@ -30,4 +30,5 @@
     <string name="oculo_panel_accounts">Comptes sur ce téléviseur : %d</string>
     <string name="oculo_panel_search">Recherche</string>
     <string name="oculo_panel_channel">Chaîne</string>
+    <string name="oculo_panel_update">Mise à jour disponible</string>
 </resources>

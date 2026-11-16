@@ -1,5 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs;
 
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoPanelInfo;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import com.liskovsoft.appupdatechecker2.AppUpdateChecker;
@@ -104,7 +105,9 @@ public class AppUpdatePresenter extends BasePresenter<Void> implements AppUpdate
         //}, mUpdateChecker.isUpdateCheckEnabled()));
 
         //mSettingsPresenter.setOnFinish(getOnFinish());
-        mSettingsPresenter.showDialog(String.format("%s %s", getContext().getString(R.string.app_name), versionName), AppUpdatePresenter::unhold);
+        String dialogTitle = String.format("%s %s", getContext().getString(R.string.app_name), versionName);
+        OculoPanelInfo.forLabel(getContext(), dialogTitle, R.string.oculo_panel_update); // Oculo: panel header
+        mSettingsPresenter.showDialog(dialogTitle, AppUpdatePresenter::unhold);
     }
 
     private void pinUpdateSection(String versionName, List<String> changelog, String apkPath) {

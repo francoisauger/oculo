@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): flavor copy of common's layout (WebProxyDialog): fields as pills (OculoDialogField), the
+     card's colors, turquoise radios. Same ids. Re-sync if upstream changes it. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/web_proxy_config"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="6dp">
+
+    <EditText
+        android:id="@+id/proxy_host"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/proxy_host_hint"
+        android:imeOptions="actionNext"
+        android:inputType="textUri|textPersonName"
+        style="@style/OculoDialogField"
+        android:textCursorDrawable="@null" />
+
+    <EditText
+        android:id="@+id/proxy_port"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/proxy_port_hint"
+        android:imeOptions="actionNext"
+        android:inputType="number"
+        style="@style/OculoDialogField"
+        android:textCursorDrawable="@null" />
+
+    <EditText
+        android:id="@+id/proxy_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/proxy_username_hint"
+        android:imeOptions="actionNext"
+        android:inputType="textPersonName"
+        style="@style/OculoDialogField"
+        android:textCursorDrawable="@null" />
+
+    <EditText
+        android:id="@+id/proxy_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/proxy_password_hint"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        style="@style/OculoDialogField"
+        android:textCursorDrawable="@null" />
+
+    <TextView
+        android:id="@+id/proxy_type_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/proxy_type"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="@color/oculo_card_secondary"
+        android:textSize="@dimen/oculo_card_row_title"
+        android:padding="5dp" />
+
+    <RadioGroup
+        android:id="@+id/proxy_type"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/proxy_type_http"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HTTP(S)"
+            android:textColor="@color/oculo_card_title_text"
+            android:buttonTint="@color/oculo_card_teal" />
+
+        <RadioButton
+            android:id="@+id/proxy_type_socks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SOCKS"
+            android:textColor="@color/oculo_card_title_text"
+            android:buttonTint="@color/oculo_card_teal" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/proxy_config_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:fontFamily="sans-serif"
+        android:lines="5"
+        android:textColor="@color/oculo_card_secondary"
+        android:padding="5dp" />
+</LinearLayout>

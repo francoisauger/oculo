@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): dialog button as a pill, white when focused (the panel's focus pill) -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/oculo_white_focus" />
+            <corners android:radius="@dimen/oculo_card_pill_radius" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/oculo_white_focus" />
+            <corners android:radius="@dimen/oculo_card_pill_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#14FFFFFF" />
+            <corners android:radius="@dimen/oculo_card_pill_radius" />
+        </shape>
+    </item>
+</selector>

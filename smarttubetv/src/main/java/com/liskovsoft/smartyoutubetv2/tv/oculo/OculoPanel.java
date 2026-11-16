@@ -98,6 +98,7 @@ public final class OculoPanel {
                 return;
             }
 
+            container.setTag(R.id.oculo_panel_notice, null);
             boolean inPlayer = isInPlayer(context);
             container.setBackgroundResource(inPlayer ? R.drawable.oculo_panel_card_player : R.drawable.oculo_panel_card);
             if (VERSION.SDK_INT >= 21) {
@@ -125,6 +126,7 @@ public final class OculoPanel {
         int outer = res.getDimensionPixelSize(R.dimen.oculo_panel_margin);
         int inner = res.getDimensionPixelSize(R.dimen.oculo_panel_margin_inner);
         boolean atStart = isAtStart(lp.gravity);
+        lp.gravity = atStart ? Gravity.START : Gravity.END;
         lp.width = res.getDimensionPixelSize(R.dimen.oculo_panel_width);
         lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
         lp.topMargin = outer;
@@ -254,6 +256,10 @@ public final class OculoPanel {
         try {
             Context context = view.getContext();
             View parent = (View) view.getParent();
+            if (OculoNotice.isNoticeFrame(parent)) {
+                OculoNotice.bind(view); // SponsorBlock « ask », chapter notice: small card at the bottom right
+                return;
+            }
             if (parent != null && parent.getId() == R.id.settings_preference_fragment_container && parent.getBackground() != null) {
                 applyMargins(parent); // the comments may have moved the band to the left
             }

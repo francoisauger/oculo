@@ -46,4 +46,64 @@
         <item name="android:colorPrimary" tools:targetApi="21">@color/scheme_grey_background</item>
         <item name="android:colorAccent" tools:targetApi="21">@color/oculo_turquoise</item>
     </style>
+    <!-- Oculo panel (0.12.0): the Android dialogs that remain (SimpleEditDialog: playlist and section names,
+         passwords, custom audio delay; WebProxyDialog) take the panel's look. Restates sharedutils' AppDialog (same
+         items) on a dark base: the card as window, Roboto Condensed title, buttons as pills (white when focused),
+         dim like the panel's scrim. Fields: flavor copies of simple_edit_dialog.xml and web_proxy_dialog.xml. -->
+    <style name="AppDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/oculo_dialog_background</item>
+        <item name="android:backgroundDimAmount">0.58</item>
+        <item name="android:textColor">@color/oculo_card_title_text</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="colorPrimaryDark">@color/oculo_card_teal</item>
+        <item name="colorPrimary">@color/oculo_card_teal</item>
+        <item name="colorAccent">@color/oculo_card_teal</item>
+        <item name="android:selectableItemBackground">@drawable/oculo_list_focus</item>
+        <item name="android:textColorPrimary">@color/oculo_card_title_text</item>
+        <item name="android:textColorSecondary">@color/oculo_card_secondary</item>
+        <item name="android:windowTitleStyle">@style/OculoDialogTitle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AppDialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AppDialogButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/AppDialogButtonStyle</item>
+    </style>
+    <style name="AppDialogButtonStyle">
+        <item name="android:textColor">@color/oculo_dialog_button_text</item>
+        <item name="android:background">@drawable/oculo_dialog_button</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textSize">@dimen/oculo_card_row_title</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    <style name="OculoDialogTitle" parent="RtlOverlay.DialogWindowTitle.AppCompat">
+        <item name="android:textAppearance">@style/OculoDialogTitleText</item>
+    </style>
+    <style name="OculoDialogTitleText" parent="TextAppearance.AppCompat.Title">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/oculo_card_title</item>
+        <item name="android:textColor">@color/oculo_card_title_text</item>
+    </style>
+    <!-- Text field of those dialogs: a pill, Roboto, the card's colors -->
+    <style name="OculoDialogField">
+        <item name="android:background">@drawable/oculo_dialog_field</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/oculo_card_title_text</item>
+        <item name="android:textColorHint">#80FFFFFF</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+    </style>
 </resources>

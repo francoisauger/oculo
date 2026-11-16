@@ -1,5 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs;
 
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoPanelInfo;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -79,6 +80,7 @@ public class AccountSelectionPresenter extends BasePresenter<Void> {
 
         appendAccountSelection(accounts, icons, dialogPresenter);
 
+        OculoPanelInfo.forAccount(getContext(), getContext().getString(R.string.settings_accounts), accounts.size()); // Oculo
         dialogPresenter.showDialog(getContext().getString(R.string.settings_accounts), this::unhold);
     }
 
