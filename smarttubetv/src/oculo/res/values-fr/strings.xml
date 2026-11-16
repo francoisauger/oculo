@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Oculo: French strings of the oculo flavor (EN in smarttubetv/src/main/res/values/oculo.xml or values/strings.xml).
      Casse normale, tutoiement. -->
-<resources>
+<!-- Settings labels (0.11.0): defaults (EN) are in common/src/main/res/values/oculo_settings.xml, hence ExtraTranslation. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
     <!-- common: normal case instead of upstream's ALL CAPS -->
     <string name="action_signin">Se connecter</string>
     <string name="subscriptions_signin_title">Les nouveautés de tes chaînes</string>
