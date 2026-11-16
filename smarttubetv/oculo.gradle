@@ -4,8 +4,22 @@
 
 import groovy.json.JsonSlurper
 
-// Bump for an Oculo-only rebuild of the same upstream version; reset to 1 when upstream bumps versionCode.
-def oculoRevision = 21
+// Oculo's own version (OCULO.md « Version numbers »): MAJOR.MINOR.PATCH. 1.0.0 = the public release. MINOR = a new
+// batch of features asked for by François (0.9.0 -> 0.10.0 -> 0.11.0), PATCH = a rebuild picking up a new upstream
+// SmartTube (0.10.0 -> 0.10.1). Every published build changes it. The upstream version (defaultConfig's versionName,
+// « 32.74 ») is only shown in About.
+def oculoVersion = '0.9.0'
+
+// versionCode from oculoVersion alone: 1,000,000 + MAJOR x 1,000,000 + MINOR x 1,000 + PATCH (0.9.0 -> 1009000,
+// 0.10.1 -> 1010001, 1.0.0 -> 2000000). Strictly increasing as the version increases, above every 32.74-N build
+// (246401..246421 = upstream 2464 x 100 + revision), and far below Integer.MAX_VALUE.
+def oculoVersionCode = { String version ->
+    def parts = version.tokenize('.').collect { it as int }
+    if (parts.size() != 3 || parts[1] > 999 || parts[2] > 999) {
+        throw new GradleException("Oculo: version must be MAJOR.MINOR.PATCH with MINOR and PATCH below 1000: ${version}")
+    }
+    1000000 + parts[0] * 1000000 + parts[1] * 1000 + parts[2]
+}
 
 // Release signing: a JSON file kept OUTSIDE the repo, e.g.
 // {"storeFile": "/abs/path/oculo-release.jks", "storePassword": "...", "keyAlias": "oculo", "keyPassword": "..."}
@@ -38,8 +52,10 @@ android {
             applicationId "com.francoisauger.oculo"
             minSdkVersion 21
             targetSdkVersion project.properties.compileSdkVersion
-            versionCode android.defaultConfig.versionCode * 100 + oculoRevision
-            versionNameSuffix "-" + oculoRevision
+            versionCode oculoVersionCode(oculoVersion)
+            versionName oculoVersion
+            // About: « Oculo 0.9.0 · basé sur SmartTube 32.74 » (OculoVersion)
+            resValue "string", "oculo_upstream_version", android.defaultConfig.versionName
 
             // Library modules only know stbeta/ststable/stfdroid: use the F-Droid variant
             // (no Firebase/Crashlytics, no upstream update channel).

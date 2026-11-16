@@ -6,6 +6,7 @@ import com.liskovsoft.sharedutils.helpers.AppInfoHelpers;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.sharedutils.helpers.MessageHelpers;
 import com.liskovsoft.sharedutils.locale.LocaleUtility;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoVersion;
 import com.liskovsoft.smartyoutubetv2.common.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionItem;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.UiOptionItem;
@@ -36,9 +37,7 @@ public class AboutSettingsPresenter extends BasePresenter<Void> {
     }
 
     public void show() {
-        String mainTitle = String.format("%s %s",
-                getContext().getString(R.string.app_name),
-                AppInfoHelpers.getAppVersionName(getContext()));
+        String mainTitle = OculoVersion.aboutTitle(getContext()); // Oculo: « Oculo 0.9.0 · based on SmartTube 32.74 »
 
         AppDialogPresenter settingsPresenter = AppDialogPresenter.instance(getContext());
 

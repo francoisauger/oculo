@@ -18,7 +18,7 @@ Kept untouched: `MediaServiceCore`, `SharedModules` (submodules), `exoplayer-amz
 
 | File | Change |
 |---|---|
-| `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, versionCode = upstream × 100 + Oculo revision, versionName = upstream + `-<revision>`, libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
+| `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, Oculo's own version (`oculoVersion`, see « Version numbers »: versionName `0.9.0`, versionCode computed from it, the upstream version only in About), libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
 | `smarttubetv/build.gradle` | One line at the end: `apply from: "oculo.gradle"`. |
 | `smarttubetv/src/oculo/res/` | Name "Oculo", launcher icon (see « Launcher icon »), Android TV banner, browse logo, global search label and authority (`xml/searchable.xml`, `search_authority`), update manifest URL (`update_urls`), About links and upstream credit (`feedback`, `releases_url`, `sources_url`). |
 | `smarttubetv/src/oculo/res/values/colors.xml`, `values/styles.xml`, `drawable/progress_bar_oculo.xml` | Oculo accents (palette from the approved logo, preview in `docs/mockups/colors.html`): the default "Dark Grey" scheme's styles are restated with turquoise `#22D3C8` instead of red (toggles; until 32.74-7 also the focused card's fill, see « Card focus »), badges (`dark_red`) and search orb in teal `#0B7F7D`, "Teal" scheme re-tinted to `#0B7F7D`/`#0F4A52`. Dark backgrounds unchanged except the browse glow below; Red and Blue schemes untouched (`scheme_red_background_dark` pinned to `#B31217`). Seek bar, card progress and player buttons: see « Player » below. If upstream changes these styles, re-sync the restated copies. |
@@ -123,10 +123,11 @@ Keep this list current: these are the only upstream files Oculo edits (each chan
 | `smarttubetv/.../tv/util/ViewUtil.java` (32.74-18) | `glideOptions()` without `skipMemoryCache(true)`; new `glideAnimationOptions()` keeps it. CRLF file. |
 | `smarttubetv/.../widgets/complexcardview/ComplexImageView.java` (32.74-18) | Animated preview uses `ViewUtil.glideAnimationOptions()` (1 line). CRLF file. |
 | `smarttubetv/.../tv/util/GlideCachingModule.java` (32.74-18) | Disk cache 80 MB instead of 10 MB. CRLF file. |
+| `common/.../app/presenters/settings/AboutSettingsPresenter.java` (0.9.0) | `show()`: title from `OculoVersion.aboutTitle()` (« Oculo 0.9.0 · basé sur SmartTube 32.74 »), import. CRLF file. |
 | `common/.../prefs/GeneralData.java` (32.74-21) | `restoreState()`: screen dimming delay default and one-time migration through `OculoScreensaver` (4 lines + `persistNow()` when migrated), import. CRLF file. |
 
 New files outside the flavor (not upstream): `common/.../oculo/`, `common/src/test/.../oculo/`, `common/src/main/res/values/oculo.xml`,
-`common/src/main/res/values-fr/oculo.xml`, `smarttubetv/src/main/res/values/oculo.xml`, `smarttubetv/.../tv/oculo/` (`OculoRail`, `OculoTopBar`, `OculoUi`, `OculoGlow`, `OculoRowEdge` since 32.74-15 (clip bounds since 32.74-16), `OculoComments` since 32.74-17, `OculoSearchBar`, `OculoErrorState`, `OculoSignIn`, `OculoDot` since 32.74-18; `common/.../oculo/OculoNewContent*` since 32.74-13, `OculoBackground`, `OculoSections`, `OculoStore` since 32.74-18, `OculoScreensaver` since 32.74-21), `smarttubetv/src/main/res/drawable/oculo_*.xml`, `layout/oculo_comment_item.xml` (32.74-17), `layout/oculo_signin.xml`, `values/oculo_perf.xml`, `color/oculo_*_button_text.xml` (32.74-18) and `color/oculo_top_bar_content.xml` The flavor's `layout/settings_card.xml` (32.74-11) is a copy of upstream's, wrapped in a FrameLayout since 32.74-13. Flavor copies since 32.74-18: `layout/lb_error_fragment.xml` (leanback's) and `layout/search_field.xml`; flavor manifest `smarttubetv/src/oculo/AndroidManifest.xml` (removes `UpdateChannelsReceiver`).
+`common/src/main/res/values-fr/oculo.xml`, `smarttubetv/src/main/res/values/oculo.xml`, `smarttubetv/.../tv/oculo/` (`OculoRail`, `OculoTopBar`, `OculoUi`, `OculoGlow`, `OculoRowEdge` since 32.74-15 (clip bounds since 32.74-16), `OculoComments` since 32.74-17, `OculoSearchBar`, `OculoErrorState`, `OculoSignIn`, `OculoDot` since 32.74-18; `common/.../oculo/OculoNewContent*` since 32.74-13, `OculoBackground`, `OculoSections`, `OculoStore` since 32.74-18, `OculoScreensaver` since 32.74-21, `OculoVersion` since 0.9.0), `smarttubetv/src/main/res/drawable/oculo_*.xml`, `layout/oculo_comment_item.xml` (32.74-17), `layout/oculo_signin.xml`, `values/oculo_perf.xml`, `color/oculo_*_button_text.xml` (32.74-18) and `color/oculo_top_bar_content.xml` The flavor's `layout/settings_card.xml` (32.74-11) is a copy of upstream's, wrapped in a FrameLayout since 32.74-13. Flavor copies since 32.74-18: `layout/lb_error_fragment.xml` (leanback's) and `layout/search_field.xml`; flavor manifest `smarttubetv/src/oculo/AndroidManifest.xml` (removes `UpdateChannelsReceiver`).
 
 ## Build
 
@@ -160,11 +161,12 @@ The manifest uses the SmartTube format (`SharedModules/appupdatechecker2/.../App
     "downloadUrlList_arm64-v8a": ["https://github.com/francoisauger/oculo/releases/download/<tag>/Oculo_<version>_arm64-v8a.apk"],
     "downloadUrlList_x86": ["https://github.com/francoisauger/oculo/releases/download/<tag>/Oculo_<version>_x86.apk"]
   },
-  "32.74-1": { "versionCode": 246401, "changelog": ["..."] }
+  "0.9.0": { "versionCode": 1009000, "changelog": ["..."] }
 }
 ```
 
-Version keys are versionNames; the updater compares `versionCode` with the installed one and picks
+Version keys are versionNames (« 0.9.0 »; the updater never parses them, it only displays the newest one); it
+takes the entry with the highest `versionCode`, compares it with the installed one and picks
 `downloadUrlList_<primary ABI>`, then `downloadUrlList`, then `downloadUrl`.
 
 ## Sync with upstream
@@ -176,5 +178,25 @@ git checkout oculo && git merge main
 git submodule update --init --recursive
 ```
 
-When upstream bumps `versionCode`, reset `oculoRevision` to 1 in `smarttubetv/oculo.gradle`;
-for an Oculo-only rebuild of the same upstream version, increment it.
+After merging a new upstream SmartTube, bump the PATCH of `oculoVersion` in `smarttubetv/oculo.gradle`
+(0.10.0 -> 0.10.1); About picks up the new upstream version by itself.
+
+## Version numbers
+
+Since 0.9.0 (15 Nov. 2026, François's decision of 12 Nov.), Oculo has its own numbers; until then builds were
+`32.74-1` to `32.74-21` (upstream versionName + Oculo revision, versionCode = upstream 2464 × 100 + revision).
+
+- One place: `def oculoVersion = '0.9.0'` at the top of `smarttubetv/oculo.gradle`. MAJOR.MINOR.PATCH: 1.0.0 is
+  reserved for the public release; MINOR = a new batch of features asked for by François (0.9.0 -> 0.10.0 ->
+  0.11.0); PATCH = a rebuild picking up a new upstream SmartTube (0.10.0 -> 0.10.1). Every published build changes it.
+- versionName (shown everywhere) = `oculoVersion`; APK names `Oculo_0.9.0_<abi>.apk`.
+- versionCode, computed by `oculoVersionCode()` in `oculo.gradle`: 1,000,000 + MAJOR × 1,000,000 + MINOR × 1,000
+  + PATCH (0.9.0 = 1009000, 0.10.1 = 1010001, 1.0.0 = 2000000). It grows with the version whatever part changes
+  (MINOR and PATCH must stay below 1000; the build fails otherwise), is above every 32.74-N build (246401 to 246421),
+  so 0.9.0 installs over 32.74-21, and stays far below Integer.MAX_VALUE. Upstream bumps go through PATCH, so they
+  increase it too.
+- The SmartTube version Oculo is built on (defaultConfig's versionName, « 32.74 ») is only shown in About:
+  « Oculo 0.9.0 · basé sur SmartTube 32.74 » (`common/.../oculo/OculoVersion.java`, `R.string.oculo_upstream_version`
+  generated by `resValue` in the flavor, `oculo_about_based_on` EN/FR in common's `oculo.xml`), and in release notes.
+- In-app updates compare versionCodes only (see « In-app updates »); `GeneralData`'s stored versionCode (« show the
+  changelog after an update ») sees 1009000 > 246421 as an update, as it should.

@@ -19,4 +19,5 @@
     <string name="oculo_audio_label_auto_dubbed">Doublage auto</string>
     <string name="oculo_audio_label_descriptive">Audiodescription</string>
     <string name="oculo_audio_label_secondary">Secondaire</string>
+    <string name="oculo_about_based_on">%1$s · basé sur SmartTube %2$s</string>
 </resources>
