@@ -23,6 +23,8 @@
     <bool name="oculo_tv_channels">false</bool>
     <!-- No « Buttons at the top of the main window » settings: the rail and the top bar replace them -->
     <bool name="oculo_hide_top_buttons_setting">true</bool>
+    <!-- Idle screen dimming after 5 minutes instead of 60 s (32.74-21, OculoScreensaver; a stored 60 s is migrated once) -->
+    <integer name="oculo_screensaver_timeout_default_sec">300</integer>
     <!-- Channels list: no Abricot background on channels with new content, a small Abricot dot instead (M5) -->
     <bool name="oculo_channel_new_content_dot">true</bool>
     <!-- Sign-in screen background: the browse glow, as on Home and search -->

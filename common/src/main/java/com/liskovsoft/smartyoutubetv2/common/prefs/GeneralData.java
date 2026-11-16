@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.sharedutils.prefs.GlobalPreferences;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoScreensaver;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.prefs.AppPrefs.ProfileChangeListener;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
@@ -617,7 +618,10 @@ public class GeneralData implements ProfileChangeListener {
         mSettingsPassword = Helpers.parseStr(split, 33);
         mIsChildModeEnabled = Helpers.parseBoolean(split, 34, false);
         mIsHistoryEnabled = Helpers.parseBoolean(split, 35, true);
-        mScreensaverTimeoutMs = Helpers.parseInt(split, 36, 60 * 1_000);
+        // Oculo: default from resources (5 min in the flavor), old 60 s default migrated once
+        int screensaverTimeoutMs = Helpers.parseInt(split, 36, OculoScreensaver.defaultTimeoutMs(mPrefs.getContext()));
+        mScreensaverTimeoutMs = OculoScreensaver.migrate(mPrefs.getContext(), screensaverTimeoutMs);
+        boolean oculoMigrated = mScreensaverTimeoutMs != screensaverTimeoutMs;
         // ScreensaverMode was here
         mIsAltAppIconEnabled = Helpers.parseBoolean(split, 38, false);
         mVersionCode = Helpers.parseInt(split, 39, -1);
@@ -656,6 +660,10 @@ public class GeneralData implements ProfileChangeListener {
         mLocalDriveBackupFreqDays = Helpers.parseInt(split, 70, 1);
         //mIsRemapFastForwardToSpeedToggleEnabled = Helpers.parseBoolean(split, 71, false);
         mIsRemapSToSpeedToggleEnabled = Helpers.parseBoolean(split, 72, true);
+
+        if (oculoMigrated) {
+            persistNow();
+        }
     }
 
     public void persistNow() {
