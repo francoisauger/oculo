@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.11.0): value list radio off (16dp), turquoise when chosen; darker on the white focus pill -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <layer-list>
+            <item><shape android:shape="oval"><stroke android:width="1.5dp" android:color="#555555" /><size android:width="16dp" android:height="16dp" /></shape></item>
+
+        </layer-list>
+    </item>
+    <item>
+        <layer-list>
+            <item><shape android:shape="oval"><stroke android:width="1.5dp" android:color="#9A9A9A" /><size android:width="16dp" android:height="16dp" /></shape></item>
+
+        </layer-list>
+    </item>
+</selector>

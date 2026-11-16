@@ -88,4 +88,6 @@
     <bool name="oculo_settings_cleanup">true</bool>
     <!-- Settings (0.11.0): 7 categories + Advanced, simple mode by default (OculoSettingsTiles) -->
     <bool name="oculo_settings_tiles">true</bool>
+    <!-- Settings (0.11.0): list at left, detail at right (OculoSettingsFragment) -->
+    <bool name="oculo_settings_screen">true</bool>
 </resources>

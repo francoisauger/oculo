@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.11.0): Settings screen, categories at left, their settings at right (OculoSettingsFragment).
+     Sizes in values/oculo_settings_screen.xml. -->
+<androidx.leanback.widget.BrowseFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/oculo_settings_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="afterDescendants"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/oculo_settings_start"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <TextView
+            android:id="@+id/oculo_settings_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/oculo_settings_heading_top"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@string/header_settings"
+            android:textColor="#F1F1F1"
+            android:textSize="@dimen/oculo_settings_heading_size" />
+
+        <LinearLayout
+            android:id="@+id/oculo_settings_recent"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginStart="@dimen/oculo_settings_recent_start"
+            android:layout_marginTop="@dimen/oculo_settings_recent_top"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/oculo_settings_recent_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/oculo_set_recent"
+                android:textColor="@color/oculo_settings_secondary"
+                android:textSize="@dimen/oculo_settings_pill_text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/oculo_settings_list"
+            android:layout_width="@dimen/oculo_settings_list_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/oculo_settings_list_top"
+            android:orientation="vertical" />
+
+        <FrameLayout
+            android:id="@+id/oculo_settings_pane"
+            android:layout_width="@dimen/oculo_settings_pane_width"
+            android:layout_height="@dimen/oculo_settings_pane_height"
+            android:layout_marginStart="@dimen/oculo_settings_pane_start"
+            android:layout_marginTop="@dimen/oculo_settings_list_top"
+            android:background="@drawable/oculo_settings_pane">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/oculo_settings_pane_padding_v">
+
+                <TextView
+                    android:id="@+id/oculo_settings_crumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/oculo_settings_pane_padding_h"
+                    android:layout_marginEnd="@dimen/oculo_settings_pane_padding_h"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif"
+                    android:singleLine="true"
+                    android:textColor="@color/oculo_settings_secondary"
+                    android:textSize="@dimen/oculo_settings_pane_text"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/oculo_settings_pane_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/oculo_settings_pane_padding_h"
+                    android:layout_marginEnd="@dimen/oculo_settings_pane_padding_h"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-condensed"
+                    android:singleLine="true"
+                    android:textColor="#F1F1F1"
+                    android:textSize="@dimen/oculo_settings_pane_title" />
+
+                <TextView
+                    android:id="@+id/oculo_settings_pane_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/oculo_settings_pane_padding_h"
+                    android:layout_marginEnd="@dimen/oculo_settings_pane_padding_h"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="sans-serif"
+                    android:maxLines="2"
+                    android:textColor="@color/oculo_settings_secondary"
+                    android:textSize="@dimen/oculo_settings_pane_text"
+                    android:visibility="gone" />
+
+                <androidx.leanback.widget.VerticalGridView
+                    android:id="@+id/oculo_settings_rows"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="6dp"
+                    android:clipToPadding="false"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp"
+                    android:paddingBottom="24dp" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/oculo_settings_fade"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/oculo_settings_fade" />
+
+            <TextView
+                android:id="@+id/oculo_settings_locked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="32dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.28"
+                android:text="@string/oculo_set_locked"
+                android:textColor="@color/oculo_settings_secondary"
+                android:textSize="14sp"
+                android:visibility="gone" />
+        </FrameLayout>
+    </FrameLayout>
+</androidx.leanback.widget.BrowseFrameLayout>

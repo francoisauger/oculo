@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.11.0): category icons: ink on the focus pill, turquoise for the open category (as the rail's current
+     section), light grey otherwise -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:color="@color/oculo_white_focus_ink" />
+    <item android:state_activated="true" android:color="@color/oculo_settings_teal" />
+    <item android:color="#D8D8D8" />
+</selector>

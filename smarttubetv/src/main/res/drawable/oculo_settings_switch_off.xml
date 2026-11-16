@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.11.0): switch off (32 x 18dp), turquoise when on; darker when its row has the white focus pill -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#9B9B9B" />
+                    <corners android:radius="9dp" />
+                    <size android:width="32dp" android:height="18dp" />
+                </shape>
+            </item>
+            <item android:left="2dp" android:top="2dp" android:right="16dp" android:bottom="2dp">
+                <shape android:shape="oval">
+                    <solid android:color="#FFFFFFFF" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#4D5153" />
+                    <corners android:radius="9dp" />
+                    <size android:width="32dp" android:height="18dp" />
+                </shape>
+            </item>
+            <item android:left="2dp" android:top="2dp" android:right="16dp" android:bottom="2dp">
+                <shape android:shape="oval">
+                    <solid android:color="#FFCFCFCF" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

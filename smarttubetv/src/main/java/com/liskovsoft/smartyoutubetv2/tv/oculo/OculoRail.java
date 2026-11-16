@@ -102,6 +102,8 @@ public final class OculoRail implements AccountChangeListener {
      */
     @Nullable
     public static OculoRail attach(BrowseSupportFragment fragment, View root) {
+        OculoSettingsFragment.init(fragment.getContext()); // Settings section: list + detail screen (0.11.0)
+
         if (!isEnabled(fragment.getContext()) || root == null) {
             return null;
         }

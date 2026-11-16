@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.11.0): « Advanced » heading inside a category (advanced mode) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="false"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/oculo_settings_row_padding_h"
+    android:paddingTop="10dp"
+    android:paddingEnd="@dimen/oculo_settings_row_padding_h"
+    android:paddingBottom="4dp">
+
+    <TextView
+        android:id="@+id/oculo_settings_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:letterSpacing="0.03"
+        android:textColor="@color/oculo_settings_heading"
+        android:textSize="@dimen/oculo_settings_heading_row" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="7dp"
+        android:layout_weight="1"
+        android:background="#1FFFFFFF" />
+</LinearLayout>

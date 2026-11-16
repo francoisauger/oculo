@@ -240,10 +240,21 @@ public final class OculoSettingsModel {
         StringBuilder sb = new StringBuilder();
         int count = 0;
 
-        for (OculoSettingsNode node : tile.simple) {
-            CharSequence value = node.getValue(mContext);
+        String advancedModeKey = name(R.string.oculo_set_advanced_mode);
 
-            if (TextUtils.isEmpty(value) || node.kind == OculoSettingsNode.MULTI) {
+        for (OculoSettingsNode node : tile.simple) {
+            CharSequence value;
+
+            if (node.kind == OculoSettingsNode.SWITCH) {
+                // A switch reads as its name when on (« SponsorBlock »), and is left out when off
+                value = node.isOn() && !advancedModeKey.equals(node.key) ? node.title : null;
+            } else if (node.kind == OculoSettingsNode.MULTI) {
+                value = null;
+            } else {
+                value = node.getValue(mContext);
+            }
+
+            if (TextUtils.isEmpty(value)) {
                 continue;
             }
 

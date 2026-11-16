@@ -68,6 +68,7 @@
     <string name="oculo_set_classic_settings_desc">Les anciens Réglages, les 13 écrans.</string>
     <string name="oculo_set_other_settings_desc">Réglages qu\'Oculo n\'a pas encore rangés.</string>
     <string name="oculo_set_more_settings">Plus de réglages</string>
+    <string name="oculo_set_locked">Les réglages sont protégés par un mot de passe. Appuie sur OK pour l\'entrer.</string>
     <string name="oculo_sum_when_a_video_ends">Ce qui joue après une vidéo.</string>
     <string name="oculo_sum_video_quality">Qualité de départ de chaque vidéo.</string>
     <string name="oculo_sum_speed">Vitesse de lecture par défaut.</string>

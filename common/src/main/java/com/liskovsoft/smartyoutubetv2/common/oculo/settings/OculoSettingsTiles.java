@@ -40,6 +40,11 @@ public final class OculoSettingsTiles {
         return context != null && context.getResources().getBoolean(R.bool.oculo_settings_tiles);
     }
 
+    /** The list-and-detail Settings screen replaces the tile grid (OculoSettingsFragment). */
+    public static boolean isScreenEnabled(@Nullable Context context) {
+        return isEnabled(context) && context.getResources().getBoolean(R.bool.oculo_settings_screen);
+    }
+
     public static void addListener(Listener listener) {
         if (!sListeners.contains(listener)) {
             sListeners.add(listener);
@@ -68,8 +73,18 @@ public final class OculoSettingsTiles {
 
     /** The categories as Settings tiles (the settings grid). */
     public static List<SettingsItem> getSettingItems(Context context) {
-        OculoSettingsModel model = OculoSettingsModel.build(context);
         List<SettingsItem> items = new ArrayList<>();
+
+        if (isScreenEnabled(context)) {
+            // The Settings screen builds its own model; the section only needs to be non-empty
+            for (int i = 0; i < OculoSettingsMap.T_ADV; i++) {
+                String id = OculoSettingsModel.TILE_IDS[i];
+                items.add(new SettingsItem(context.getString(OculoSettingsModel.TILE_TITLES[i]), () -> showTile(context, id), TILE_ICONS[i]));
+            }
+            return items;
+        }
+
+        OculoSettingsModel model = OculoSettingsModel.build(context);
 
         if (!getRecentRows(context, model).isEmpty()) {
             items.add(new SettingsItem(context.getString(R.string.oculo_set_recent), () -> showRecent(context), R.drawable.oculo_settings_ic_recent));

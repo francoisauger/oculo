@@ -43,6 +43,7 @@
     <string name="oculo_set_classic_settings_desc">The previous Settings, all 13 screens.</string>
     <string name="oculo_set_other_settings_desc">Settings Oculo has not placed yet.</string>
     <string name="oculo_set_more_settings">More settings</string>
+    <string name="oculo_set_locked">Settings are protected by a password. Press OK to enter it.</string>
     <string name="oculo_sum_when_a_video_ends">What plays after a video.</string>
     <string name="oculo_sum_video_quality">Quality every video starts with.</string>
     <string name="oculo_sum_speed">Default playback speed.</string>

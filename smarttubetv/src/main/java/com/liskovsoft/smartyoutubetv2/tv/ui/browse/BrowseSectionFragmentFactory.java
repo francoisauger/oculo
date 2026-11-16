@@ -16,6 +16,7 @@ import com.liskovsoft.smartyoutubetv2.tv.ui.browse.interfaces.Section;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.interfaces.SettingsSection;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.interfaces.VideoSection;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.settings.SettingsGridFragment;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoSettingsFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.video.MultiVideoGridFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.video.ShortsGridFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.video.VideoGridFragment;
@@ -71,7 +72,7 @@ public class BrowseSectionFragmentFactory extends BrowseSupportFragment.Fragment
                 fragment = new ShortsGridFragment();
                 break;
             case BrowseSection.TYPE_SETTINGS_GRID:
-                fragment = new SettingsGridFragment();
+                fragment = OculoSettingsFragment.isEnabled() ? new OculoSettingsFragment() : new SettingsGridFragment(); // Oculo: list + detail
                 break;
             case BrowseSection.TYPE_MULTI_GRID:
                 fragment = new MultiVideoGridFragment();

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.11.0): the Settings screen, list at left and detail at right (OculoSettingsFragment), measured on the
+     proposal's 1920 x 1080 mocks (docs/mockups/settings/settings-redesign.html « Maquettes télé », 2 px = 1dp).
+     Positions are from the browse content's top-left corner (the content start follows the rail). -->
+<resources>
+    <dimen name="oculo_settings_start">56dp</dimen>
+    <dimen name="oculo_settings_heading_top">88dp</dimen>
+    <dimen name="oculo_settings_heading_size">23sp</dimen>
+    <dimen name="oculo_settings_recent_start">116dp</dimen>
+    <dimen name="oculo_settings_recent_top">93dp</dimen>
+    <dimen name="oculo_settings_list_top">139dp</dimen>
+    <dimen name="oculo_settings_list_width">274dp</dimen>
+    <dimen name="oculo_settings_category_height">46dp</dimen>
+    <dimen name="oculo_settings_category_gap">3dp</dimen>
+    <dimen name="oculo_settings_category_icon">20dp</dimen>
+    <dimen name="oculo_settings_category_title">15sp</dimen>
+    <dimen name="oculo_settings_category_summary">10.5sp</dimen>
+    <dimen name="oculo_settings_pane_start">297dp</dimen>
+    <dimen name="oculo_settings_pane_width">537dp</dimen>
+    <dimen name="oculo_settings_pane_height">372dp</dimen>
+    <dimen name="oculo_settings_pane_padding_h">20dp</dimen>
+    <dimen name="oculo_settings_pane_padding_v">16dp</dimen>
+    <dimen name="oculo_settings_pane_title">19sp</dimen>
+    <dimen name="oculo_settings_pane_text">10.5sp</dimen>
+    <dimen name="oculo_settings_row_min_height">40dp</dimen>
+    <dimen name="oculo_settings_row_padding_h">13dp</dimen>
+    <dimen name="oculo_settings_row_title">14.5sp</dimen>
+    <dimen name="oculo_settings_row_desc">10.5sp</dimen>
+    <dimen name="oculo_settings_row_value">12.5sp</dimen>
+    <dimen name="oculo_settings_heading_row">11sp</dimen>
+    <dimen name="oculo_settings_pill_text">11sp</dimen>
+
+    <color name="oculo_settings_pane_background">#09FFFFFF</color>
+    <color name="oculo_settings_pane_border">#12FFFFFF</color>
+    <color name="oculo_settings_selected">#17FFFFFF</color>
+    <color name="oculo_settings_secondary">#9A9A9A</color>
+    <color name="oculo_settings_value_rest">#B9B9B9</color>
+    <color name="oculo_settings_heading">#8F8F8F</color>
+    <color name="oculo_settings_teal">#22D3C8</color>
+    <color name="oculo_settings_teal_mid">#0B7F7D</color>
+
+</resources>

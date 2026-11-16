@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.11.0): one setting of the Settings screen (right pane): title (Roboto Condensed), one line of
+     explanation (Roboto), its value at the right, a switch, a radio (value lists) or a chevron (rows that open). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:background="@drawable/oculo_settings_pill_focus"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/oculo_settings_row_min_height"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/oculo_settings_row_padding_h"
+    android:paddingTop="5dp"
+    android:paddingEnd="@dimen/oculo_settings_row_padding_h"
+    android:paddingBottom="5dp">
+
+    <ImageView
+        android:id="@+id/oculo_settings_radio"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="11dp"
+        android:duplicateParentState="true"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:duplicateParentState="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/oculo_settings_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-condensed"
+            android:maxLines="2"
+            android:textColor="@color/oculo_settings_title"
+            android:textSize="@dimen/oculo_settings_row_title" />
+
+        <TextView
+            android:id="@+id/oculo_settings_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:duplicateParentState="true"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="2"
+            android:textColor="@color/oculo_settings_summary"
+            android:textSize="@dimen/oculo_settings_row_desc"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/oculo_settings_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:duplicateParentState="true"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"
+        android:maxWidth="190dp"
+        android:singleLine="true"
+        android:textColor="@color/oculo_settings_value"
+        android:textSize="@dimen/oculo_settings_row_value"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/oculo_settings_switch"
+        android:layout_width="32dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="12dp"
+        android:duplicateParentState="true"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/oculo_settings_chevron"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="6dp"
+        android:duplicateParentState="true"
+        android:src="@drawable/oculo_settings_ic_chevron"
+        android:tint="@color/oculo_settings_chevron"
+        android:visibility="gone" />
+</LinearLayout>
