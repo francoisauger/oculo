@@ -84,4 +84,6 @@
     <item name="oculo_header_unselect_alpha" type="fraction">100%</item>
     <!-- Comments panel: lighter, easier to read (OculoComments, docs/mockups/comments/) -->
     <bool name="oculo_comments_airy">true</bool>
+    <!-- Settings (0.11.0): no dead or duplicated settings, two themes (OculoSettingsCleanup) -->
+    <bool name="oculo_settings_cleanup">true</bool>
 </resources>

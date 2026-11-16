@@ -9,6 +9,8 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionCatego
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionItem;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.views.AppDialogView;
+import com.liskovsoft.smartyoutubetv2.common.oculo.settings.OculoSettingsCapture;
+import com.liskovsoft.smartyoutubetv2.common.oculo.settings.OculoSettingsCleanup;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 
 import java.util.ArrayList;
@@ -122,6 +124,13 @@ public class AppDialogPresenter extends BasePresenter<AppDialogView> {
     }
 
     public void showDialog(CharSequence dialogTitle, Runnable onFinish) {
+        OculoSettingsCleanup.apply(getContext(), dialogTitle, mCategories); // Oculo: dead and duplicated settings left out
+        if (OculoSettingsCapture.isCapturing()) { // Oculo: an Oculo settings screen reads this one without showing it
+            OculoSettingsCapture.onShowDialog(dialogTitle, mCategories, onFinish);
+            resetData();
+            return;
+        }
+
         mTitle = dialogTitle;
         mOnFinish.add(onFinish);
         

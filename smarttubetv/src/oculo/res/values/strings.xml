@@ -19,4 +19,8 @@
     <string name="subscriptions_signin_title">The latest from your channels</string>
     <string name="subscriptions_signin_subtitle">Sign in to see your subscriptions</string>
     <string name="subscriptions_signin_button_text">Sign in</string>
+
+    <!-- common: the two themes Oculo keeps (OculoSettingsCleanup): Dark Grey and Dark Grey (OLED) -->
+    <string name="color_scheme_dark_grey">Oculo</string>
+    <string name="color_scheme_dark_grey_oled">Oculo black (OLED)</string>
 </resources>

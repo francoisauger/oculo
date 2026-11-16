@@ -24,4 +24,8 @@
     <string name="oculo_signin_step_account">3. Choisis ton compte</string>
     <string name="oculo_signin_done">Terminé</string>
     <string name="oculo_signin_open_browser">Ouvrir dans le navigateur</string>
+
+    <!-- Thèmes gardés par Oculo (OculoSettingsCleanup) -->
+    <string name="color_scheme_dark_grey">Oculo</string>
+    <string name="color_scheme_dark_grey_oled">Oculo noir (OLED)</string>
 </resources>
