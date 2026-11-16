@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Réglages d'Oculo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c0d; --s1:#121415; --s2:#181b1c; --s3:#202425; --line:#2a2f31; --line2:#363c3e;
+  --tx:#F1F1F1; --tx2:#AAAAAA; --tx3:#7d8588;
+  --teal:#22D3C8; --teal-mid:#0B7F7D; --teal-deep:#0F4A52; --teal-ink:#0B333A; --mint:#78F5BE;
+  --abr:#FFA25C; --abr-l:#FFC896; --abr-d:#B0541A; --abr-ink:#3A1A06;
+  --focus:#F1F1F1; --ink:#0F0F0F;
+  --cond:"Roboto Condensed","Roboto",system-ui,sans-serif; --sans:"Roboto",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 var(--sans);
+  background-image:radial-gradient(1200px 700px at 85% -10%,rgba(50,230,220,.13),transparent 60%);background-attachment:fixed}
+a{color:var(--teal)}
+h1,h2,h3,h4{font-family:var(--cond);font-weight:500;letter-spacing:.005em;line-height:1.15;margin:0}
+h1{font-size:44px;font-weight:700}
+h2{font-size:32px;margin:0 0 6px}
+h3{font-size:22px;margin:28px 0 10px}
+h4{font-size:18px;margin:18px 0 6px;color:var(--tx2)}
+p{margin:0 0 12px;max-width:78ch}
+code{font:13px/1.4 ui-monospace,Menlo,monospace;background:var(--s3);padding:1px 5px;border-radius:5px;color:#d6dcde}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);gap:40px;max-width:1440px;margin:0 auto;padding:40px 32px 120px}
+nav.toc{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto}
+nav.toc .brand{display:flex;align-items:center;gap:10px;font-family:var(--cond);font-size:20px;font-weight:700;margin-bottom:20px}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+nav.toc li a{display:block;padding:8px 12px;border-radius:10px;color:var(--tx2);text-decoration:none;font-family:var(--cond);font-size:17px}
+nav.toc li a:hover{background:var(--s2);color:var(--tx)}
+nav.toc li a.on{background:var(--focus);color:var(--ink)}
+nav.toc li.sub a{font-size:15px;padding:5px 12px 5px 26px}
+nav.toc .meta{margin-top:22px;font-size:13px;color:var(--tx3);line-height:1.5}
+main{min-width:0;overflow-wrap:anywhere}
+main section{padding:56px 0 8px;border-top:1px solid var(--line)}
+main section:first-of-type{border-top:0;padding-top:0}
+.kicker{font-family:var(--cond);color:var(--teal);font-size:15px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.lede{font-size:18px;color:#d5d9da;max-width:72ch}
+.muted{color:var(--tx2)} .small{font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:26px 0}
+.stat{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.stat .n{font-family:var(--cond);font-size:40px;font-weight:700;line-height:1}
+.stat .n small{font-size:20px;color:var(--tx3);font-weight:500}
+.stat .l{color:var(--tx2);font-size:14px;margin-top:6px}
+.stat.hi{border-color:var(--teal-mid);background:linear-gradient(180deg,rgba(34,211,200,.10),rgba(34,211,200,.02))}
+.stat.hi .n{color:var(--teal)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.card h3{margin-top:0}
+.badge{display:inline-flex;align-items:center;gap:4px;font:500 12px/1 var(--sans);padding:4px 7px;border-radius:999px;white-space:nowrap;vertical-align:1px}
+.b-h{background:#2b2f31;color:#c8cdcf}
+.b-d{background:#3a2412;color:var(--abr-l)}
+.b-u{background:var(--teal-deep);color:#9ff1ea}
+.b-v{background:#1d2328;color:#9fb4c4;border:1px solid #2f3a44}
+.b-o{background:transparent;color:var(--tx);border:1px solid #6b7375}
+.b-c{background:transparent;color:var(--tx2);border:1px dashed #6b7375}
+.b-S{background:var(--focus);color:var(--ink)}
+.b-A{background:#2a3133;color:#d5dcde}
+.b-X{background:#3a2412;color:var(--abr-l)}
+.b-M{background:var(--teal-deep);color:#9ff1ea}
+.b-N{background:transparent;border:1px solid var(--teal);color:var(--teal)}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin:14px 0 18px;font-size:14px;color:var(--tx2)}
+.legend span{display:inline-flex;gap:8px;align-items:center}
+/* tree */
+.tree details{border:1px solid var(--line);border-radius:14px;background:var(--s1);margin:8px 0}
+.tree details details{border:0;border-top:1px solid var(--line);border-radius:0;background:transparent;margin:0}
+.tree summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.tree summary::-webkit-details-marker{display:none}
+.tree summary .chev{width:18px;height:18px;flex:none;transition:transform .15s;color:var(--tx3)}
+.tree details[open]>summary .chev{transform:rotate(90deg)}
+.tree summary .ti{font-family:var(--cond);font-size:20px;font-weight:500}
+.tree details details summary .ti{font-size:17px;color:#dfe3e4}
+.tree summary .cnt{margin-left:auto;color:var(--tx3);font-size:13px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.tree ul{list-style:none;margin:0;padding:4px 16px 12px 46px}
+.tree li{padding:7px 0;border-top:1px dashed #23282a;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px}
+.tree li:first-child{border-top:0}
+.tree li .lb{font-family:var(--cond);font-size:16.5px}
+.tree li .vals{grid-column:1/-1;color:var(--tx2);font-size:13.5px;line-height:1.45}
+.tree li .vals b{color:#cfd5d6;font-weight:500}
+.tree li .fl{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.tree li.gone .lb{text-decoration:line-through;color:var(--tx3)}
+.tree .tileicon{width:26px;height:26px;color:var(--tx2)}
+.tbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.chip{border:1px solid var(--line2);background:var(--s2);color:var(--tx2);border-radius:999px;padding:6px 12px;font:14px var(--cond);cursor:pointer}
+.chip.on{background:var(--focus);color:var(--ink);border-color:var(--focus)}
+input.search{background:var(--s2);border:1px solid var(--line2);color:var(--tx);border-radius:999px;padding:8px 14px;font:14px var(--sans);min-width:240px}
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--s1)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font:500 13px var(--cond);letter-spacing:.04em;text-transform:uppercase;color:var(--tx3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--s1)}
+td{padding:9px 12px;border-top:1px solid #202426;vertical-align:top}
+td .lb{font-family:var(--cond);font-size:15.5px}
+td .pth{color:var(--tx3);font-size:12.5px}
+td.fr{color:var(--tx2)}
+tr.gone td .lb{text-decoration:line-through;color:var(--tx3)}
+.tablecount{color:var(--tx3);font-size:13px;margin:8px 2px}
+/* proposed tiles */
+.ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:16px}
+.ptile{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:18px}
+.ptile.adv{border-style:dashed}
+.ptile header{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.ptile header svg{width:34px;height:34px;color:var(--teal);flex:none}
+.ptile header .t{font-family:var(--cond);font-size:21px;font-weight:500;line-height:1.1}
+.ptile header .f{color:var(--tx3);font-size:13.5px}
+.ptile .grp{font:500 12px var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--tx3);margin:12px 0 4px}
+.ptile ul{list-style:none;margin:0;padding:0}
+.ptile li{display:flex;gap:8px;align-items:baseline;padding:3px 0;font-size:14.5px}
+.ptile li .dot{width:7px;height:7px;border-radius:50%;flex:none;transform:translateY(-1px)}
+.ptile li.S .dot{background:var(--focus)} .ptile li.A .dot{background:#4a5355}
+.ptile li.A{color:var(--tx2)}
+.ptile li.N .dot{background:var(--teal)}
+.ptile .more{color:var(--tx3);font-size:13px;margin-top:6px}
+/* icons */
+.icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.ic{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:18px 10px 14px;text-align:center}
+.ic .row{display:flex;justify-content:center;gap:18px;align-items:center;height:64px}
+.ic svg.big{width:56px;height:56px}
+.ic svg.sm{width:28px;height:28px;color:var(--tx2)}
+.ic .n{font-family:var(--cond);font-size:16px;margin-top:8px}
+.ic .m{font-size:12px;color:var(--tx3)}
+/* tv mocks */
+.mock{margin:22px 0 34px}
+.mock figcaption{color:var(--tx2);font-size:14.5px;margin-top:10px;max-width:90ch}
+.mock figcaption b{color:var(--tx);font-family:var(--cond);font-weight:500;font-size:16px}
+.tv{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:14px;border:1px solid var(--line2);box-shadow:0 30px 80px rgba(0,0,0,.55);background:#000}
+.screen{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;color:var(--tx);
+  background:#000 radial-gradient(912px 912px at 78% 25%,rgba(50,230,220,.20),rgba(50,230,220,.07) 45%,transparent 72%)}
+.screen *{box-sizing:border-box}
+.scr-rail{position:absolute;left:0;top:0;width:188px;height:1080px}
+.scr-rail .av{position:absolute;left:67px;top:74px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#7a6a58,#3c3a36 60%,#202020);box-shadow:inset 0 0 0 2px rgba(255,255,255,.08)}
+.scr-rail svg{position:absolute;left:74px;width:40px;height:40px;color:#B8B8B8}
+.scr-rail svg.cur{color:var(--teal)}
+.scr-top .mic{position:absolute;left:188px;top:65px;width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center}
+.scr-top .pill{position:absolute;left:278px;top:65px;width:630px;height:72px;border-radius:36px;background:rgba(255,255,255,.15);display:flex;align-items:center;padding:0 34px;font:400 34px var(--sans);color:rgba(255,255,255,.72)}
+.scr-top .gear{position:absolute;left:926px;top:65px;width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center}
+.scr-top .gear.f{background:var(--focus);color:var(--ink)}
+.scr-top svg{width:40px;height:40px}
+.scr-top .clock{position:absolute;right:318px;top:70px;text-align:center;font-family:var(--sans)}
+.scr-top .clock .h{font-size:36px;font-weight:500;line-height:1}
+.scr-top .clock .d{font-size:22px;font-weight:500;margin-top:6px}
+.scr-top .wm{position:absolute;right:112px;top:76px;display:flex;align-items:center;gap:4px;font:700 58px/1 var(--sans);letter-spacing:-.01em}
+.scr-top .wm i{display:block;width:52px;height:46px;border-radius:13px;border:6px solid #fff;background:linear-gradient(135deg,#2FE3F0,#22D3C8 50%,#78F5BE);margin-right:2px}
+.scr-h{position:absolute;left:188px;top:186px;font:500 46px var(--cond)}
+.scr-recent{position:absolute;left:420px;top:196px;display:flex;gap:12px;align-items:center;font:400 22px var(--sans);color:var(--tx2)}
+.scr-recent span.c{background:rgba(255,255,255,.10);color:#e6e6e6;border-radius:22px;padding:7px 18px;font-family:var(--cond);font-size:22px}
+.scr-list{position:absolute;left:188px;top:282px;width:548px}
+.scr-row{display:flex;align-items:center;gap:22px;height:86px;padding:0 24px;border-radius:20px;margin-bottom:6px;position:relative}
+.scr-row svg{width:38px;height:38px;flex:none;color:#d8d8d8}
+.scr-row .t{font:500 30px/1.05 var(--cond)}
+.scr-row .s{font:400 19px/1.25 var(--sans);color:#9a9a9a;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px}
+.scr-row.f{background:var(--focus)} .scr-row.f .t{color:var(--ink)} .scr-row.f .s{color:#454545} .scr-row.f svg{color:var(--ink)}
+.scr-row.sel{background:rgba(255,255,255,.09)} .scr-row.sel svg{color:var(--teal)}
+.scr-row.dimrow{opacity:.45}
+.scr-row .ndot{position:absolute;left:52px;top:18px;width:16px;height:16px;border-radius:50%;background:var(--abr);box-shadow:0 0 0 3px #131313}
+.scr-row.fx{opacity:.5}
+.scr-pane{position:absolute;left:782px;top:282px;width:1074px;height:736px;border-radius:30px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);padding:36px 40px;overflow:hidden}
+.scr-pane.pv{opacity:.82}
+.scr-pane .crumb{font:400 21px var(--sans);color:var(--tx2);margin-bottom:6px}
+.scr-pane .pt{font:500 38px var(--cond)}
+.scr-pane .pd{font:400 21px/1.35 var(--sans);color:var(--tx2);margin:8px 0 18px;max-width:900px}
+.scr-pane .fade{position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(transparent,rgba(10,10,10,.95))}
+.prow{display:flex;align-items:center;gap:20px;min-height:76px;padding:12px 26px;border-radius:18px;margin:0 -26px 2px}
+.prow .pl{flex:1;min-width:0}
+.prow .pl .t{font:500 29px/1.1 var(--cond)}
+.prow .pl .d{font:400 19px/1.35 var(--sans);color:#a4a4a4;margin-top:6px}
+.prow .v{font:400 25px var(--sans);color:#b9b9b9;white-space:nowrap}
+.prow .ch{width:28px;height:28px;color:#8a8a8a;flex:none}
+.prow.f{background:var(--focus)} .prow.f .t{color:var(--ink)} .prow.f .d{color:#444} .prow.f .v{color:#333} .prow.f .ch{color:#333}
+.prow.dim{opacity:.55}
+.sw{width:64px;height:36px;border-radius:18px;background:#4d5153;position:relative;flex:none}
+.sw::after{content:"";position:absolute;top:4px;left:4px;width:28px;height:28px;border-radius:50%;background:#cfcfcf;transition:left .2s}
+.sw.on{background:var(--teal)} .sw.on::after{left:32px;background:#fff}
+.prow.f .sw.on{background:var(--teal-mid)} .prow.f .sw{background:#9b9b9b}
+.phead{display:flex;align-items:center;gap:14px;margin:18px 0 6px;font:500 22px var(--cond);color:#8f8f8f;letter-spacing:.03em}
+.phead::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.12)}
+.radio{width:32px;height:32px;border-radius:50%;border:3px solid #9a9a9a;flex:none;position:relative}
+.radio.on{border-color:var(--teal)} .radio.on::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--teal)}
+.prow.f .radio{border-color:#555} .prow.f .radio.on{border-color:var(--teal-mid)} .prow.f .radio.on::after{background:var(--teal-mid)}
+.toast{position:absolute;right:96px;top:170px;display:flex;align-items:center;gap:16px;background:rgba(20,20,20,.88);border-radius:16px;padding:18px 28px 18px 22px;font:400 24px var(--sans)}
+.toast i{width:8px;height:36px;border-radius:4px;background:var(--abr)}
+.hint{position:absolute;left:782px;bottom:14px;font:400 18px var(--sans);color:#7a7a7a;display:flex;gap:28px}
+.hint kbd{font:500 15px var(--sans);border:1px solid #555;border-radius:6px;padding:1px 7px;margin-right:6px;color:#bbb}
+.grid7{position:absolute;left:188px;top:300px;display:flex;gap:24px}
+.gt{width:216px;height:236px;border-radius:24px;background:#1b1b1b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;position:relative}
+.gt svg{width:64px;height:64px;color:#e8e8e8}
+.gt .t{font:500 26px/1.15 var(--cond);text-align:center;padding:0 10px}
+.gt.f{outline:4px solid var(--focus);outline-offset:5px}
+.gdesc{position:absolute;left:188px;top:600px;width:1500px;font:400 24px/1.45 var(--sans);color:#a9a9a9}
+.gdesc b{font:500 30px var(--cond);color:var(--tx);display:block;margin-bottom:6px}
+/* phases */
+.phase{display:grid;grid-template-columns:90px minmax(0,1fr) 120px;gap:16px;align-items:start;background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:10px 0}
+.phase .no{font:700 34px/1 var(--cond);color:var(--teal)}
+.phase h4{margin:0 0 6px;color:var(--tx);font-size:20px}
+.phase ul{margin:4px 0 0;padding-left:18px;color:#d0d5d6}
+.phase li{margin:3px 0}
+.eff{justify-self:end;text-align:right}
+.eff .e{display:inline-block;font:500 14px var(--cond);padding:5px 10px;border-radius:999px;background:#2a3133}
+.eff .e.p{background:var(--teal-deep);color:#9ff1ea}
+.eff .e.g{background:#3a2412;color:var(--abr-l)}
+.eff .x{color:var(--tx3);font-size:12.5px;margin-top:6px}
+.callout{border-left:4px solid var(--teal);background:rgba(34,211,200,.06);padding:14px 18px;border-radius:0 12px 12px 0;margin:16px 0}
+.callout.warn{border-left-color:var(--abr);background:rgba(255,162,92,.06)}
+ul.clean{padding-left:20px} ul.clean li{margin:5px 0}
+@media (max-width:980px){
+  .wrap{grid-template-columns:minmax(0,1fr);padding:20px 16px 80px;gap:12px}
+  .tree ul{padding-left:16px} .tree li{grid-template-columns:minmax(0,1fr)} .tree li .fl{justify-content:flex-start}
+  nav.toc{position:relative;top:0;max-height:none;border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--s1)}
+  nav.toc ol{display:flex;flex-wrap:wrap;gap:4px} nav.toc li.sub{display:none}
+  nav.toc .meta{display:none}
+  .cols{grid-template-columns:1fr}
+  h1{font-size:34px}
+  .phase{grid-template-columns:1fr}
+  .eff{justify-self:start;text-align:left}
+}
+body.shot{margin:0;background:#000;background-image:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc" aria-label="Sommaire">
+  <div class="brand"><svg width="30" height="26" viewBox="0 0 30 26" aria-hidden="true"><rect x="2.5" y="2.5" width="25" height="21" rx="6" fill="url(#lg)" stroke="#fff" stroke-width="3"/><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2FE3F0"/><stop offset=".5" stop-color="#22D3C8"/><stop offset="1" stop-color="#78F5BE"/></linearGradient></defs></svg>Réglages d'Oculo</div>
+  <ol>
+    <li><a href="#resume">En bref</a></li>
+    <li><a href="#actuel">1. L'arbre actuel</a></li>
+    <li class="sub"><a href="#profondeur">Combien de clics</a></li>
+    <li class="sub"><a href="#arbre">L'arbre complet</a></li>
+    <li><a href="#propose">2. L'arbre proposé</a></li>
+    <li class="sub"><a href="#renommages">Libellés renommés</a></li>
+    <li class="sub"><a href="#retraits">Ce qui part, et pourquoi</a></li>
+    <li class="sub"><a href="#correspondance">Ancien → nouveau</a></li>
+    <li><a href="#modes">3. Simple et avancé</a></li>
+    <li><a href="#ecrans">4. Icônes et écrans</a></li>
+    <li class="sub"><a href="#icones">Icônes</a></li>
+    <li class="sub"><a href="#maquettes">Maquettes télé</a></li>
+    <li class="sub"><a href="#raccourcis">Raccourcis</a></li>
+    <li><a href="#plan">5. Par où commencer</a></li>
+  </ol>
+  <div class="meta">Proposition du 16 nov. 2026, branche <code>oculo</code> (0.10.0, base SmartTube 32.74). Aucune ligne de l'app changée : maquettes seulement.</div>
+</nav>
+
+<main>
+<section id="resume">
+  <div class="kicker">Proposition · Réglages</div>
+  <h1>Des réglages qu'on trouve sans chercher</h1>
+  <p class="lede" style="margin-top:14px">Aujourd'hui, Réglages, c'est 13 tuiles rangées par module technique (« General », « Player », « Auto Frame Rate »…), et derrière, plus de deux cents choix, dont des doublons, des réglages qui ne font rien sur ta télé et une vingtaine d'options de développeur mélangées au reste. La proposition : <b>7 tuiles rangées par intention</b>, un <b>mode simple par défaut</b> qui ne montre qu'une trentaine de réglages, et un <b>mode avancé</b> qui rend tout le reste visible, sans rien perdre.</p>
+  <div class="stats" id="stats"></div>
+  <div class="cols">
+    <div class="card">
+      <h3>Ce que je recommande</h3>
+      <ul class="clean">
+        <li><b>Liste à gauche, détail à droite</b> (comme les réglages de Google TV), plutôt qu'une grille de tuiles : on ne fait que monter et descendre, et on voit les valeurs avant d'entrer.</li>
+        <li><b>7 catégories</b> : Playback, Audio &amp; Subtitles, Home &amp; Display, Account &amp; History, SponsorBlock &amp; Filters, Remote &amp; Devices, System. Une 8<sup>e</sup>, Advanced, n'apparaît qu'en mode avancé.</li>
+        <li><b>Le commutateur « Advanced mode »</b> vit au bas de System : un seul endroit, facile à expliquer, réversible.</li>
+        <li><b>Rien n'est perdu</b> : chaque réglage actuel a sa place dans le tableau « Ancien → nouveau », et l'ancien menu complet reste accessible sous Advanced › « Classic settings » tant que la refonte n'a pas fait ses preuves.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Par où commencer</h3>
+      <ul class="clean">
+        <li><b>Étape 1 (petite)</b> : retirer ce qui ne fait rien sur ta télé, fusionner les doublons, ne garder que les thèmes Oculo.</li>
+        <li><b>Étape 2 (moyenne)</b> : les 7 tuiles et le mode simple, construits dans des fichiers propres à Oculo (aucun fichier d'amont réécrit).</li>
+        <li><b>Étape 3 (grosse)</b> : l'écran liste + détail, le focus en pastille blanche, les icônes en contour, la roue dentée dans la barre du haut.</li>
+      </ul>
+      <p class="muted small" style="margin-top:8px">Détail, efforts et risques en section 5.</p>
+    </div>
+  </div>
+</section>
+
+<section id="actuel">
+  <div class="kicker">1 · Ce qui existe</div>
+  <h2>L'arbre actuel, au complet</h2>
+  <p>Tiré du code de la branche <code>oculo</code> : les 13 tuiles de <code>AppDataSourceManager</code>, chaque écran construit par les présentateurs de <code>common/…/presenters/settings/</code>, les catégories partagées de <code>AppDialogUtil</code> et <code>AutoFrameRateController</code>, et la catégorie « Home » ajoutée par Oculo (<code>OculoSettings</code>). Les libellés sont ceux affichés à l'écran (en anglais). Un « écran », c'est une liste dans laquelle on entre : le panneau d'une tuile, une catégorie (« Misc », « Hide content »…), une liste de valeurs ou un sous-dialogue. Un défaut noté « — » n'a pas été relevé dans le code (souvent désactivé).</p>
+  <div class="legend">
+    <span><i class="badge b-h">masqué par Oculo</i> déjà retiré par Oculo</span>
+    <span><i class="badge b-d">sans effet ici</i> ne fait rien (ou presque) sur la TCL Google TV</span>
+    <span><i class="badge b-u">doublon</i> même réglage ailleurs</span>
+    <span><i class="badge b-v">développeur</i> correctif ou option technique</span>
+    <span><i class="badge b-o">Oculo</i> ajouté par Oculo</span>
+    <span><i class="badge b-c">à vérifier</i> effet douteux, à confirmer sur la télé</span>
+  </div>
+
+  <h3 id="profondeur">Combien de pressions pour les choses courantes</h3>
+  <p>Comptées depuis la première rangée de l'Accueil, avec la télécommande (flèches + OK). Aujourd'hui, on passe par le rail (~12 pressions vers le bas jusqu'à Réglages, voir l'audit R13), puis la grille de tuiles de 7 colonnes. Proposé : la roue dentée de la barre du haut (haut, droite, droite, OK), puis la liste à gauche. La « profondeur » compte les écrans traversés après l'écran Réglages.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Je veux…</th><th>Aujourd'hui : chemin</th><th>Profondeur</th><th>Pressions (env.)</th><th>Proposé : chemin</th><th>Profondeur</th><th>Pressions (env.)</th></tr></thead>
+    <tbody>
+      <tr><td class="lb">Grossir les sous-titres</td><td>Subtitles › Subtitle scale › 1.2x</td><td>2</td><td>22</td><td>Audio &amp; Subtitles › Subtitle size › 1.2x</td><td>2</td><td>12</td></tr>
+      <tr><td class="lb">Changer la qualité par défaut</td><td>Player › Video presets › (liste de ~40 formats)</td><td>2</td><td>26</td><td>Playback › Video quality › 1080p</td><td>2</td><td>10</td></tr>
+      <tr><td class="lb">Régler l'assombrissement</td><td>General › Screen dimming › Screen dimming timeout › 5 min</td><td>3</td><td>31</td><td>Home &amp; Display › Dim the screen after › 5 min</td><td>2</td><td>14</td></tr>
+      <tr><td class="lb">Changer de compte</td><td>Accounts › Select account</td><td>2</td><td>17 (2 par l'avatar du rail)</td><td>Account &amp; History › Account</td><td>2</td><td>9 (2 par l'avatar)</td></tr>
+      <tr><td class="lb">Couper SponsorBlock</td><td>SponsorBlock › Enable SponsorBlock</td><td>1</td><td>19</td><td>SponsorBlock &amp; Filters › SponsorBlock</td><td>1</td><td>10</td></tr>
+      <tr><td class="lb">Ne plus sauter les intros</td><td>SponsorBlock › Choose action › Intermission/Intro › Do nothing</td><td>3</td><td>25</td><td>SponsorBlock &amp; Filters › Segments › Intro › Do nothing</td><td>3</td><td>15</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted small" style="margin-top:8px">Les gains viennent surtout du raccourci (4 pressions au lieu de 14 pour arriver dans Réglages) et du fait qu'en liste + détail, on entre dans une catégorie par la flèche droite, sans OK ni changement d'écran.</p>
+
+  <h3 id="arbre">L'arbre complet</h3>
+  <div class="tbar" id="treeFilters"></div>
+  <div class="tree" id="tree"></div>
+  <div class="callout" style="margin-top:18px"><b>Ce qui n'apparaît pas dans l'arbre</b> parce que ça n'existe que dans le code : <code>UIScaleSettingsPresenter</code> (un écran « UI scale » que plus rien n'ouvre : ses deux réglages sont aussi dans User interface), « Unlock more subtitles » (commenté dans <code>SubtitleSettingsPresenter</code>), « Card title lines num », « Playlists section style », « Time format » (en radio), « Exit from the player » (en radio) et « Remember speed » dans Player : méthodes présentes mais jamais appelées. Et la langue des sous-titres n'est pas un réglage : elle se choisit dans le lecteur, vidéo par vidéo.</div>
+</section>
+
+<section id="propose">
+  <div class="kicker">2 · Ce que je propose</div>
+  <h2>L'arbre proposé : 7 tuiles par intention</h2>
+  <p>On range par ce que la personne veut faire, pas par le nom du module dans le code. Les sous-titres et la langue audio vont ensemble (on les règle au même moment), tout ce qui cache du contenu va avec SponsorBlock, tout ce qui touche aux boutons de la télécommande est au même endroit. Les points <span class="badge b-S">blancs</span> sont visibles en mode simple ; les <span class="badge b-A">gris</span> seulement en mode avancé, regroupés sous un intertitre « Advanced » au bas de chaque tuile. Les noms restent en anglais, comme le reste de l'interface ; la traduction est là pour toi.</p>
+  <div class="ptiles" id="ptiles"></div>
+
+  <h3 id="renommages">Libellés renommés</h3>
+  <p>Les libellés d'amont décrivent souvent le mécanisme (« Video presets », « Screen dimming timeout », « Boot to section ») ou sont négatifs (« Disable search history »). Je propose des noms qui disent l'effet, en positif. Liste des principaux ; le tableau complet est plus bas.</p>
+  <div class="tw"><table id="renames"><thead><tr><th>Aujourd'hui</th><th>Proposé (anglais, à l'écran)</th><th>En français</th><th>Pourquoi</th></tr></thead><tbody></tbody></table></div>
+
+  <h3 id="retraits">Ce qui part, et pourquoi</h3>
+  <p>Rien n'est retiré en silence : voici tout ce qui disparaît des écrans, avec la raison. Le code d'amont reste en place (on masque, on n'efface pas), donc un retour en arrière est toujours possible.</p>
+  <div class="tw"><table id="removed"><thead><tr><th>Réglage</th><th>Où aujourd'hui</th><th>Pourquoi il part</th></tr></thead><tbody></tbody></table></div>
+  <h4>Valeurs retirées à l'intérieur de réglages gardés</h4>
+  <ul class="clean small" style="color:#cfd5d6">
+    <li><b>Color scheme</b> : de 8 thèmes à 2, « Oculo » (l'actuel Dark Grey) et « Oculo black (OLED) » (l'actuel Dark Grey (OLED)). Partent Teal, Red, Teal (OLED), Dark Grey (monochrome), Dark Blue, Dark Blue (OLED) : seuls les deux gris ont reçu le travail d'Oculo (lueur, anneau, cartes sans boîte), les autres ramènent l'allure SmartTube, et Red l'allure YouTube (audit R12). Les index enregistrés restent valides.</li>
+    <li><b>Background playback</b> : les deux valeurs « Play behind (Android TV 5,6,7) » partent : ta télé est sous Google TV, bien plus récente.</li>
+    <li><b>Voice search engine</b> : le réglage entier part, car ses deux autres valeurs sont marquées « seriously bugged » par l'amont et le micro d'Oculo utilise déjà la reconnaissance de la télé (« System »).</li>
+  </ul>
+
+  <h3 id="correspondance">Ancien → nouveau, réglage par réglage</h3>
+  <p>Chaque ligne de l'arbre actuel, avec sa nouvelle place. Filtre par tuile d'origine, par sort, ou cherche un mot.</p>
+  <div class="tbar" id="mapFilters"></div>
+  <div class="tw" style="max-height:760px;overflow:auto"><table id="map"><thead><tr><th>Aujourd'hui</th><th>Valeurs · défaut</th><th>Constat</th><th>Nouvelle place</th><th>Nouveau libellé · français</th><th>Mode</th></tr></thead><tbody></tbody></table></div>
+  <div class="tablecount" id="mapCount"></div>
+</section>
+
+<section id="modes">
+  <div class="kicker">3 · Pour qui</div>
+  <h2>Mode simple par défaut, mode avancé sur demande</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>Le principe</h3>
+      <p><b>Simple</b> (par défaut) : seulement les réglages qu'une personne qui regarde des vidéos touche vraiment, environ quatre par tuile. Assez pour ne jamais se perdre, même la première fois.</p>
+      <p><b>Avancé</b> : tout le reste apparaît, sans déménager. Chaque tuile gagne un intertitre « Advanced » à la fin de sa liste, et une 8<sup>e</sup> tuile « Advanced » rassemble ce qui n'a pas d'intention claire pour un spectateur (réseau, codecs, correctifs d'appareils, l'ancien menu complet).</p>
+      <p class="muted small">Pourquoi pas une tuile « Advanced » seule, avec tout dedans ? Parce qu'on chercherait « Audio delay » dans Advanced alors qu'il appartient au son. Ici, un réglage avancé reste là où on l'attend ; le mode décide seulement s'il est montré.</p>
+    </div>
+    <div class="card">
+      <h3>Où vit le commutateur</h3>
+      <p>Au bas de <b>System</b> : « Advanced mode », un interrupteur avec une phrase d'explication (« Shows every setting, plus the Advanced tile »). Quand on l'active, une petite pastille Abricot marque la nouvelle tuile Advanced le temps d'une visite, et l'avis d'Oculo (la même pastille que « Skipped: Sponsor ») confirme « Advanced settings shown ».</p>
+      <p>Variante écartée : le geste « appuyer 7 fois sur la version », à la manière des options de développeur d'Android. Ça plaît aux initiés, mais personne ne le trouve, et toi, tu veux pouvoir le retrouver dans six mois.</p>
+      <p class="muted small">Le mode est un réglage de l'app (pas par compte), retenu entre les sessions. Si « Use separate settings per account » est actif, il suit la même règle que les autres réglages.</p>
+    </div>
+  </div>
+  <h3>Les réglages du mode simple, et pourquoi eux</h3>
+  <div class="tw"><table id="simple"><thead><tr><th>Tuile</th><th>Réglage (à l'écran)</th><th>En français</th><th>Pourquoi il est dans le mode simple</th></tr></thead><tbody></tbody></table></div>
+  <p class="muted small" style="margin-top:8px">La classification de <b>tous</b> les autres réglages (avancé, fusionné ou retiré) est dans la colonne « Mode » du tableau Ancien → nouveau.</p>
+</section>
+
+<section id="ecrans">
+  <div class="kicker">4 · À quoi ça ressemble</div>
+  <h2>Icônes et écrans</h2>
+  <h3 id="icones">Un seul jeu d'icônes</h3>
+  <p>Contour arrondi, trait de 2dp sur une grille de 24dp, coins et bouts ronds, dans l'esprit de Material Symbols Rounded (audit M10). Version contour partout ; la catégorie en cours prend le turquoise, comme la section en cours dans le rail. Les mêmes dessins servent à 30dp dans la liste et à 20dp dans le rail.</p>
+  <div class="icons" id="icons"></div>
+
+  <h3 id="maquettes">Maquettes à l'échelle de la télé (1920 × 1080)</h3>
+  <div class="callout"><b>Recommandation : liste à gauche + détail à droite</b>, plutôt qu'une grille de tuiles.
+    <ul class="clean" style="margin:8px 0 0">
+      <li><b>Une seule direction à la fois.</b> Haut/bas pour choisir la catégorie, droite pour entrer, gauche pour ressortir. Dans une grille, il faut viser en deux dimensions, puis un panneau s'ouvre par-dessus et cache la moitié des tuiles (c'est le cas aujourd'hui).</li>
+      <li><b>On voit avant d'entrer.</b> La catégorie qui a le focus affiche ses réglages et leurs valeurs à droite : à 3 m, on lit « Subtitle size 1.0x » sans ouvrir quoi que ce soit.</li>
+      <li><b>Chaque ligne porte son état.</b> Sous chaque catégorie, une ligne de résumé (« Original audio · Yellow, 1.0x ») : on sait où on en est d'un coup d'œil.</li>
+      <li><b>C'est le modèle de Google TV et de Plex</b>, déjà dans les mains de ta famille, et il reste lisible avec 7 ou 8 lignes, sans défilement.</li>
+      <li><b>Ça cohabite avec le rail.</b> Le rail replié reste à gauche, la liste commence à la même ligne que le contenu de l'Accueil (188 px), la barre du haut ne bouge pas.</li>
+    </ul>
+  </div>
+  <figure class="mock" id="m-home"><div class="tv"><div class="screen" data-mock="home"></div></div>
+    <figcaption><b>A · Accueil des réglages.</b> La catégorie qui a le focus est une pastille blanche (le même objet que dans le rail déplié et la barre du haut) ; sous chaque nom, le résumé de ses valeurs en Roboto. À droite, l'aperçu de Playback, un peu atténué tant que le focus est à gauche. En haut, la roue dentée proposée à côté de la pastille Search (audit M11) et la rangée « Recent » des derniers réglages modifiés.</figcaption></figure>
+  <figure class="mock" id="m-sub"><div class="tv"><div class="screen" data-mock="sub"></div></div>
+    <figcaption><b>B · Dans une catégorie.</b> Flèche droite depuis Home &amp; Display : la catégorie reste marquée à gauche (fond blanc 9 %, icône turquoise), le focus passe à droite. Ligne focalisée = pastille blanche, encre foncée ; la valeur actuelle est alignée à droite ; une phrase courte en Roboto explique l'effet. Les interrupteurs sont turquoise quand ils sont activés.</figcaption></figure>
+  <figure class="mock" id="m-pick"><div class="tv"><div class="screen" data-mock="pick"></div></div>
+    <figcaption><b>C · Choisir une valeur.</b> OK sur « Dim the screen after » : le détail devient la liste des valeurs (fil d'Ariane en haut), la valeur en cours est cochée en turquoise et a le focus d'entrée. OK choisit et revient ; Retour revient sans rien changer. La liste de gauche s'efface à moitié pour montrer qu'on est un niveau plus bas.</figcaption></figure>
+  <figure class="mock" id="m-adv"><div class="tv"><div class="screen" data-mock="adv"></div></div>
+    <figcaption><b>D · Activer le mode avancé.</b> Au bas de System, l'interrupteur « Advanced mode ». Activé : la tuile Advanced apparaît en 8<sup>e</sup> ligne, marquée d'un point Abricot (le même que les nouveautés des chaînes), et l'avis d'Oculo le confirme en haut à droite.</figcaption></figure>
+  <figure class="mock" id="m-advcat"><div class="tv"><div class="screen" data-mock="advcat"></div></div>
+    <figcaption><b>E · Une catégorie en mode avancé.</b> Les réglages simples d'abord, puis un intertitre « Advanced » et le reste. La liste défile ; le fondu en bas annonce la suite.</figcaption></figure>
+  <figure class="mock" id="m-grid"><div class="tv"><div class="screen" data-mock="grid"></div></div>
+    <figcaption><b>F · Variante écartée : une rangée de 7 tuiles.</b> Plus proche d'aujourd'hui et jolie, mais on ne voit rien de ce qu'il y a derrière une tuile, et entrer ouvre encore un panneau par-dessus. Je la garde en réserve si tu préfères l'allure « tuiles ».</figcaption></figure>
+
+  <h3 id="raccourcis">Raccourcis</h3>
+  <div class="cols">
+    <div class="card"><h3>Pour arriver aux réglages</h3><ul class="clean">
+      <li><b>Roue dentée dans la barre du haut</b>, à droite de la pastille Search : 4 pressions depuis n'importe quelle rangée, au lieu de ~14 par le rail (audit M11).</li>
+      <li><b>Appui long sur l'avatar</b> : ouvre déjà les réglages du compte ; il ouvrira directement Account &amp; History.</li>
+      <li><b>Depuis le lecteur</b> : le panneau rapide « Audio, sous-titres et vitesse » (audit P2) gagne une dernière ligne « More settings » qui ouvre Audio &amp; Subtitles ou Playback, à la bonne ligne.</li>
+    </ul></div>
+    <div class="card"><h3>Pour y revenir</h3><ul class="clean">
+      <li><b>« Recent »</b> en haut de l'écran Réglages : les 3 derniers réglages modifiés, en pastilles. Un OK et on y est.</li>
+      <li><b>Mémoire de position</b> : Réglages rouvre sur la dernière catégorie visitée, focus sur la dernière ligne touchée.</li>
+      <li><b>Appui long sur une ligne</b> : « Reset to default » (avec la valeur par défaut affichée) ; utile après avoir trop joué dans le mode avancé.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section id="plan">
+  <div class="kicker">5 · Le plan</div>
+  <h2>Par où commencer</h2>
+  <p>Effort, avec la même échelle que l'audit : <b>petit</b> = une ressource ou quelques lignes, moins d'une heure ; <b>moyen</b> = quelques fichiers, une demi-journée ; <b>gros</b> = une journée ou plus, avec essais sur la télé.</p>
+  <div class="phase"><div class="no">1</div><div><h4>Faire le ménage, sans rien déplacer</h4><ul>
+    <li>Masquer ce qui ne fait rien ici : « Open corresponding section… ATV Channels », « Oculus Quest fix », « Fullscreen mode », « Voice search engine », les valeurs « Play behind », et « Hide Settings section (dangerous!) ».</li>
+    <li>Ne laisser qu'une copie de chaque doublon (« Unlocalized video titles » ×3, « Exit from the player/search: Double back », « Use separate settings per each account », « Background play while searching… », la source des vignettes).</li>
+    <li>Thèmes : 8 → 2 (« Oculo », « Oculo black (OLED) »), audit R12.</li>
+    <li>Chaque retrait = un drapeau dans <code>oculo_config.xml</code> lu par un crochet d'une ligne, comme « Buttons at the top » et « Disable channels service » en 32.74-18.</li>
+  </ul></div><div class="eff"><span class="e p">petit</span><div class="x">≈ 2 h<br>~25 lignes en moins</div></div></div>
+  <div class="phase"><div class="no">2</div><div><h4>Les 7 tuiles et le mode simple, chez Oculo</h4><ul>
+    <li>Un crochet d'une ligne dans <code>AppDataSourceManager.getSettingItems()</code> : si le drapeau Oculo est actif, la liste vient de <code>OculoSettingsTiles</code>.</li>
+    <li>Sept présentateurs Oculo (<code>common/…/oculo/settings/</code>) qui composent leurs écrans avec les classes de données existantes (<code>PlayerData</code>, <code>GeneralData</code>, <code>MainUIData</code>…) et les catégories publiques d'<code>AppDialogUtil</code> : mêmes préférences, aucune migration.</li>
+    <li>« Advanced mode » dans <code>OculoData</code> ; la tuile Advanced et son entrée « Classic settings » (les 13 anciennes tuiles) comme filet.</li>
+    <li>Un test qui liste les libellés des présentateurs d'amont et échoue si un nouveau n'a pas de place dans la correspondance (filet pour les fusions d'amont).</li>
+  </ul></div><div class="eff"><span class="e">moyen</span><div class="x">1 à 1,5 jour<br>dans la grille actuelle</div></div></div>
+  <div class="phase"><div class="no">3</div><div><h4>Le focus en pastille blanche dans les panneaux</h4><ul>
+    <li>Audit M1 : pastille <code>#F1F1F1</code>, encre <code>#0F0F0F</code>, coins 8dp dans les listes de réglages et les menus (copies de saveur des quatre layouts de liste). Valable aussi pour le menu d'une vidéo et la qualité.</li>
+    <li>Valeur actuelle à droite de chaque ligne et phrase d'explication en Roboto (<code>OculoSummaryText</code> existe déjà).</li>
+  </ul></div><div class="eff"><span class="e">moyen</span><div class="x">½ journée</div></div></div>
+  <div class="phase"><div class="no">4</div><div><h4>Raccourci et icônes</h4><ul>
+    <li>Roue dentée dans la barre du haut (<code>OculoTopBar</code>, navigation dans <code>OculoRail</code>), audit M11.</li>
+    <li>Les 8 icônes de cette page en vecteurs (<code>smarttubetv/src/oculo/res/drawable/</code>), avec celles du rail (audit M10) pour un seul jeu.</li>
+  </ul></div><div class="eff"><span class="e">moyen</span><div class="x">½ journée</div></div></div>
+  <div class="phase"><div class="no">5</div><div><h4>L'écran liste + détail</h4><ul>
+    <li>Un fragment Oculo pour la section Réglages (<code>smarttubetv/…/tv/oculo/</code>) qui remplace la grille quand le drapeau est actif : liste à gauche, détail à droite, sélecteur de valeur en place, « Recent », mémoire de position, appui long « Reset to default ».</li>
+    <li>Le contrôle du mot de passe des réglages (aujourd'hui au clic sur une tuile, dans <code>SettingsGridFragment</code>) est repris tel quel.</li>
+  </ul></div><div class="eff"><span class="e g">gros</span><div class="x">2 à 3 jours<br>+ essais sur la télé</div></div></div>
+
+  <h3>Risques et parades</h3>
+  <div class="tw"><table><thead><tr><th>Risque</th><th>Parade</th></tr></thead><tbody>
+    <tr><td class="lb">Fusions avec l'amont : SmartTube ajoute, renomme ou déplace un réglage dans ses présentateurs.</td><td>Ne pas réécrire les présentateurs d'amont : les nouvelles tuiles sont des fichiers Oculo qui <i>lisent</i> les mêmes classes de données. Un nouveau réglage d'amont reste joignable par « Classic settings », et le test de correspondance le signale à la fusion.</td></tr>
+    <tr><td class="lb">Un réglage oublié dans la correspondance.</td><td>« Classic settings » sous Advanced garde l'ancien menu entier tant que tu n'as pas validé la refonte ; on le retire seulement après.</td></tr>
+    <tr><td class="lb">Préférences existantes (thème, assombrissement, SponsorBlock…).</td><td>Mêmes classes, mêmes clés : rien ne bouge dans les données. Pour les thèmes, les index restent ; un index retiré retombe sur « Oculo ».</td></tr>
+    <tr><td class="lb">Mot de passe des réglages et « Child mode ».</td><td>Le contrôle reste à l'entrée de la section Réglages ; à vérifier sur la télé avec un mot de passe d'essai, puis l'enlever.</td></tr>
+    <tr><td class="lb">Ouvertures directes depuis le lecteur (Auto Frame Rate, SponsorBlock, mot de passe).</td><td>Ces appels ouvrent les présentateurs d'amont, qui restent en place : ils continuent de marcher, avec l'ancienne allure, jusqu'à l'étape 5.</td></tr>
+    <tr><td class="lb">Régler à l'aveugle : je n'ai pas pu vérifier sur la télé certains effets (horloge de l'Accueil, coins arrondis, puce de la TCL pour le correctif Amlogic).</td><td>Marqués « à vérifier » ; un passage sur la télé avant l'étape 1 suffit à trancher.</td></tr>
+  </tbody></table></div>
+</section>
+</main>
+</div>
+
+<script id="data">
+// ---------- data ----------
+const TILES = {
+  play:  {en:'Playback', fr:'Lecture', ic:'play', blurb:'Qualité, lecture automatique, vitesse, minuterie.'},
+  av:    {en:'Audio & Subtitles', fr:'Son et sous-titres', ic:'subs', blurb:'Langue audio, style et taille des sous-titres.'},
+  home:  {en:'Home & Display', fr:'Accueil et affichage', ic:'home', blurb:'Sections du rail, Accueil, taille de l\'interface, assombrissement.'},
+  acct:  {en:'Account & History', fr:'Compte et historique', ic:'acct', blurb:'Compte, historique, langue et pays de YouTube, protection.'},
+  filt:  {en:'SponsorBlock & Filters', fr:'SponsorBlock et filtres', ic:'shield', blurb:'Segments sautés, Shorts et contenus masqués, titres d\'origine.'},
+  remote:{en:'Remote & Devices', fr:'Télécommande et appareils', ic:'remote', blurb:'Téléphone comme télécommande, boutons, clavier et voix.'},
+  sys:   {en:'System', fr:'Système', ic:'info', blurb:'Mises à jour, sauvegarde, à propos, mode avancé.'},
+  adv:   {en:'Advanced', fr:'Avancé', ic:'tune', blurb:'Réseau, formats vidéo, correctifs d\'appareils, ancien menu. Visible en mode avancé seulement.'}
+};
+const OLD_TILES = ['Accounts','Remote control','Language/Country','General','User interface','Player','Auto Frame Rate','Subtitles','Search','SponsorBlock','DeArrow','Backup/Restore','About'];
+const OLD_ICON = {'Accounts':'acct','Remote control':'cast','Language/Country':'globe','General':'gear','User interface':'grid','Player':'clap','Auto Frame Rate':'afr','Subtitles':'subs','Search':'search','SponsorBlock':'shield','DeArrow':'arrow','Backup/Restore':'cloud','About':'info'};
+// row: [path, label, kind, values, default, flags, newTile, group, newLabel, fr, mode, note, n(items)]
+// kind: s toggle, c choice, l checklist, a action, k link, i info ; mode: S simple, A advanced, X removed, = merged, N new
+// flags: h hidden by Oculo, d no effect here, u duplicate, v developer, o Oculo, c to check
+const ROWS = [
+// Accounts
+['Accounts','Select account','c','None + les comptes connectés','compte en cours','', 'acct','Account','Account','Compte','S','Une seule ligne « Account » : changer, ajouter, se déconnecter.'],
+['Accounts','Sign out','a','une entrée par compte','','', 'acct','Account','Sign out','Se déconnecter','=','Dans la ligne « Account ».'],
+['Accounts','Sign in','a','ouvre la connexion par code QR','','', 'acct','Account','Add account','Ajouter un compte','=','Dans la ligne « Account ».'],
+['Accounts','Protect this account with password','s','activé / désactivé','désactivé','', 'acct','Protection','Account password','Mot de passe du compte','A',''],
+['Accounts','Use separate settings per each account','s','activé / désactivé','désactivé','u', 'acct','Account','Separate settings per account','Réglages séparés par compte','A','Aussi dans General › Misc.'],
+['Accounts','Show account selection on boot','s','activé / désactivé','désactivé','', 'acct','Account','Ask which account at start','Choisir le compte au démarrage','A',''],
+// Remote control
+['Remote control','Remote control','s','activé / désactivé','désactivé','', 'remote','Phone','Phone remote','Téléphone comme télécommande','S',''],
+['Remote control','Show in YouTube cast list (DIAL)','s','activé / désactivé','désactivé','', 'remote','Phone','Show in the cast list','Apparaître dans la liste de diffusion','A',''],
+['Remote control','Add device','a','affiche un code d\'association','','', 'remote','Phone','Link a phone','Associer un téléphone','S',''],
+['Remote control','Remove all devices','a','Confirm (confirmation)','','', 'remote','Phone','Unlink all phones','Dissocier tous les téléphones','A',''],
+['Remote control › Misc','Close the app after disconnecting the phone/tablet','s','activé / désactivé','désactivé','', 'remote','Phone','Close Oculo when the phone disconnects','Fermer Oculo quand le téléphone se déconnecte','A',''],
+['Remote control › Misc','Disable history when using remote control','s','activé / désactivé','désactivé','', 'acct','History','Pause history while casting','Pas d\'historique pendant la diffusion','A','Rejoint l\'historique.'],
+// Language/Country
+['Language/Country','Language','c','Default + ~60 langues','Default (langue du système)','', 'acct','YouTube region','YouTube language','Langue de YouTube','S','Redémarrage nécessaire (inchangé).'],
+['Language/Country','Country','c','Default + ~100 pays','Default (langue du système)','', 'acct','YouTube region','Content country','Pays du contenu','S','Redémarrage nécessaire (inchangé).'],
+// General
+['General','Boot to section','c','18 sections + éléments épinglés','Home','', 'home','Sections','Start screen','Écran de démarrage','S',''],
+['General','Set-up sections','l','Notifications, Home, Shorts, Trending, Kids, Sports, LIVE, Gaming, News, Music, Channels, Subscriptions, History, Blocked channels, Playlists, My videos, Playback queue','jeu d\'amont (Oculo retire Kids et My videos une fois)','', 'home','Sections','Sidebar sections','Sections du rail','S','',17],
+['General','Context menu','l','42 entrées du menu de l\'appui long, chacune avec sa position','jeu d\'amont','', 'home','Menus','Long-press menu items','Menu de l\'appui long','A','En cocher un demande sa position.',42],
+['General › Hide content','Hide shorts everywhere','s','activé / désactivé','désactivé','', 'filt','Hide','Hide Shorts everywhere','Masquer les Shorts partout','S','Retire aussi la section Shorts.'],
+['General › Hide content','Hide Mixes','s','activé / désactivé','désactivé','', 'filt','Hide','Hide Mixes','Masquer les mix','A',''],
+['General › Hide content','Remove watched videos from Watch later playlist','s','activé / désactivé','désactivé','', 'filt','Hide watched','Remove watched from Watch later','Retirer les vues de « À regarder plus tard »','A',''],
+['General › Hide content','Hide watched videos from Home','s','activé / désactivé','désactivé','u', 'filt','Hide watched','Hide watched on Home','Masquer les vues sur l\'Accueil','A','Proche de « Hide watched videos in the first row » d\'Oculo.'],
+['General › Hide content','Hide watched videos from Subscriptions','s','activé / désactivé','désactivé','', 'filt','Hide watched','Hide watched in Subscriptions','Masquer les vues dans Abonnements','A',''],
+['General › Hide content','Hide watched videos from Notifications','s','activé / désactivé','désactivé','', 'filt','Hide watched','Hide watched in Notifications','Masquer les vues dans Notifications','A',''],
+['General › Hide content','Hide shorts from Subscriptions','s','activé / désactivé','désactivé','', 'filt','Hide Shorts in…','Subscriptions','Abonnements','A','Regroupé sous « Hide Shorts in… ».'],
+['General › Hide content','Hide shorts from the search result','s','activé / désactivé','désactivé','', 'filt','Hide Shorts in…','Search results','Résultats de recherche','A',''],
+['General › Hide content','Hide shorts from Home','s','activé / désactivé','désactivé','', 'filt','Hide Shorts in…','Home','Accueil','A',''],
+['General › Hide content','Hide shorts from a channel','s','activé / désactivé','désactivé','', 'filt','Hide Shorts in…','Channel pages','Pages de chaîne','A',''],
+['General › Hide content','Hide shorts from History','s','activé / désactivé','désactivé','', 'filt','Hide Shorts in…','History','Historique','A',''],
+['General › Hide content','Hide shorts from Trending','s','activé / désactivé','désactivé','', 'filt','Hide Shorts in…','Trending','Tendances','A',''],
+['General › Hide content','Hide streams from Subscriptions','s','activé / désactivé','désactivé','', 'filt','Hide','Hide live streams in Subscriptions','Masquer les directs dans Abonnements','A',''],
+['General › Hide content','Hide upcoming from Subscriptions','s','activé / désactivé','désactivé','', 'filt','Hide upcoming in…','Subscriptions','Abonnements','A','Regroupé sous « Hide upcoming in… ».'],
+['General › Hide content','Hide upcoming from Home','s','activé / désactivé','désactivé','', 'filt','Hide upcoming in…','Home','Accueil','A',''],
+['General › Hide content','Hide upcoming from Channel','s','activé / désactivé','désactivé','', 'filt','Hide upcoming in…','Channel pages','Pages de chaîne','A',''],
+['General','Exit from the app','c','Don\'t exit / Double back / Single back','Double back','', 'remote','Back button','Back on Home leaves Oculo','Retour sur l\'Accueil quitte Oculo','A','Valeurs : Never / Press twice / Press once.'],
+['General','Background playback','c','Disabled; Picture in picture, Only audio (by HOME / HOME or BACK / BACK); Play behind (Android TV 5,6,7) ×2','Disabled','', 'play','Playback','Keep playing in the background','Continuer la lecture en arrière-plan','A','Les deux valeurs « Play behind » partent (Android TV 5 à 7 seulement).'],
+['General › Screen dimming','Screen dimming amount','c','10 % to 100 %','80 %','', 'home','Screen','Dimming level','Intensité de l\'assombrissement','A',''],
+['General › Screen dimming','Screen dimming timeout','c','Never, 5/15/30 sec, 1 to 15 min','5 min (Oculo ; 60 s en amont)','', 'home','Screen','Dim the screen after','Assombrir l\'écran après','S',''],
+['General › Key remapping','OK -> Toggle speed on/off','s','activé / désactivé','désactivé','u', 'remote','Button shortcuts','OK button during a video','Bouton OK pendant une vidéo','=','Même valeur que Player › OK button behavior « Toggle speed on/off ».'],
+['General › Key remapping','Skip Shorts with up/down buttons','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Up/Down skips Shorts','Haut/bas passe au Short suivant','A',''],
+['General › Key remapping','Skip Shorts with left/right buttons','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Left/Right skips Shorts','Gauche/droite passe au Short suivant','A',''],
+['General › Key remapping','Skip regular videos with up/down buttons','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Up/Down skips videos','Haut/bas passe à la vidéo suivante','A',''],
+['General › Key remapping','Skip regular videos with left/right buttons','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Left/Right skips videos','Gauche/droite passe à la vidéo suivante','A',''],
+['General › Key remapping','Play/Pause -> OK','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Play/Pause acts as OK','Lecture/Pause agit comme OK','A',''],
+['General › Key remapping','DPAD RIGHT/LEFT -> Volume Up/Down','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Left/Right = volume','Gauche/droite = volume','A',''],
+['General › Key remapping','DPAD UP/DOWN -> Volume Up/Down','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Up/Down = volume','Haut/bas = volume','A',''],
+['General › Key remapping','DPAD UP/DOWN -> Speed Up/Down','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Up/Down = speed','Haut/bas = vitesse','A',''],
+['General › Key remapping','Numbers 3/1 -> Speed Up/Down','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','3 / 1 = speed','3 / 1 = vitesse','A',''],
+['General › Key remapping','Next/Previous -> Fast Forward/Rewind','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Next/Previous = seek','Suivant/précédent = avance/recul','A',''],
+['General › Key remapping','Next/Previous -> Speed Up/Down','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Next/Previous = speed','Suivant/précédent = vitesse','A',''],
+['General › Key remapping','Fast Forward/Rewind -> Next/Previous','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Fast forward/Rewind = next/previous','Avance/recul = suivant/précédent','A',''],
+['General › Key remapping','Fast Forward/Rewind -> Speed Up/Down','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Fast forward/Rewind = speed','Avance/recul = vitesse','A',''],
+['General › Key remapping','Fast Forward/Rewind -> Speed Toggle','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Fast forward/Rewind = speed toggle','Avance/recul = vitesse on/off','A',''],
+['General › Key remapping','S -> Speed Toggle','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','S key = speed toggle','Touche S = vitesse on/off','A','Claviers seulement.'],
+['General › Key remapping','Page Up/Down -> Next/Previous','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Page Up/Down = next/previous','Page haut/bas = suivant/précédent','A',''],
+['General › Key remapping','Page Up/Down -> Like/Dislike','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Page Up/Down = like/dislike','Page haut/bas = j\'aime/je n\'aime pas','A',''],
+['General › Key remapping','Page Up/Down -> Speed Up/Down','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Page Up/Down = speed','Page haut/bas = vitesse','A',''],
+['General › Key remapping','Page Up/Down -> Speed Down/Up','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Page Up/Down = speed (reversed)','Page haut/bas = vitesse (inversée)','A',''],
+['General › Key remapping','Channel Up/Down -> Volume Up/Down','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Channel +/- = volume','Chaîne +/- = volume','A',''],
+['General › Key remapping','Channel Up/Down -> Next/Previous','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Channel +/- = next/previous','Chaîne +/- = suivant/précédent','A',''],
+['General › Key remapping','Channel Up/Down -> Like/Dislike','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Channel +/- = like/dislike','Chaîne +/- = j\'aime/je n\'aime pas','A',''],
+['General › Key remapping','Channel Up/Down -> Speed Up/Down','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Channel +/- = speed','Chaîne +/- = vitesse','A',''],
+['General › Key remapping','Channel Up/Down -> Speed Toggle','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Channel +/- = speed toggle','Chaîne +/- = vitesse on/off','A',''],
+['General › Key remapping','Channel Up/Down -> Search','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','Channel +/- = search','Chaîne +/- = recherche','A',''],
+['General › Network settings','Disable automatic network error fixing','s','activé / désactivé','désactivé','v', 'adv','Network','Automatic network repair','Réparation réseau automatique','A','Présenté en positif (activé = réparation).'],
+['General › Network settings','Use Web Proxy','s','activé / désactivé (si l\'appareil le permet)','désactivé','v', 'adv','Network','Web proxy','Proxy web','A',''],
+['General › Network settings','Enable Conscrypt','s','activé / désactivé','désactivé','v', 'adv','Network','Conscrypt (TLS)','Conscrypt (TLS)','A','Redémarrage nécessaire.'],
+['General › Network settings','Preferred DNS','c','Default / IPv4 DNS / Google DNS','Default','v', 'adv','Network','DNS','DNS','A','Redémarrage nécessaire.'],
+['General › Network settings','Network engine','c','Default / Cronet / OkHttp','le plus rapide pour l\'appareil (Cronet)','v', 'adv','Network','Network engine','Moteur réseau','A',''],
+['General','History','c','Auto (use account settings) / Enable history / Disable history','Auto','', 'acct','History','Watch history','Historique de visionnage','S','Valeurs : Follow my YouTube account / On / Off.'],
+['General › Misc','Disable screensaver','s','activé / désactivé','activé','', 'home','Screen','Block the TV screensaver','Bloquer l\'économiseur de la télé','A',''],
+['General › Misc','Use separate settings per each account','s','activé / désactivé','désactivé','u', 'acct','Account','Separate settings per account','Réglages séparés par compte','=','Même réglage que dans Accounts.'],
+['General › Misc','Protect all settings with password','s','activé / désactivé (demande un mot de passe)','désactivé','', 'acct','Protection','Settings password','Mot de passe des réglages','A',''],
+['General › Misc','Enable master password','s','activé / désactivé (demande un mot de passe)','désactivé','', 'acct','Protection','Master password','Mot de passe principal','A',''],
+['General › Misc','Child mode','s','activé / désactivé','désactivé','', 'acct','Protection','Child mode','Mode enfant','A','Change plusieurs réglages d\'un coup ; gardé tel quel.'],
+['General › Misc','Disable OK button long press','s','activé / désactivé','désactivé','', 'remote','Button shortcuts','OK long press','Appui long sur OK','A','Présenté en positif.'],
+['General › Misc','Exit from the player: Double back','s','activé / désactivé','désactivé (un seul Retour)','u', 'remote','Back button','Press Back twice to leave a video','Retour deux fois pour quitter une vidéo','A','Aussi dans Player › Misc.'],
+['General › Misc','Exit from the search: Double back','s','activé / désactivé','désactivé (un seul Retour)','u', 'remote','Back button','Press Back twice to leave search','Retour deux fois pour quitter la recherche','A','Aussi dans Search › Misc.'],
+['General › Misc','Return to the launcher from ATV channels/search','s','activé / désactivé','désactivé','d', 'remote','Back button','Back returns to the TV home after a Google TV search','Retour ramène à l\'accueil de la télé après une recherche Google TV','A','Les chaînes sont coupées dans Oculo ; seule la partie recherche globale s\'applique encore.'],
+['General › Misc','Remember last viewed position in Subscriptions','s','activé / désactivé','désactivé','', 'home','Sections','Reopen Subscriptions where I left off','Rouvrir Abonnements où j\'étais','A',''],
+['General › Misc','Remember last viewed position in the pinned playlists','s','activé / désactivé','désactivé','', 'home','Sections','Reopen pinned playlists where I left off','Rouvrir les listes épinglées où j\'étais','A',''],
+['General › Misc','Open corresponding section when the app launched from ATV Channels','s','activé / désactivé','désactivé','d', '','','','','X','Oculo a coupé les chaînes de l\'accueil Google TV en 32.74-18 : plus rien ne lance Oculo par là.'],
+// User interface
+['User interface','Buttons at the top of the main window','l','Search / Language/Country / Accounts','','h', '','','','','X','Déjà masqué par Oculo (sans effet avec le rail et la barre du haut).',3],
+['User interface','Color scheme','c','Teal, Dark Grey, Red, Dark Grey (OLED), Teal (OLED), Dark Grey (monochrome), Dark Blue, Dark Blue (OLED)','Dark Grey','c', 'home','Look','Theme','Thème','A','Valeurs : Oculo / Oculo black (OLED). Les six autres partent.'],
+['User interface','Card text scroll speed','c','1x to 8x','2x','', 'home','Cards','Title scroll speed','Vitesse de défilement des titres','A',''],
+['User interface','Card preview','c','Disabled / Video with sound / Video without sound','Disabled','', 'home','Cards','Preview on focus','Aperçu au focus','A',''],
+['User interface › Cards style','Multiline titles','s','activé / désactivé','—','', 'home','Cards','Two-line titles','Titres sur deux lignes','A',''],
+['User interface › Cards style','Multiline subtitles','s','activé / désactivé','—','', 'home','Cards','Two-line details','Infos sur deux lignes','A',''],
+['User interface › Cards style','Auto-scroll cropped title','s','activé / désactivé','—','', 'home','Cards','Scroll long titles','Faire défiler les titres longs','A','Voir l\'audit, R2.'],
+['User interface › Cards style','Unlocalized video titles','s','activé / désactivé','désactivé','u', 'filt','Titles & thumbnails','Original titles','Titres d\'origine','=','Trois copies : ici, User interface › Misc et DeArrow.'],
+['User interface › Cards style','Rounded card corners','s','activé / désactivé','—','c', 'home','Cards','Rounded corners','Coins arrondis','A','Oculo arrondit déjà les vignettes (12dp) : effet visible à vérifier.'],
+['User interface','Where to grab card thumbnails','c','Default / Start / Middle / End of the video','Default','u', 'filt','Titles & thumbnails','Thumbnail frame','Image de la vignette','A','Même réglage que DeArrow › Thumbnail source.'],
+['User interface','Channels section sorting','c','Last viewed / Alphabetically / New content','Last viewed','', 'home','Sections','Sort channels by','Trier les chaînes par','A',''],
+['User interface','UI scale','c','0.4x to 1.4x','1.0x','', 'home','Look','Interface size','Taille de l\'interface','S','Redémarrage nécessaire (inchangé).'],
+['User interface','Video grid scale','c','0.5x to 1.5x','1.0x','', 'home','Look','Card size','Taille des vignettes','A',''],
+['User interface › Home','Hide news and sports rows','s','activé / désactivé','désactivé','o', 'home','Home','Hide news and sports rows','Masquer les rangées actualités et sports','S',''],
+['User interface › Home','Hide watched videos in the first row','s','activé / désactivé','activé','o', 'home','Home','Hide watched in the first row','Masquer les vues dans la 1re rangée','A',''],
+['User interface › Home','Show Continue watching','s','activé / désactivé','activé','o', 'home','Home','Show Continue watching','Afficher Continuer à regarder','S',''],
+['User interface › Home','Glow from the thumbnail','s','activé / désactivé','activé','o', 'home','Look','Glow from the thumbnail','Lueur selon la vignette','A',''],
+['User interface › Misc','Unlocalized video titles','s','activé / désactivé','désactivé','u', 'filt','Titles & thumbnails','Original titles','Titres d\'origine','=','Doublon.'],
+['User interface › Misc','24 hours Time format','s','activé / désactivé','selon le système','', 'home','Look','24-hour clock','Horloge 24 h','A','Redémarrage nécessaire.'],
+['User interface › Misc','Home: top right corner clock','s','activé / désactivé','—','c', 'home','Look','Clock on Home','Horloge sur l\'Accueil','A','La barre du haut d\'Oculo dessine sa propre horloge : effet à vérifier.'],
+['User interface › Misc','Player: top right corner clock','s','activé / désactivé','désactivé','', 'play','Player screen','Clock in the corner','Horloge dans le coin','A',''],
+['User interface › Misc','Player: top right corner ending time','s','activé / désactivé','désactivé','', 'play','Player screen','End time in the corner','Heure de fin dans le coin','A',''],
+['User interface › Misc','Old look of Channels section','s','activé / désactivé','—','', 'home','Sections','Classic Channels layout','Ancienne présentation des chaînes','A',''],
+['User interface › Misc','Fullscreen mode (without system bars)','s','activé / désactivé','—','d', '','','','','X','Une Google TV n\'a pas de barres système à cacher.'],
+['User interface › Misc','Show pinned channel as rows','s','activé / désactivé','—','', 'home','Sections','Pinned channels as rows','Chaînes épinglées en rangées','A',''],
+['User interface › Misc','Show Playlists section as rows','s','activé / désactivé','grille','', 'home','Sections','Playlists as rows','Listes de lecture en rangées','A',''],
+['User interface › Misc','Show Filter channels field inside Channels section','s','activé / désactivé','—','', 'home','Sections','Channel filter field','Champ de filtre des chaînes','A',''],
+['User interface › Misc','Search bar inside the Channel page','s','activé / désactivé','—','', 'home','Sections','Search on channel pages','Recherche dans les pages de chaîne','A',''],
+['User interface › Misc','Auto load Channels section content','s','activé / désactivé','—','', 'home','Sections','Load channel videos automatically','Charger les vidéos des chaînes tout seul','A',''],
+// Player
+['Player','Playback mode','c','Play videos continuously / Repeat current video / Shuffle any playlist / Play only playlist videos continuously / … in reverse order / Pause after each video / Stop after one video','Play videos continuously','', 'play','','When a video ends','À la fin d\'une vidéo','S','Valeurs : Play the next one / Repeat it / Shuffle / Playlist only / Playlist in reverse / Pause / Stop.'],
+['Player','Video presets','c','résolution · i/s · codec (seulement ceux que la télé lit, ~40)','aucun (automatique)','', 'play','','Video quality','Qualité vidéo','S','« Auto » en tête, puis 2160p, 1440p, 1080p… sans le détail des codecs, qui passe dans Advanced › Video formats.'],
+['Player','Setup player buttons','l','27 buttons: Auto Frame Rate, Mute, Rotate, Flip, Chat/Comments, SponsorBlock, Seek interval, Share link, Video description, Debug info, Playback queue, Screen dimming, Video zoom, Open channel, Search, Background playback, Video speed, Subtitles, Subscribe, Like, Dislike, Add to playlist, Play/Pause, Playback mode, Next, Previous, Advanced playback settings','jeu d\'amont','', 'play','Player screen','Player buttons','Boutons du lecteur','A','',27],
+['Player','Video buffer','c','Low / Medium / High / Highest','Medium','', 'play','Streaming','Buffer size','Taille de la mémoire tampon','A',''],
+['Player','Video zoom','c','Default / Fit width / Fit height / Fit either width or height / Stretch + zoom %','Default','', 'play','Picture','Picture fit','Cadrage de l\'image','A',''],
+['Player › Video speed','Video speed','c','liste courte de 0,25 à 2,0 (listes longue et très longue en option)','1.0','', 'play','','Speed','Vitesse','S',''],
+['Player › Video speed','Remember speed','c','None / Same on all videos / Per each video / Per each channel','None','', 'play','Speed','Remember speed','Retenir la vitesse','A',''],
+['Player › Video speed › Misc','Long speed list','s','activé / désactivé','désactivé','', 'play','Speed','More speeds','Plus de vitesses','A','Les listes longue et très longue deviennent un seul choix : Short / Long / Extra long.'],
+['Player › Video speed › Misc','Extra long speed list','s','activé / désactivé','désactivé','', 'play','Speed','More speeds','Plus de vitesses','=','Fusionné avec « Long speed list ».'],
+['Player','Audio language','c','Original + toutes les langues','Original','', 'av','Audio','Audio language','Langue audio','S',''],
+['Player','Audio delay','c','Enable + décalage','désactivé','', 'av','Audio','Audio delay','Décalage du son','A',''],
+['Player','Volume','c','0 % to 300 %','100 %','', 'av','Audio','Volume boost','Amplification du volume','A','Au-delà de 100 %, un avertissement (inchangé).'],
+['Player','OK button behavior','c','Only UI / UI and pause / Only pause / Toggle speed on/off','Only UI','', 'remote','Button shortcuts','OK button during a video','Bouton OK pendant une vidéo','A','Valeurs : Show controls / Controls + pause / Pause / Speed on/off.'],
+['Player','Auto-hide UI','c','Never, 1 to 15 sec','3 sec','', 'play','Player screen','Hide controls after','Masquer les commandes après','A',''],
+['Player','Seek behavior','c','Regular / With confirmation (pause while seeking) / With confirmation (play while seeking)','Regular','', 'play','Seeking','How seeking works','Comportement de l\'avance','A',''],
+['Player','Preview while seeking','c','Disabled / Single frame / Carousel (slow) / Carousel (fast)','Single frame','', 'play','Seeking','Preview while seeking','Aperçu pendant l\'avance','A',''],
+['Player','Seek interval','c','1 to 60 sec','10 sec','', 'play','','Skip step','Pas d\'avance','S',''],
+['Player','Show ending time in controls bar','c','Disabled / Show remaining time / Show ending time','Show remaining time','', 'play','Player screen','Time shown under the bar','Temps affiché sous la barre','A',''],
+['Player','Pixel ratio','c','1:1 (16:9), 1.11:1 (16:10), 1.33:1 (4:3), 0.75:1 (64:27), 0.744:1 (43:18), 0.741:1 (12:5)','1:1','c', 'adv','Display','Pixel ratio','Format des pixels','A','Seul 1:1 a du sens sur une télé 16:9.'],
+['Player','Sleep timer','c','Disabled, 0.5 to 10 h','Disabled','', 'play','','Sleep timer','Minuterie de mise en veille','S',''],
+['Player › Misc','Keep up with live','s','activé / désactivé','—','', 'play','Live','Stay at the live edge','Rester au direct','A',''],
+['Player › Misc','Horizontally scrolled Suggestions','s','activé / désactivé','—','', 'play','Player screen','Suggestions in one row','Suggestions sur une rangée','A',''],
+['Player › Misc','Don\'t resize video to fit dialog','s','activé / désactivé','—','', 'play','Player screen','Keep video size behind panels','Garder la taille de la vidéo derrière les panneaux','A',''],
+['Player › Misc','Audio focus (pause if other players detected)','s','activé / désactivé','—','', 'av','Audio','Pause when another app plays sound','Pause quand une autre app joue du son','A',''],
+['Player › Misc','Auto volume adjustment','s','activé / désactivé','—','', 'av','Audio','Even out loudness','Égaliser le volume','A',''],
+['Player › Misc','Audio time stretching','s','activé / désactivé','—','', 'av','Audio','Natural voice at other speeds','Voix naturelle aux autres vitesses','A',''],
+['Player › Misc','Use current section contents as a playlist','s','activé / désactivé','—','', 'play','Playback','Play the section as a playlist','Lire la section comme une liste','A',''],
+['Player › Misc','Switch to the next chapter by clicking on the notification','s','activé / désactivé','—','c', 'play','Playback','Notification skips to next chapter','La notification passe au chapitre suivant','A','Dépend de la notification média de la télé : à vérifier.'],
+['Player › Misc','Background play while searching/browsing a channel','s','activé / désactivé','—','u', 'play','Playback','Keep playing while searching','Continuer pendant la recherche','A','Aussi dans Search › Misc.'],
+['Player › Misc','Exit from the player: Double back','s','activé / désactivé','désactivé','u', 'remote','Back button','Press Back twice to leave a video','Retour deux fois pour quitter une vidéo','=','Doublon de General › Misc.'],
+['Player › Misc','Loop Shorts','s','activé / désactivé','—','', 'play','Playback','Loop Shorts','Répéter les Shorts','A',''],
+['Player › Misc','Place chat to the left','s','activé / désactivé','désactivé','', 'play','Player screen','Live chat on the left','Clavardage en direct à gauche','A',''],
+['Player › Misc','Place comments to the left','s','activé / désactivé','désactivé','', 'play','Player screen','Comments on the left','Commentaires à gauche','A',''],
+['Player › Misc','Disable suggestions','s','activé / désactivé','désactivé','', 'play','Player screen','Suggestions under the video','Suggestions sous la vidéo','A','Présenté en positif.'],
+['Player › Misc','Seek with number keys','s','activé / désactivé','activé','', 'remote','Button shortcuts','Number keys jump (1 = 10 %)','Les chiffres sautent (1 = 10 %)','A',''],
+['Player › Misc','Remember live stream position','s','activé / désactivé','—','', 'play','Resume','Resume live streams','Reprendre les directs','A',''],
+['Player › Misc','Remember position of short videos (less than 5 min)','s','activé / désactivé','—','', 'play','Resume','Resume short videos','Reprendre les vidéos courtes','A',''],
+['Player › Misc','Revert old behavior of the speed button','s','activé / désactivé','désactivé','', 'play','Speed','Classic speed button','Ancien bouton de vitesse','A',''],
+['Player › Misc','Show clock in controls bar','s','activé / désactivé','activé','', 'play','Player screen','Clock under the bar','Horloge sous la barre','A',''],
+['Player › Misc','Show quality info in the controls bar','s','activé / désactivé','activé','', 'play','Player screen','Quality under the bar','Qualité sous la barre','A',''],
+['Player › Misc','Add bitrate into the quality info','s','activé / désactivé','—','', 'play','Player screen','Add the bitrate','Ajouter le débit','A',''],
+['Player › Misc','Sync focus between player button rows','s','activé / désactivé','—','', 'play','Player screen','Keep focus column between rows','Garder la colonne du focus entre les rangées','A',''],
+['Player › Misc','Show player UI when switching to the next video','s','activé / désactivé','—','', 'play','Player screen','Show controls on the next video','Montrer les commandes à la vidéo suivante','A',''],
+['Player › Misc','Enable player UI animations','s','activé / désactivé','—','', 'play','Player screen','Player animations','Animations du lecteur','A',''],
+['Player › Misc','Show likes/dislikes count','s','activé / désactivé','—','', 'play','Player screen','Like counts','Nombre de j\'aime','A',''],
+['Player › Misc','Show button tooltips','s','activé / désactivé','activé','', 'play','Player screen','Button tooltips','Bulles d\'aide des boutons','A',''],
+['Player › Misc','Long press this button for additional options','s','activé / désactivé','—','', 'play','Player screen','Long-press hints on buttons','Indices d\'appui long','A',''],
+['Player › Misc','Show icon on the channel button','s','activé / désactivé','—','', 'play','Player screen','Channel avatar on its button','Avatar de la chaîne sur son bouton','A',''],
+['Player › Misc','Queue respects playback mode','s','activé / désactivé','—','', 'play','Playback','Queue follows « When a video ends »','La file suit « À la fin d\'une vidéo »','A',''],
+['Player › Developer options','SABR live streams','s','activé / désactivé','—','v', 'adv','Live streams','SABR live streams','Directs SABR','A',''],
+['Player › Developer options','Disable playback notifications','s','activé / désactivé','désactivé','v', 'adv','Device fixes','Playback notifications','Notifications de lecture','A','Présenté en positif.'],
+['Player › Developer options','Oculus Quest fix','s','activé / désactivé','désactivé','v d', '','','','','X','Pour le casque Oculus Quest seulement.'],
+['Player › Developer options','Audio sync fix','s','activé / désactivé','désactivé','v', 'adv','Device fixes','Audio sync fix','Correctif de synchro audio','A',''],
+['Player › Developer options','Ambilight/Aspect ratio/Video scale/Screenshots fix','s','activé / désactivé','désactivé','v', 'adv','Device fixes','Ambilight & aspect fix','Correctif Ambilight et format','A',''],
+['Player › Developer options','Unlock high bitrate 1080p vp9 formats','s','activé / désactivé','désactivé','v', 'adv','Video formats','High-bitrate 1080p','1080p à haut débit','A',''],
+['Player › Developer options','Unlock high bitrate mp4a formats','s','activé / désactivé','désactivé','v', 'adv','Video formats','High-bitrate AAC audio','Audio AAC à haut débit','A',''],
+['Player › Developer options','Force legacy codecs (360p)','s','activé / désactivé','désactivé','v', 'adv','Video formats','Legacy codecs (360p max)','Anciens codecs (360p max)','A',''],
+['Player › Developer options','Live stream fix (1080p)','s','activé / désactivé','désactivé','v', 'adv','Live streams','Live fix, HLS (1080p)','Correctif directs, HLS (1080p)','A',''],
+['Player › Developer options','Live stream fix (4K)','s','activé / désactivé','désactivé','v', 'adv','Live streams','Live fix, DASH (4K)','Correctif directs, DASH (4K)','A',''],
+['Player › Developer options','Disable buffer on streams','s','activé / désactivé','désactivé','v', 'adv','Live streams','No buffer on live streams','Pas de tampon sur les directs','A',''],
+['Player › Developer options','Unlock all video formats','s','activé / désactivé','désactivé','v', 'adv','Video formats','Unlock all formats','Débloquer tous les formats','A',''],
+['Player › Developer options','Alt presets behavior (limit bandwidth)','s','activé / désactivé','désactivé','v', 'adv','Video formats','Quality by bandwidth','Qualité selon la bande passante','A',''],
+['Player › Developer options','Codec selection: prefer avc over vp9','s','activé / désactivé','désactivé','v', 'adv','Video formats','Prefer AVC (1080p max)','Préférer AVC (1080p max)','A',''],
+['Player › Developer options','Amlogic 1080p@60fps fix','s','activé / désactivé','désactivé','v c', 'adv','Device fixes','Amlogic 1080p60 fix','Correctif Amlogic 1080p60','A','Pour les puces Amlogic seulement ; la puce de la TCL est à vérifier.'],
+['Player › Developer options','Tunneled video playback (Android 5+)','s','activé / désactivé','désactivé','v', 'adv','Device fixes','Tunneled playback','Lecture en tunnel','A',''],
+['Player › Developer options','Disable snap to vsync','s','activé / désactivé','désactivé','v', 'adv','Device fixes','No vsync alignment','Sans alignement vsync','A',''],
+['Player › Developer options','Skip codec profile level check','s','activé / désactivé','désactivé','v', 'adv','Video formats','Skip codec check','Ignorer la vérification des codecs','A',''],
+['Player › Developer options','Force SW video decoder','s','activé / désactivé','désactivé','v', 'adv','Video formats','Software decoder','Décodeur logiciel','A',''],
+['Player › Developer options','Frame drop fix #1','s','activé / désactivé','désactivé','v', 'adv','Device fixes','Frame drop fix (Sony)','Correctif d\'images perdues (Sony)','A',''],
+['Player › Developer options','Frame drop fix #2','s','activé / désactivé','désactivé','v c', 'adv','Device fixes','Frame drop fix (Amazon)','Correctif d\'images perdues (Amazon)','A','Fait pour les clés Amazon.'],
+['Player › Developer options','Keep finished activities','s','activé / désactivé','désactivé','v', 'adv','Device fixes','Keep finished activities','Garder les activités terminées','A',''],
+['Player › Developer options','Disable Channels service','s','activé / désactivé','','v h', '','','','','X','Déjà masqué par Oculo : les chaînes de l\'écran d\'accueil sont toujours coupées.'],
+['Player › Developer options','Hide Settings section (dangerous!)','s','activé / désactivé','désactivé','v', '','','','','X','Cache le seul chemin vers Réglages ; rien à y gagner à la maison.'],
+['Player › Developer options','Fix empty Subscriptions and Channels','s','activé / désactivé','désactivé','v', 'adv','Device fixes','Fix empty Subscriptions','Réparer Abonnements vide','A',''],
+// Auto Frame Rate
+['Auto Frame Rate › Auto Frame Rate','Auto Frame Rate','s','activé / désactivé','désactivé','', 'play','Frame rate','Match frame rate','Adapter la fréquence d\'image','A','Utile pour les films en 24p ; la plupart des gens n\'y touchent jamais.'],
+['Auto Frame Rate › Auto Frame Rate','Fix fps: 24->23.97, 30->29.97, 60->59.94','s','activé / désactivé','activé','', 'play','Frame rate','Use 23.976 / 29.97 / 59.94','Utiliser 23,976 / 29,97 / 59,94','A',''],
+['Auto Frame Rate › Auto Frame Rate','Switch resolution','s','activé / désactivé','désactivé','', 'play','Frame rate','Also match resolution','Adapter aussi la résolution','A',''],
+['Auto Frame Rate › Auto Frame Rate','Double refresh rate','s','activé / désactivé','activé','', 'play','Frame rate','Double refresh rate','Fréquence doublée','A',''],
+['Auto Frame Rate › Auto Frame Rate','Skip 24fps formats (real cinema mode fix?)','s','activé / désactivé','désactivé','', 'play','Frame rate','Ignore 24 fps','Ignorer le 24 i/s','A',''],
+['Auto Frame Rate › Auto Frame Rate','Skip Shorts','s','activé / désactivé','—','', 'play','Frame rate','Not for Shorts','Pas pour les Shorts','A',''],
+['Auto Frame Rate','Auto Frame Rate (pause when switching)','c','Never, 0.25 to 15 sec','Never','', 'play','Frame rate','Pause while switching','Pause pendant le changement','A',''],
+['Auto Frame Rate','Supported modes','i','liste des modes d\'affichage de la télé','','', 'adv','Display','Display modes','Modes d\'affichage','A','Information seulement.'],
+// Subtitles
+['Subtitles','Enable subtitles only on the current channel','s','activé / désactivé','activé','', 'av','Subtitles','Remember subtitles per channel','Retenir les sous-titres par chaîne','A',''],
+['Subtitles','Subtitle style','c','White ou Yellow on transparent / semitransparent / black background, ou System style','Yellow on semitransparent background','', 'av','Subtitles','Subtitle style','Style des sous-titres','S',''],
+['Subtitles','Subtitle scale','c','0.1x to 2.0x','1.0x','', 'av','Subtitles','Subtitle size','Taille des sous-titres','S',''],
+['Subtitles','Subtitle bottom shift','c','0 % to 100 %, by 2.5 %','10 %','', 'av','Subtitles','Subtitle position','Position des sous-titres','A',''],
+// Search
+['Search','Voice search engine','c','System (preferred) / External 1 (seriously bugged…) / External 2 (seriously bugged)','System','d', '','','','','X','Seul « System » fonctionne, et c\'est ce qu\'utilise le micro d\'Oculo.'],
+['Search › Misc','Disable auto-correction while typing text','s','activé / désactivé','—','', 'remote','Keyboard & voice','Auto-correction','Correction automatique','A','Présenté en positif.'],
+['Search › Misc','Exit from the search: Double back','s','activé / désactivé','désactivé','u', 'remote','Back button','Press Back twice to leave search','Retour deux fois pour quitter la recherche','=','Doublon de General › Misc.'],
+['Search › Misc','Disable search history','s','activé / désactivé','désactivé','', 'acct','History','Search history','Historique de recherche','S','Présenté en positif (activé = conservé).'],
+['Search › Misc','Background play while searching/browsing a channel','s','activé / désactivé','—','u', 'play','Playback','Keep playing while searching','Continuer pendant la recherche','=','Doublon de Player › Misc.'],
+['Search › Misc','Instant voice search','s','activé / désactivé','—','', 'remote','Keyboard & voice','Search as soon as I stop talking','Chercher dès que je me tais','A',''],
+['Search › Misc','Autofocus on search results','s','activé / désactivé','—','', 'remote','Keyboard & voice','Jump to results','Aller aux résultats','A',''],
+['Search › Misc','Show keyboard automatically','s','activé / désactivé','—','', 'remote','Keyboard & voice','Open the keyboard automatically','Ouvrir le clavier tout seul','A',''],
+['Search › Misc','Prevent OK button from opening the keyboard (G20s and others)','s','activé / désactivé','désactivé','', 'remote','Keyboard & voice','OK doesn\'t open the keyboard (G20s remotes)','OK n\'ouvre pas le clavier (télécommandes G20s)','A',''],
+// SponsorBlock
+['SponsorBlock','Enable SponsorBlock','s','activé / désactivé','activé','', 'filt','SponsorBlock','SponsorBlock','SponsorBlock','S',''],
+['SponsorBlock','Exclude this channel from SponsorBlock','a','seulement quand on l\'ouvre depuis le lecteur','','', 'filt','SponsorBlock','Not for this channel','Pas pour cette chaîne','A','Aussi dans le menu de l\'appui long sur une vidéo.'],
+['SponsorBlock','Choose action','l','one screen per segment type (×9): Sponsor, Intro, Outro, Self promotion, Interaction reminder, Music: non-music section, Preview/recap, Highlight, Filler · each: Do nothing / Only skip / Skip with notification / Show confirmation dialog','jeu d\'amont','', 'filt','SponsorBlock','Segments','Segments','S','Une ligne par type de segment : action + « Show on progress bar ».',9],
+['SponsorBlock','Color markers on progress bar','l','une case par type de segment (×9)','jeu d\'amont','', 'filt','SponsorBlock','Show on progress bar','Montrer sur la barre','=','Fusionné dans « Segments », par type.',9],
+['SponsorBlock','Ignore short segments','c','Disabled, 0.5 to 20 sec','5 sec','', 'filt','SponsorBlock','Ignore segments shorter than','Ignorer les segments de moins de','A',''],
+['SponsorBlock › Misc','Paid content notification','s','activé / désactivé','désactivé','', 'filt','SponsorBlock','Paid promotion notice','Avis de promotion payée','A',''],
+['SponsorBlock › Misc','Don\'t skip segments again','s','activé / désactivé','désactivé','', 'filt','SponsorBlock','Skip each segment only once','Sauter chaque segment une seule fois','A',''],
+['SponsorBlock › Misc','Use alternative server','s','activé / désactivé','désactivé','v', 'adv','Network','SponsorBlock: alternative server','SponsorBlock : autre serveur','A',''],
+['SponsorBlock','Check SponsorBlock server status','k','ouvre un code QR / lien','','', 'filt','SponsorBlock','Server status','État du serveur','A',''],
+['SponsorBlock','About SponsorBlock','k','ouvre un code QR / lien','','', 'filt','SponsorBlock','About SponsorBlock','À propos de SponsorBlock','A',''],
+// DeArrow
+['DeArrow','Unlocalized video titles','s','activé / désactivé','désactivé','u', 'filt','Titles & thumbnails','Original titles','Titres d\'origine','A','La copie gardée (les deux autres s\'y fondent).'],
+['DeArrow','Crowdsourced titles','s','activé / désactivé','désactivé','', 'filt','Titles & thumbnails','Better titles (DeArrow)','Titres améliorés (DeArrow)','A',''],
+['DeArrow','Crowdsourced thumbnails','s','activé / désactivé','désactivé','', 'filt','Titles & thumbnails','Better thumbnails (DeArrow)','Vignettes améliorées (DeArrow)','A',''],
+['DeArrow','Thumbnail source (if there\'s no DeArrow submission)','c','Default / Start / Middle / End of the video','Default','u', 'filt','Titles & thumbnails','Thumbnail frame','Image de la vignette','=','Même réglage que User interface › Where to grab card thumbnails.'],
+['DeArrow','Check DeArrow server status','k','ouvre un code QR / lien','','', 'filt','Titles & thumbnails','DeArrow server status','État du serveur DeArrow','A',''],
+['DeArrow','About DeArrow','k','ouvre un code QR / lien','','', 'filt','Titles & thumbnails','About DeArrow','À propos de DeArrow','A',''],
+// Backup/Restore
+['Backup/Restore › Local backup','Backup app data','a','écrit un zip sur la télé','','', 'sys','Backup','Back up settings','Sauvegarder les réglages','S',''],
+['Backup/Restore › Local backup','Restore app data','a','le relit','','', 'sys','Backup','Restore settings','Restaurer les réglages','S',''],
+['Backup/Restore › Local backup','Auto backup','c','None / Once a day / Once a week / Once a month','None','', 'sys','Backup','Automatic backup','Sauvegarde automatique','A',''],
+['Backup/Restore › Google Drive','Backup app data','a','vers Google Drive','','', 'sys','Backup','Back up to Google Drive','Sauvegarder sur Google Drive','A',''],
+['Backup/Restore › Google Drive','Restore app data','a','depuis Google Drive','','', 'sys','Backup','Restore from Google Drive','Restaurer depuis Google Drive','A',''],
+['Backup/Restore › Google Drive','Auto backup','c','None / Once a day / Once a week / Once a month','None','', 'sys','Backup','Automatic Drive backup','Sauvegarde Drive automatique','A',''],
+['Backup/Restore › Google Drive','Backup for this device only','s','activé / désactivé','désactivé','', 'sys','Backup','Drive backup for this TV only','Sauvegarde Drive pour cette télé seulement','A',''],
+['Backup/Restore › Google Drive','Sign in','a','connexion Google pour Drive','','', 'sys','Backup','Google Drive account','Compte Google Drive','A',''],
+['Backup/Restore','Import (GrayJay/PocketTube/NewPipe)','a','sélecteur de fichier','','', 'acct','Subscriptions','Import subscriptions','Importer des abonnements','A',''],
+// About
+['About','Check for updates','a','lit le manifeste d\'Oculo','','', 'sys','Updates','Check for updates','Rechercher une mise à jour','S',''],
+['About','Notify about updates','c','Disabled / Show notification in sidebar / Notify via pop-up dialog','—','', 'sys','Updates','Update notices','Avis de mise à jour','A',''],
+['About','Changelog','a','liste des changements','','', 'sys','About','What\'s new','Nouveautés','S',''],
+['About','Select update source','c','adresses de mise à jour','le GitHub d\'Oculo','v', 'sys','Updates','Update source','Source des mises à jour','A',''],
+['About','Install ATV/Amazon bridge','a','','','h', '','','','','X','Déjà masqué par Oculo (oculo_show_install_bridge = false).'],
+['About','Donation','l','(vide dans Oculo)','','h', '','','','','X','Déjà parti : la liste de dons d\'Oculo est vide.'],
+['About','Feedback','k','liens','','', 'sys','About','Feedback','Commentaires','A',''],
+['About','Releases','k','lien (code QR)','','', 'sys','About','Releases','Versions','A',''],
+['About','Sources','k','lien (code QR)','','', 'sys','About','Source code','Code source','A',''],
+];
+// New items introduced by the proposal
+const NEW_ROWS = [
+  ['sys','Advanced mode','Mode avancé','S','Shows every setting, plus the Advanced tile.'],
+  ['sys','About Oculo','À propos d\'Oculo','S','Version, base SmartTube, liens (le titre de l\'ancien écran About).'],
+  ['adv','Classic settings','Réglages classiques','A','Les 13 anciennes tuiles, en filet, jusqu\'à ce que le nouvel arbre soit validé.'],
+  ['home','Recent','Récents','S','Les 3 derniers réglages modifiés, en haut de l\'écran Réglages (raccourci, pas un réglage).']
+];
+const SIMPLE_WHY = {
+ 'Account':'C\'est le premier geste d\'une nouvelle télé, et le seul moyen de changer de compte ailleurs que par l\'avatar.',
+ 'Phone remote':'Utile pour taper une recherche ou lancer une vidéo depuis le téléphone ; une famille s\'en sert.',
+ 'Link a phone':'Va avec la ligne précédente : sans association, la télécommande téléphone ne sert à rien.',
+ 'YouTube language':'Change la langue des titres et de l\'interface YouTube : se règle une fois, mais il faut le trouver.',
+ 'Content country':'Décide des tendances et des recommandations régionales ; même raison.',
+ 'Start screen':'Certains veulent ouvrir sur Abonnements plutôt que sur l\'Accueil.',
+ 'Sidebar sections':'Le levier le plus visible pour alléger le rail (audit R13).',
+ 'Hide Shorts everywhere':'La demande la plus courante des gens qui regardent YouTube sur une télé.',
+ 'Dim the screen after':'Tu l\'as déjà ajusté (60 s → 5 min) : preuve que ça se touche.',
+ 'Watch history':'Question de vie privée simple à comprendre ; on doit pouvoir la couper vite.',
+ 'Interface size':'Pour la vue de loin ou un petit téléviseur : réglage d\'accessibilité.',
+ 'Hide news and sports rows':'Réglage maison d\'Oculo, pensé pour l\'Accueil.',
+ 'Show Continue watching':'Réglage maison d\'Oculo, deuxième rangée de l\'Accueil.',
+ 'When a video ends':'Lecture automatique ou non : ce que tout le monde finit par chercher.',
+ 'Video quality':'Pour forcer une qualité quand la connexion est lente ou pour limiter les données.',
+ 'Speed':'Vitesse par défaut (1,25x pour les balados, par exemple).',
+ 'Skip step':'Combien de secondes une flèche avance ; ça se règle selon le goût.',
+ 'Sleep timer':'S\'endormir devant la télé ; réglage attendu dans toute app vidéo.',
+ 'Audio language':'Garde la piste d\'origine plutôt que le doublage automatique.',
+ 'Subtitle style':'Lisibilité : jaune sur fond, blanc sur noir…',
+ 'Subtitle size':'Lisibilité à 3 m ; la demande la plus fréquente après « activer ».',
+ 'SponsorBlock':'L\'interrupteur général : on doit pouvoir le couper en deux gestes.',
+ 'Segments':'Choisir ce qui est sauté (commandites oui, intros non…).',
+ 'Search history':'Va avec l\'historique de visionnage, même logique.',
+ 'Back up settings':'Avant une réinstallation ou un changement de télé.',
+ 'Restore settings':'Le pendant de la sauvegarde.',
+ 'Check for updates':'Oculo se met à jour par son propre manifeste : il faut un bouton visible.',
+ 'What\'s new':'Savoir ce qui a changé après une mise à jour.',
+ 'Advanced mode':'La porte vers tout le reste ; elle doit être visible.',
+ 'About Oculo':'Version et base SmartTube : la première question quand quelque chose cloche.',
+ 'Recent':'Raccourci vers les 3 derniers réglages touchés.'
+};
+const RENAMES = [
+ ['Video presets','Video quality','Qualité vidéo','« Preset » est un mot de développeur ; la liste mélange résolution, i/s et codec.'],
+ ['Playback mode','When a video ends','À la fin d\'une vidéo','Dit quand ça s\'applique ; les valeurs deviennent courtes (« Play the next one », « Repeat it »…).'],
+ ['Seek interval','Skip step','Pas d\'avance','« Seek » est du jargon de lecteur.'],
+ ['Boot to section','Start screen','Écran de démarrage','« Boot » parle de l\'appareil, pas de ce qu\'on voit.'],
+ ['Set-up sections','Sidebar sections','Sections du rail','Dit où se trouvent ces sections.'],
+ ['Screen dimming timeout','Dim the screen after','Assombrir l\'écran après','Se lit comme une phrase avec sa valeur : « Dim the screen after 5 min ».'],
+ ['Screen dimming amount','Dimming level','Intensité de l\'assombrissement','Plus court.'],
+ ['UI scale','Interface size','Taille de l\'interface','« Scale » est abstrait.'],
+ ['Video grid scale','Card size','Taille des vignettes','On voit des vignettes, pas une grille.'],
+ ['Color scheme','Theme','Thème','Avec seulement « Oculo » et « Oculo black (OLED) ».'],
+ ['Subtitle scale','Subtitle size','Taille des sous-titres','Même raison que « UI scale ».'],
+ ['Subtitle bottom shift','Subtitle position','Position des sous-titres','« Bottom shift » décrit le calcul.'],
+ ['Enable subtitles only on the current channel','Remember subtitles per channel','Retenir les sous-titres par chaîne','Le libellé actuel laisse croire que les sous-titres ne marchent qu\'ici.'],
+ ['History (Auto / Enable / Disable)','Watch history (Follow my account / On / Off)','Historique (Selon mon compte / Oui / Non)','« Auto » ne dit pas ce qu\'il suit.'],
+ ['Disable search history','Search history','Historique de recherche','En positif : activé = conservé.'],
+ ['Disable automatic network error fixing','Automatic network repair','Réparation réseau automatique','Les doubles négations font hésiter.'],
+ ['Disable suggestions','Suggestions under the video','Suggestions sous la vidéo','En positif.'],
+ ['Disable OK button long press','OK long press','Appui long sur OK','En positif.'],
+ ['Volume (0–300 %)','Volume boost','Amplification du volume','Dit que ça dépasse le volume normal.'],
+ ['Unlocalized video titles','Original titles','Titres d\'origine','« Unlocalized » est un mot de traducteur.'],
+ ['Where to grab card thumbnails','Thumbnail frame','Image de la vignette','Plus court ; une seule copie (avec DeArrow).'],
+ ['Remote control (switch)','Phone remote','Téléphone comme télécommande','La tuile « Remote control » prête à confusion avec la vraie télécommande.'],
+ ['Show in YouTube cast list (DIAL)','Show in the cast list','Apparaître dans la liste de diffusion','DIAL est un nom de protocole.'],
+ ['Choose action + Color markers on progress bar','Segments','Segments','Deux écrans pour le même sujet deviennent une ligne par type de segment.'],
+ ['Backup app data / Restore app data','Back up settings / Restore settings','Sauvegarder / restaurer les réglages','Dit ce qui est sauvegardé.'],
+ ['Auto Frame Rate','Match frame rate','Adapter la fréquence d\'image','Dit l\'effet ; rangé dans Playback (avancé).'],
+ ['Exit from the app (Don\'t exit / Double back / Single back)','Back on Home leaves Oculo (Never / Press twice / Press once)','Retour sur l\'Accueil quitte Oculo (Jamais / Deux fois / Une fois)','Dit quel bouton et où.'],
+ ['Changelog','What\'s new','Nouveautés','Mot courant.'],
+];
+// ---------- counting ----------
+function flagsOf(r){return (r[5]||'').split(' ').filter(Boolean)}
+function isChoice(r){return r[2]==='c'||r[2]==='l'}
+function computeCounts(){
+  const vis = ROWS.filter(r=>!flagsOf(r).includes('h'));
+  const screens = new Set();
+  let extra = 0;
+  vis.forEach(r=>{
+    const segs = r[0].split(' › ');
+    for(let i=1;i<=segs.length;i++) screens.add(segs.slice(0,i).join(' › '));
+    if(isChoice(r)) screens.add(r[0]+' › '+r[1]);
+  });
+  // Choose action: 9 per-type screens; Context menu: « Position of… » dialog
+  extra += 9 + 1;
+  const curScreens = screens.size + extra;
+  const curOptions = vis.length;
+  const curItems = vis.reduce((s,r)=>s+(r[12]||1),0);
+  const kept = ROWS.filter(r=>r[10]==='S'||r[10]==='A');
+  const newCount = NEW_ROWS.filter(n=>n[1]!=='Recent').length;
+  const propOptions = kept.length + newCount;
+  const simple = ROWS.filter(r=>r[10]==='S').length + NEW_ROWS.filter(n=>n[3]==='S'&&n[1]!=='Recent').length;
+  const propChoiceScreens = kept.filter(isChoice).length;
+  const simpleChoiceScreens = ROWS.filter(r=>r[10]==='S'&&isChoice(r)).length;
+  const removed = ROWS.filter(r=>r[10]==='X').length;
+  const merged = ROWS.filter(r=>r[10]==='=').length;
+  const dups = ROWS.filter(r=>flagsOf(r).includes('u')).length;
+  const dead = ROWS.filter(r=>flagsOf(r).includes('d')).length;
+  const dev = vis.filter(r=>flagsOf(r).includes('v')).length;
+  const hidden = ROWS.filter(r=>flagsOf(r).includes('h')).length;
+  return {curTiles:13, curScreens, curOptions, curItems, propTiles:7, propTilesAdv:8,
+    propScreens: 1+8+propChoiceScreens, simpleScreens: 1+7+simpleChoiceScreens,
+    propOptions, simple, removed, merged, dups, dead, dev, hidden, total:ROWS.length};
+}
+if (typeof module !== 'undefined') module.exports = {ROWS, NEW_ROWS, computeCounts};
+</script>
+
+<script>
+// ---------- icons (24-grid, 2dp stroke, rounded) ----------
+const ICON = {
+  play:'<circle cx="12" cy="12" r="9"/><path d="M10 8.6v6.8l5.4-3.4z"/>',
+  subs:'<rect x="3" y="5" width="18" height="14" rx="3.5"/><path d="M7 12.2h3.5M13 12.2h4M7 15.6h6.5M16.5 15.6h.5"/>',
+  home:'<path d="M4 10.6 12 4l8 6.6V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/>',
+  acct:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3.2"/><path d="M6.3 18.2c1.3-2.3 3.4-3.4 5.7-3.4s4.4 1.1 5.7 3.4"/>',
+  shield:'<path d="M12 3.4 19 6.2v5.4c0 4.3-2.9 7.6-7 9-4.1-1.4-7-4.7-7-9V6.2z"/><path d="M9.6 9.3v5.4l4-2.7zM15 9.3v5.4"/>',
+  remote:'<rect x="7.5" y="2.5" width="9" height="19" rx="4.5"/><circle cx="12" cy="8.2" r="2"/><path d="M12 13.6h.01M12 17.2h.01"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5.6M12 7.7h.01"/>',
+  tune:'<path d="M4 7h8.5M17.5 7H20M4 17h2.5M11.5 17H20"/><circle cx="15" cy="7" r="2.5"/><circle cx="9" cy="17" r="2.5"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
+  search:'<circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.6 15.6 4.6 4.6"/>',
+  subsc:'<rect x="3" y="7" width="18" height="13" rx="3"/><path d="M6 4h12M10.3 10.6v5.8l4.7-2.9z"/>',
+  hist:'<path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3.5 4.5V8H7M12 7.8V12l3 2"/>',
+  list:'<path d="M4 6.5h11M4 11h11M4 15.5h6"/><path d="M15 13.2v6.6l5-3.3z"/>',
+  chan:'<circle cx="9" cy="8.5" r="3.3"/><path d="M3 19c.9-3 3.2-4.6 6-4.6s5.1 1.6 6 4.6M16 5.5a3.3 3.3 0 0 1 0 6.2M18.5 14.8c1.2.8 2 2.2 2.5 4.2"/>',
+  chev:'<path d="m9.5 6 6 6-6 6"/>',
+  cast:'<path d="M3 8V6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11a2.5 2.5 0 0 1-2.5 2.5H14"/><path d="M3 12a8 8 0 0 1 8 8M3 16a4 4 0 0 1 4 4M3 20h.01"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/>',
+  grid:'<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',
+  clap:'<rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="m4 8 2.5-4M10 8l2.5-4M16 8l2.5-4"/>',
+  afr:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 15V9.5h3M7 12.2h2.4M12.5 15V9h2a1.6 1.6 0 0 1 0 3.2h-2M15 12.2 16.8 15"/>',
+  arrow:'<circle cx="12" cy="12" r="9"/><path d="M8 12h7.5M12.5 8.8 15.7 12l-3.2 3.2"/>',
+  cloud:'<path d="M7 18.5h10.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.6 9.2 4.7 4.7 0 0 0 7 18.5z"/><path d="M12 15.5v-5M9.8 12.4 12 10.2l2.2 2.2"/>'
+};
+function svg(name, cls='', extra=''){return `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${ICON[name]||''}</svg>`}
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const BADGE = {h:['b-h','masqué par Oculo'],d:['b-d','sans effet ici'],u:['b-u','doublon'],v:['b-v','développeur'],o:['b-o','Oculo'],c:['b-c','à vérifier']};
+const MODE = {S:['b-S','Simple'],A:['b-A','Avancé'],X:['b-X','Retiré'],'=':['b-M','Fusionné'],N:['b-N','Nouveau']};
+const badges = r => flagsOf(r).map(f=>`<i class="badge ${BADGE[f][0]}">${BADGE[f][1]}</i>`).join('');
+const KIND = {s:'interrupteur',c:'choix',l:'liste à cocher',a:'action',k:'lien',i:'information'};
+
+// ---------- summary stats ----------
+const C = computeCounts();
+document.getElementById('stats').innerHTML = [
+  ['',`${C.curTiles}`,'tuiles aujourd\'hui'],
+  ['',`${C.curScreens}`,'écrans dans lesquels on entre'],
+  ['',`${C.curOptions}`,`réglages (${C.curItems} cases et choix en comptant chaque entrée de liste)`],
+  ['hi',`${C.propTiles} <small>+1</small>`,'tuiles proposées (+ Advanced en mode avancé)'],
+  ['hi',`${C.simple}`,`réglages en mode simple (${C.simpleScreens} écrans)`],
+  ['hi',`${C.propOptions}`,`réglages en mode avancé (${C.propScreens} écrans), rien de perdu`],
+].map(([c,n,l])=>`<div class="stat ${c}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+
+// ---------- current tree ----------
+function renderTree(filter){
+  const byTile = {};
+  ROWS.forEach(r=>{const t=r[0].split(' › ')[0]; (byTile[t]=byTile[t]||[]).push(r)});
+  const keep = r => !filter || flagsOf(r).includes(filter);
+  let html='';
+  OLD_TILES.forEach((t,ti)=>{
+    const rows = byTile[t]||[]; const shown = rows.filter(keep);
+    if(filter && !shown.length) return;
+    const groups = {}; const order=[];
+    shown.forEach(r=>{const g=r[0].split(' › ').slice(1).join(' › '); if(!(g in groups)){groups[g]=[];order.push(g)} groups[g].push(r)});
+    const counts = {}; rows.forEach(r=>flagsOf(r).forEach(f=>counts[f]=(counts[f]||0)+1));
+    const fb = Object.keys(counts).map(f=>`<i class="badge ${BADGE[f][0]}">${counts[f]} ${BADGE[f][1]}</i>`).join('');
+    html += `<details ${filter||ti<1?'open':''}><summary>${svg('chev','chev')}${svg(OLD_ICON[t],'tileicon')}<span class="ti">${esc(t)}</span><span class="cnt">${rows.length} réglages ${fb}</span></summary>`;
+    order.forEach(g=>{
+      const items = groups[g].map(r=>{
+        const gone = flagsOf(r).includes('h') ? ' gone':'';
+        const n = r[12] ? ` (${r[12]} entrées)`:'';
+        return `<li class="${gone}"><span class="lb">${esc(r[1])}</span><span class="fl">${badges(r)}</span><span class="vals">${KIND[r[2]]}${n} · ${esc(r[3])}${r[4]?` · défaut <b>${esc(r[4])}</b>`:''}${r[11]&&(r[10]==='X'||r[10]==='='||flagsOf(r).some(f=>'hdcu'.includes(f)))?` · <i>${esc(r[11])}</i>`:''}</span></li>`}).join('');
+      if(!g) html += `<ul>${items}</ul>`;
+      else html += `<details open><summary>${svg('chev','chev')}<span class="ti">${esc(g)}</span><span class="cnt">${groups[g].length}</span></summary><ul>${items}</ul></details>`;
+    });
+    html += `</details>`;
+  });
+  document.getElementById('tree').innerHTML = html;
+}
+(function(){
+  const box = document.getElementById('treeFilters');
+  const opts = [['', 'Tout'],['h','Masqué par Oculo'],['d','Sans effet ici'],['u','Doublons'],['v','Développeur'],['o','Oculo'],['c','À vérifier']];
+  box.innerHTML = opts.map(([k,l],i)=>`<button class="chip ${i?'':'on'}" data-f="${k}">${l}${k?` (${ROWS.filter(r=>flagsOf(r).includes(k)).length})`:''}</button>`).join('')+`<button class="chip" id="expandAll">Tout déplier</button>`;
+  box.addEventListener('click',e=>{const b=e.target.closest('button'); if(!b) return;
+    if(b.id==='expandAll'){document.querySelectorAll('#tree details').forEach(d=>d.open=true);return}
+    box.querySelectorAll('.chip[data-f]').forEach(x=>x.classList.toggle('on',x===b)); renderTree(b.dataset.f)});
+  renderTree('');
+})();
+
+// ---------- proposed tiles ----------
+(function(){
+  const order=['play','av','home','acct','filt','remote','sys','adv'];
+  let html='';
+  order.forEach(k=>{
+    const T=TILES[k];
+    const rows=ROWS.filter(r=>r[6]===k&&(r[10]==='S'||r[10]==='A'));
+    const news=NEW_ROWS.filter(n=>n[0]===k);
+    const s=rows.filter(r=>r[10]==='S'); const a=rows.filter(r=>r[10]==='A');
+    const ag={}; const ao=[]; a.forEach(r=>{const g=r[7]||'Other'; if(!ag[g]){ag[g]=[];ao.push(g)} ag[g].push(r)});
+    const sl = s.map(r=>`<li class="S"><i class="dot"></i><span>${esc(r[8])}</span></li>`).join('') + news.filter(n=>n[3]==='S'&&n[1]!=='Recent').map(n=>`<li class="N"><i class="dot"></i><span>${esc(n[1])} <span class="badge b-N">nouveau</span></span></li>`).join('');
+    const al = ao.map(g=>`<li class="A"><i class="dot"></i><span><b style="font-weight:500;color:#cfd5d6">${esc(g)}</b> · ${ag[g].length}</span></li>`).join('') + news.filter(n=>n[3]==='A').map(n=>`<li class="N"><i class="dot"></i><span>${esc(n[1])} <span class="badge b-N">nouveau</span></span></li>`).join('');
+    html += `<div class="ptile ${k==='adv'?'adv':''}"><header>${svg(T.ic)}<div><div class="t">${esc(T.en)}</div><div class="f">${esc(T.fr)} · ${s.length+news.filter(n=>n[3]==='S'&&n[1]!=='Recent').length} simple, ${a.length+news.filter(n=>n[3]==='A').length} avancés</div></div></header>
+      <div class="muted small">${esc(T.blurb)}</div>
+      ${sl?`<div class="grp">Mode simple</div><ul>${sl}</ul>`:''}
+      ${al?`<div class="grp">Advanced (groupes)</div><ul>${al}</ul>`:''}</div>`;
+  });
+  document.getElementById('ptiles').innerHTML=html;
+})();
+
+// ---------- renames, removed, simple ----------
+document.querySelector('#renames tbody').innerHTML = RENAMES.map(r=>`<tr><td><span class="lb">${esc(r[0])}</span></td><td><span class="lb">${esc(r[1])}</span></td><td class="fr">${esc(r[2])}</td><td class="small">${esc(r[3])}</td></tr>`).join('');
+document.querySelector('#removed tbody').innerHTML = ROWS.filter(r=>r[10]==='X').map(r=>`<tr class="gone"><td><span class="lb">${esc(r[1])}</span><div>${badges(r)}</div></td><td class="small">${esc(r[0])}</td><td class="small">${esc(r[11])}</td></tr>`).join('');
+(function(){
+  const order=['play','av','home','acct','filt','remote','sys'];
+  const rows=[];
+  order.forEach(k=>{
+    ROWS.filter(r=>r[6]===k&&r[10]==='S').forEach(r=>rows.push([k,r[8],r[9]]));
+    NEW_ROWS.filter(n=>n[0]===k&&n[3]==='S').forEach(n=>rows.push([k,n[1],n[2],true]));
+  });
+  document.querySelector('#simple tbody').innerHTML = rows.map(([k,en,fr,isNew])=>`<tr><td class="small">${esc(TILES[k].en)}</td><td><span class="lb">${esc(en)}</span>${isNew?' <span class="badge b-N">nouveau</span>':''}</td><td class="fr">${esc(fr)}</td><td class="small">${esc(SIMPLE_WHY[en]||'')}</td></tr>`).join('');
+})();
+
+// ---------- mapping table ----------
+(function(){
+  const box=document.getElementById('mapFilters');
+  let tile='', mode='', q='';
+  box.innerHTML = `<input class="search" type="search" placeholder="Chercher un réglage…" id="mapQ">` +
+    ['',...OLD_TILES].map((t,i)=>`<button class="chip ${i?'':'on'}" data-t="${esc(t)}">${t||'Toutes les tuiles'}</button>`).join('') +
+    `<span style="width:100%"></span>` + [['','Tous les sorts'],['S','Simple'],['A','Avancé'],['=','Fusionné'],['X','Retiré']].map(([m,l],i)=>`<button class="chip ${i?'':'on'}" data-m="${m}">${l}</button>`).join('');
+  function draw(){
+    const rows = ROWS.filter(r=>(!tile||r[0].split(' › ')[0]===tile)&&(!mode||r[10]===mode)&&(!q||(r[1]+' '+r[8]+' '+r[9]+' '+r[0]).toLowerCase().includes(q)));
+    document.querySelector('#map tbody').innerHTML = rows.map(r=>{
+      const m=MODE[r[10]]; const dest = r[6]?`${esc(TILES[r[6]].en)}${r[7]?` › ${esc(r[7])}`:''}`:'—';
+      return `<tr class="${r[10]==='X'?'gone':''}"><td><span class="lb">${esc(r[1])}</span><div class="pth">${esc(r[0])}</div></td>
+        <td class="small">${esc(r[3])}${r[4]?`<div class="pth">défaut : ${esc(r[4])}</div>`:''}</td>
+        <td>${badges(r)}</td><td class="small">${dest}</td>
+        <td>${r[8]?`<span class="lb">${esc(r[8])}</span><div class="pth">${esc(r[9])}</div>`:''}${r[11]?`<div class="pth" style="color:#9aa3a5">${esc(r[11])}</div>`:''}</td>
+        <td><i class="badge ${m[0]}">${m[1]}</i></td></tr>`}).join('');
+    document.getElementById('mapCount').textContent = `${rows.length} ligne(s) sur ${ROWS.length}.`;
+  }
+  box.addEventListener('click',e=>{const b=e.target.closest('button'); if(!b) return;
+    if('t' in b.dataset){tile=b.dataset.t; box.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x===b))}
+    if('m' in b.dataset){mode=b.dataset.m; box.querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('on',x===b))}
+    draw()});
+  document.getElementById('mapQ').addEventListener('input',e=>{q=e.target.value.trim().toLowerCase(); draw()});
+  draw();
+})();
+
+// ---------- icon set ----------
+document.getElementById('icons').innerHTML = ['play','av','home','acct','filt','remote','sys','adv'].map(k=>{const T=TILES[k];
+  return `<div class="ic"><div class="row">${svg(T.ic,'big')}${svg(T.ic,'sm')}</div><div class="n">${esc(T.en)}</div><div class="m">${esc(T.fr)}</div></div>`}).join('') +
+  `<div class="ic"><div class="row">${svg('gear','big')}${svg('gear','sm')}</div><div class="n">Settings</div><div class="m">raccourci de la barre du haut</div></div>`;
+
+// ---------- TV mocks ----------
+const CATS = [
+  ['play','Playback','Auto quality · Play the next one'],
+  ['av','Audio & Subtitles','Original audio · Yellow, 1.0x'],
+  ['home','Home & Display','Continue watching · Dim after 5 min'],
+  ['acct','Account & History','Signed in · History on'],
+  ['filt','SponsorBlock & Filters','On · Sponsors skipped'],
+  ['remote','Remote & Devices','Phone remote off'],
+  ['sys','System','Oculo 0.10.0 · Up to date'],
+];
+function rail(){
+  const ys=[205,283,360,438,517,595,673,751,829,985];
+  const ic=['search','home','subsc','chan','hist','list','subsc','list','chan','gear'];
+  return `<div class="scr-rail"><div class="av"></div>${ys.map((y,i)=>svg(ic[i], i===ys.length-1?'cur':'', `style="top:${y-20}px"`)).join('')}</div>`;
+}
+function topbar(gearFocus){
+  return `<div class="scr-top"><div class="mic">${svg('mic')}</div><div class="pill">Search</div><div class="gear ${gearFocus?'f':''}">${svg('gear')}</div>
+    <div class="clock"><div class="h">8:42 PM</div><div class="d">Mon Nov 16</div></div><div class="wm"><i></i>culo</div></div>`;
+}
+function list(focus, sel, opts={}){
+  const cats = opts.adv ? [...CATS,['adv','Advanced','Network, formats, fixes']] : CATS;
+  return `<div class="scr-list">${cats.map(([k,t,s],i)=>`<div class="scr-row ${i===focus?'f':''} ${i===sel?'sel':''} ${opts.dim&&i!==sel?'dimrow':''}">${svg(TILES[k].ic)}${opts.adv&&k==='adv'?'<i class="ndot"></i>':''}<div><div class="t">${esc(t)}</div><div class="s">${esc(s)}</div></div></div>`).join('')}</div>`;
+}
+function prow(o){
+  const right = o.sw!==undefined ? `<div class="sw ${o.sw?'on':''}"></div>` : o.radio!==undefined ? '' : `${o.v?`<div class="v">${esc(o.v)}</div>`:''}${o.go?svg('chev','ch'):''}`;
+  const left = o.radio!==undefined ? `<div class="radio ${o.radio?'on':''}"></div>` : '';
+  return `<div class="prow ${o.f?'f':''} ${o.dim?'dim':''}">${left}<div class="pl"><div class="t">${esc(o.t)}</div>${o.d?`<div class="d">${esc(o.d)}</div>`:''}</div>${right}</div>`;
+}
+function pane(o){
+  return `<div class="scr-pane ${o.pv?'pv':''}">${o.crumb?`<div class="crumb">${esc(o.crumb)}</div>`:''}<div class="pt">${esc(o.t)}</div>${o.d?`<div class="pd">${esc(o.d)}</div>`:''}
+    ${o.rows.map(r=>r.head?`<div class="phead">${esc(r.head)}</div>`:prow(r)).join('')}${o.fade?'<div class="fade"></div>':''}</div>`;
+}
+const hint = (a)=>`<div class="hint">${a.map(([k,l])=>`<span><kbd>${k}</kbd>${l}</span>`).join('')}</div>`;
+const MOCKS = {
+  home: ()=> rail()+topbar(false)+`<div class="scr-h">Settings</div><div class="scr-recent">Recent <span class="c">Subtitle size</span><span class="c">Dim the screen after</span><span class="c">Video quality</span></div>`+
+    list(0,-1)+pane({pv:true,t:'Playback',d:'How videos play: quality, what happens at the end, speed.',rows:[
+      {t:'Video quality',v:'Auto',go:1},{t:'When a video ends',v:'Play the next one',go:1},{t:'Speed',v:'1.0x',go:1},{t:'Skip step',v:'10 sec',go:1},{t:'Sleep timer',v:'Off',go:1}]})+
+    hint([['▲▼','Category'],['▶','Open'],['OK','Open']]),
+  sub: ()=> rail()+topbar(false)+`<div class="scr-h">Settings</div>`+list(-1,2)+pane({t:'Home & Display',d:'What Home shows, the sidebar, and how the screen looks.',rows:[
+      {t:'Sidebar sections',v:'8 shown',go:1},{t:'Start screen',v:'Home',go:1},
+      {t:'Show Continue watching',sw:true,d:''},{t:'Hide news and sports rows',sw:false},
+      {t:'Dim the screen after',v:'5 min',go:1,f:1,d:'The screen darkens when no button is pressed for this long.'},
+      {t:'Interface size',v:'1.0x',go:1}]})+hint([['◀','Categories'],['OK','Change'],['Back','Settings']]),
+  pick: ()=> rail()+topbar(false)+`<div class="scr-h">Settings</div>`+list(-1,2,{dim:true})+pane({crumb:'Home & Display ›',t:'Dim the screen after',d:'The screen darkens when no button is pressed for this long.',rows:[
+      {t:'Never',radio:false},{t:'30 sec',radio:false},{t:'1 min',radio:false},{t:'2 min',radio:false},{t:'5 min',radio:true,f:1},{t:'10 min',radio:false},{t:'15 min',radio:false}],fade:true})+hint([['OK','Choose'],['Back','Cancel']]),
+  adv: ()=> rail()+topbar(false)+`<div class="scr-h">Settings</div>`+list(-1,6,{adv:true})+pane({t:'System',d:'Updates, backup and information about Oculo.',rows:[
+      {t:'Check for updates',v:'Up to date',go:1},{t:'Back up settings',go:1},{t:'Restore settings',go:1},{t:'What\'s new',go:1},{t:'About Oculo',v:'0.10.0 · SmartTube 32.74',go:1},
+      {t:'Advanced mode',sw:true,f:1,d:'Shows every setting, plus the Advanced tile. Turn it off to go back to the short list.'}]})+
+    `<div class="toast"><i></i>Advanced settings shown</div>`+hint([['◀','Categories'],['OK','Turn off']]),
+  advcat: ()=> rail()+topbar(false)+`<div class="scr-h">Settings</div>`+list(-1,0,{adv:true})+pane({t:'Playback',d:'How videos play: quality, what happens at the end, speed.',rows:[
+      {t:'Video quality',v:'Auto',go:1},{t:'When a video ends',v:'Play the next one',go:1},{t:'Speed',v:'1.0x',go:1},{t:'Skip step',v:'10 sec',go:1},{t:'Sleep timer',v:'Off',go:1},
+      {head:'Advanced'},{t:'Match frame rate',sw:false,f:1,d:'Switches the TV to the video\'s frame rate (24p films). Short black screen when it changes.'},{t:'Keep playing in the background',v:'Off',go:1},{t:'Hide controls after',v:'3 sec',go:1}],fade:true})+hint([['▲▼','Move'],['OK','Turn on']]),
+  grid: ()=> rail()+topbar(false)+`<div class="scr-h">Settings</div><div class="grid7">${CATS.map(([k,t],i)=>`<div class="gt ${i===1?'f':''}">${svg(TILES[k].ic)}<div class="t">${esc(t)}</div></div>`).join('')}</div>
+     <div class="gdesc"><b>Audio &amp; Subtitles</b>Audio language, subtitle style and size. OK opens the panel on the right, over the tiles, as today.</div>`
+};
+document.querySelectorAll('.screen[data-mock]').forEach(s=>{s.innerHTML=MOCKS[s.dataset.mock]()});
+function fit(){document.querySelectorAll('.tv').forEach(tv=>{const s=tv.querySelector('.screen'); s.style.transform=`scale(${tv.clientWidth/1920})`})}
+new ResizeObserver(fit).observe(document.body); fit();
+
+// ---------- screenshot mode: ?shot=home renders one mock at 1920x1080 ----------
+(function(){
+  const m = new URLSearchParams(location.search).get('shot');
+  if(!m || !MOCKS[m]) return;
+  const s = document.createElement('div'); s.className='screen'; s.innerHTML = MOCKS[m]();
+  document.body.className='shot'; document.body.innerHTML=''; document.body.appendChild(s);
+})();
+
+// ---------- toc highlight ----------
+(function(){
+  const links=[...document.querySelectorAll('nav.toc a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}})},{rootMargin:'-20% 0px -70% 0px'});
+  secs.forEach(s=>io.observe(s));
+})();
+</script>
+</body>
+</html>
