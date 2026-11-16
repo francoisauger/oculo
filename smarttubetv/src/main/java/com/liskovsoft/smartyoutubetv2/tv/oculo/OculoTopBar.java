@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.SearchPresenter;
+import com.liskovsoft.smartyoutubetv2.common.oculo.settings.OculoSettingsTiles;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 
 /**
@@ -36,6 +37,7 @@ final class OculoTopBar {
     private final View mGroup;
     private final View mMic;
     private final View mPill;
+    @Nullable private final View mGear;
 
     @Nullable
     static OculoTopBar attach(View titleView) {
@@ -103,6 +105,31 @@ final class OculoTopBar {
         group.addView(pill, 1, pillLp);
         mMic = mic;
         mPill = pill;
+
+        // Settings gear right of the pill (0.11.0, design.md M11): up, right, right, OK from any row
+        if (OculoSettingsTiles.isEnabled(mContext)) {
+            FrameLayout gear = new FrameLayout(mContext);
+            gear.setId(View.generateViewId());
+            gear.setBackgroundResource(R.drawable.oculo_top_bar_mic_background);
+            gear.setFocusable(true);
+            gear.setFocusableInTouchMode(true);
+            gear.setContentDescription(mContext.getString(R.string.header_settings));
+            ImageView gearIcon = new ImageView(mContext);
+            gearIcon.setImageResource(R.drawable.oculo_ic_settings);
+            gearIcon.setImageTintList(contentColors);
+            gearIcon.setDuplicateParentStateEnabled(true);
+            gear.addView(gearIcon, new FrameLayout.LayoutParams(iconSize, iconSize, Gravity.CENTER));
+            gear.setOnClickListener(v -> OculoSettingsTiles.openSettings(mContext));
+            LinearLayout.LayoutParams gearLp = new LinearLayout.LayoutParams(height, height);
+            gearLp.gravity = Gravity.CENTER_VERTICAL;
+            gearLp.setMarginStart(res.getDimensionPixelSize(R.dimen.oculo_top_bar_gap));
+            pill.setNextFocusRightId(gear.getId());
+            gear.setNextFocusLeftId(pill.getId());
+            group.addView(gear, 2, gearLp);
+            mGear = gear;
+        } else {
+            mGear = null;
+        }
 
         resizeBranding(res);
         applyBarGeometry(res);
@@ -172,7 +199,7 @@ final class OculoTopBar {
     boolean contains(View view) {
         View current = view;
         while (current != null) {
-            if (current == mMic || current == mPill) {
+            if (current == mMic || current == mPill || (mGear != null && current == mGear)) {
                 return true;
             }
             ViewParent next = current.getParent();
@@ -187,11 +214,19 @@ final class OculoTopBar {
      */
     @Nullable
     View onFocusSearch(View focused, int direction) {
-        if (focused == mPill && direction == (isRtl() ? View.FOCUS_LEFT : View.FOCUS_RIGHT)) {
-            View exitPip = mTitleView.findViewById(R.id.exit_pip);
-            return exitPip != null && exitPip.getVisibility() == View.VISIBLE ? exitPip : mPill;
+        int forward = isRtl() ? View.FOCUS_LEFT : View.FOCUS_RIGHT;
+        if (focused == mPill && direction == forward && mGear != null) {
+            return mGear;
         }
-        if ((focused == mMic || focused == mPill) && direction == View.FOCUS_UP) {
+        View last = mGear != null ? mGear : mPill;
+        if (focused == last && direction == forward) {
+            View exitPip = mTitleView.findViewById(R.id.exit_pip);
+            return exitPip != null && exitPip.getVisibility() == View.VISIBLE ? exitPip : last;
+        }
+        if (focused == mGear && direction == (isRtl() ? View.FOCUS_RIGHT : View.FOCUS_LEFT)) {
+            return mPill;
+        }
+        if ((focused == mMic || focused == mPill || (mGear != null && focused == mGear)) && direction == View.FOCUS_UP) {
             return focused;
         }
         return null;

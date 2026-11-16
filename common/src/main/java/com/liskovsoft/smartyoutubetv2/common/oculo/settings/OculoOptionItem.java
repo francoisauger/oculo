@@ -12,7 +12,14 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionItem;
  * Without a delegate it is a synthetic item ({@link Choice}).
  */
 public class OculoOptionItem implements OptionItem {
+    /** Told about each change made through an Oculo row (« Recent »). */
+    public interface ChangeListener {
+        void onChanged(String key);
+    }
+
+    private static ChangeListener sChangeListener;
     private final OptionItem mDelegate;
+    private String mKey;
     private final CharSequence mTitle;
     private final CharSequence mDescription;
     private final boolean mInverted;
@@ -26,6 +33,22 @@ public class OculoOptionItem implements OptionItem {
 
     public OptionItem getDelegate() {
         return mDelegate;
+    }
+
+    public static void setChangeListener(@Nullable ChangeListener listener) {
+        sChangeListener = listener;
+    }
+
+    /** The row this item belongs to (OculoSettingsNode.key). */
+    public OculoOptionItem setKey(String key) {
+        mKey = key;
+        return this;
+    }
+
+    protected void notifyChanged() {
+        if (mKey != null && sChangeListener != null) {
+            sChangeListener.onChanged(mKey);
+        }
     }
 
     @Override
@@ -53,6 +76,8 @@ public class OculoOptionItem implements OptionItem {
         if (mDelegate != null) {
             mDelegate.onSelect(mInverted != isSelected);
         }
+
+        notifyChanged();
     }
 
     @Override
@@ -119,6 +144,8 @@ public class OculoOptionItem implements OptionItem {
             if (isSelected && mOnSelect != null) {
                 mOnSelect.run();
             }
+
+            notifyChanged();
         }
     }
 
@@ -149,6 +176,8 @@ public class OculoOptionItem implements OptionItem {
             if (mOnSelect != null) {
                 mOnSelect.onSelect(isSelected);
             }
+
+            notifyChanged();
         }
     }
 }

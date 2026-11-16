@@ -7,6 +7,7 @@ import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
 import com.liskovsoft.mediaserviceinterfaces.data.SearchOptions;
 import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.sharedutils.rx.RxHelper;
+import com.liskovsoft.smartyoutubetv2.common.oculo.settings.OculoSettingsTiles;
 import com.liskovsoft.smartyoutubetv2.common.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.VideoGroup;
@@ -325,6 +326,7 @@ public class SearchPresenter extends BasePresenter<SearchView> implements VideoG
         appendFilterByTypeCategory(settingsPresenter);
         appendFilterByFeatureCategory(settingsPresenter);
         appendSortByCategory(settingsPresenter);
+        OculoSettingsTiles.appendMoreSettings(getContext(), settingsPresenter, false); // Oculo: the Settings section
 
         settingsPresenter.showDialog(getContext().getString(R.string.settings_search));
     }

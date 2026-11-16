@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoAudioTracks;
+import com.liskovsoft.smartyoutubetv2.common.oculo.settings.OculoSettingsTiles;
 
 public class HQDialogController extends BasePlayerController {
     private static final String TAG = HQDialogController.class.getSimpleName();
@@ -60,6 +61,7 @@ public class HQDialogController extends BasePlayerController {
 
         appendOptions(mCategoriesInt);
         appendOptions(mCategories);
+        OculoSettingsTiles.appendMoreSettings(getContext(), mAppDialogPresenter, true); // Oculo: Playback settings
 
         mAppDialogPresenter.showDialog(getContext().getString(R.string.playback_settings), this::onDialogHide);
     }

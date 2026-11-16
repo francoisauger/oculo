@@ -164,6 +164,8 @@ public final class OculoSettingsModel {
 
     public static OculoSettingsModel build(Context context) {
         OculoSettingsModel model = new OculoSettingsModel(context);
+        Context appContext = context.getApplicationContext() != null ? context.getApplicationContext() : context;
+        OculoOptionItem.setChangeListener(key -> OculoSettingsRecent.record(appContext, key));
         long start = System.currentTimeMillis();
         model.harvest();
         model.place();
@@ -530,6 +532,9 @@ public final class OculoSettingsModel {
 
             boolean isSwitch = leaf.category.type == OptionCategory.TYPE_SINGLE_SWITCH || leaf.category.type == OptionCategory.TYPE_CHECKBOX_LIST;
             OculoOptionItem item = new OculoOptionItem(source, label, null, entry.has(OculoSettingsMap.INVERT));
+            if (isSwitch) {
+                item.setKey(key);
+            }
             return new OculoSettingsNode(isSwitch ? OculoSettingsNode.SWITCH : OculoSettingsNode.ACTION, key, label, summary, item,
                     null, null, advanced);
         }
@@ -545,10 +550,10 @@ public final class OculoSettingsModel {
                     options = renameValues(options, entry.values);
                 }
                 return new OculoSettingsNode(OculoSettingsNode.CHOICE, key, label, summary, null,
-                        OptionCategory.from(category.id, OptionCategory.TYPE_RADIO_LIST, label, options), null, advanced);
+                        OptionCategory.from(category.id, OptionCategory.TYPE_RADIO_LIST, label, keyed(options, key)), null, advanced);
             case OptionCategory.TYPE_CHECKBOX_LIST:
                 return new OculoSettingsNode(OculoSettingsNode.MULTI, key, label, summary, null,
-                        OptionCategory.from(category.id, OptionCategory.TYPE_CHECKBOX_LIST, label, options), null, advanced);
+                        OptionCategory.from(category.id, OptionCategory.TYPE_CHECKBOX_LIST, label, keyed(options, key)), null, advanced);
             case OptionCategory.TYPE_STRING_LIST:
                 return new OculoSettingsNode(OculoSettingsNode.LIST, key, label, summary, null,
                         OptionCategory.from(category.id, OptionCategory.TYPE_STRING_LIST, label, options), null, advanced);
@@ -558,6 +563,21 @@ public final class OculoSettingsModel {
         }
 
         return null;
+    }
+
+    /** Each value tells « Recent » about a change of this row. */
+    private static List<OptionItem> keyed(List<OptionItem> options, String key) {
+        List<OptionItem> result = new ArrayList<>(options.size());
+
+        for (OptionItem option : options) {
+            if (option instanceof OculoOptionItem) {
+                result.add(((OculoOptionItem) option).setKey(key));
+            } else {
+                result.add(option != null ? new OculoOptionItem(option, null, null, false).setKey(key) : null);
+            }
+        }
+
+        return result;
     }
 
     private List<OptionItem> renameValues(List<OptionItem> options, int[][] values) {
@@ -708,7 +728,7 @@ public final class OculoSettingsModel {
         }
 
         return new OculoSettingsNode(OculoSettingsNode.CHOICE, key, label, null, null,
-                OptionCategory.from(-1, OptionCategory.TYPE_RADIO_LIST, label, options), null, advanced);
+                OptionCategory.from(-1, OptionCategory.TYPE_RADIO_LIST, label, keyed(options, key)), null, advanced);
     }
 
     // ------------------------------------------------------------------------------------------------------------
@@ -736,7 +756,8 @@ public final class OculoSettingsModel {
         acct.advanced.add(at, new OculoSettingsNode(OculoSettingsNode.SWITCH, name(R.string.oculo_set_ask_which_account_at_start),
                 str(R.string.oculo_set_ask_which_account_at_start), null,
                 new OculoOptionItem.Simple(str(R.string.oculo_set_ask_which_account_at_start), null,
-                        accountsData.isSelectAccountOnBootEnabled(), accountsData::selectAccountOnBoot), null, null, true));
+                        accountsData.isSelectAccountOnBootEnabled(), accountsData::selectAccountOnBoot)
+                        .setKey(name(R.string.oculo_set_ask_which_account_at_start)), null, null, true));
         acct.advanced.add(at + 1, new OculoSettingsNode(OculoSettingsNode.SWITCH, name(R.string.oculo_set_account_password),
                 str(R.string.oculo_set_account_password), null,
                 new OculoOptionItem.Simple(str(R.string.oculo_set_account_password), null,
@@ -752,7 +773,7 @@ public final class OculoSettingsModel {
                     com.liskovsoft.sharedutils.helpers.MessageHelpers.showMessage(c,
                             enabled ? R.string.oculo_set_advanced_shown : R.string.oculo_set_advanced_hidden);
                     OculoSettingsTiles.onAdvancedModeChanged(c);
-                }), null, null, false));
+                }).setKey(name(R.string.oculo_set_advanced_mode)), null, null, false));
         OculoOptionItem.Simple aboutItem = new OculoOptionItem.Simple(str(R.string.oculo_set_about_oculo), null, false,
                 selected -> presenter(OculoSettingsMap.ABOUT).run());
         OculoSettingsNode about = new OculoSettingsNode(OculoSettingsNode.ACTION, name(R.string.oculo_set_about_oculo),

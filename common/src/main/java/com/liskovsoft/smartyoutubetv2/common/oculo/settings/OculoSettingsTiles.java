@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
+import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
 import com.liskovsoft.smartyoutubetv2.common.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.SettingsItem;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionCategory;
@@ -26,9 +27,9 @@ public final class OculoSettingsTiles {
     }
 
     /** Category icons (24dp outline set, docs/mockups/settings/settings-redesign.html « Icônes »). */
-    public static final int[] TILE_ICONS = {R.drawable.settings_player, R.drawable.settings_subtitles,
-            R.drawable.settings_main_ui, R.drawable.settings_account, R.drawable.settings_block,
-            R.drawable.settings_cast, R.drawable.settings_about, R.drawable.settings_app};
+    public static final int[] TILE_ICONS = {R.drawable.oculo_settings_ic_play, R.drawable.oculo_settings_ic_subs,
+            R.drawable.oculo_settings_ic_home, R.drawable.oculo_settings_ic_account, R.drawable.oculo_settings_ic_shield,
+            R.drawable.oculo_settings_ic_remote, R.drawable.oculo_settings_ic_info, R.drawable.oculo_settings_ic_tune};
 
     private static final List<Listener> sListeners = new ArrayList<>();
 
@@ -70,12 +71,62 @@ public final class OculoSettingsTiles {
         OculoSettingsModel model = OculoSettingsModel.build(context);
         List<SettingsItem> items = new ArrayList<>();
 
+        if (!getRecentRows(context, model).isEmpty()) {
+            items.add(new SettingsItem(context.getString(R.string.oculo_set_recent), () -> showRecent(context), R.drawable.oculo_settings_ic_recent));
+        }
+
         for (Tile tile : model.getVisibleTiles()) {
             String id = tile.getId();
             items.add(new SettingsItem(context.getString(tile.titleRes), () -> showTile(context, id), TILE_ICONS[tile.index]));
         }
 
         return items;
+    }
+
+    /** The rows of « Recent » still visible in the current mode, most recent first. */
+    public static List<OculoSettingsNode> getRecentRows(Context context, OculoSettingsModel model) {
+        List<OculoSettingsNode> rows = new ArrayList<>();
+
+        for (String key : OculoSettingsRecent.get(context)) {
+            OculoSettingsNode node = model.findByKey(key);
+
+            if (node != null) {
+                rows.add(node);
+            }
+        }
+
+        return rows;
+    }
+
+    private static void showRecent(Context context) {
+        OculoSettingsModel model = OculoSettingsModel.build(context);
+        AppDialogPresenter presenter = AppDialogPresenter.instance(context);
+        appendRows(context, presenter, getRecentRows(context, model));
+        presenter.showDialog(context.getString(R.string.oculo_set_recent), model::runOnFinish);
+    }
+
+    /** Top bar gear (OculoTopBar): the Settings section. */
+    public static void openSettings(Context context) {
+        BrowsePresenter.instance(context).selectSection(MediaGroup.TYPE_SETTINGS);
+    }
+
+    /**
+     * « More settings » at the end of a dialog: the player's quick settings (Playback), the search filters (Settings
+     * section). One line in each upstream dialog.
+     */
+    public static void appendMoreSettings(Context context, AppDialogPresenter presenter, boolean fromPlayer) {
+        if (!isEnabled(context)) {
+            return;
+        }
+
+        presenter.appendSingleButton(UiOptionItem.from(context.getString(R.string.oculo_set_more_settings), option -> {
+            if (fromPlayer) {
+                showTile(context, OculoSettingsModel.TILE_IDS[OculoSettingsMap.T_PLAY]);
+            } else {
+                presenter.closeDialog();
+                openSettings(context);
+            }
+        }));
     }
 
     /** One category as an upstream dialog: its simple rows, then « Advanced » (advanced mode) opening the others. */
