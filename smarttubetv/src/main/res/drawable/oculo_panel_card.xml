@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): the floating card. Opaque dark, the Settings card's turquoise glow at the top right,
+     hairline border. The first layer gives the rounded outline (shadow and clipToOutline). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/oculo_panel_background" />
+            <corners android:radius="@dimen/oculo_card_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:centerX="0.92"
+                android:centerY="0"
+                android:gradientRadius="110%"
+                android:startColor="@color/oculo_panel_glow"
+                android:endColor="#0032E6DC" />
+            <corners android:radius="@dimen/oculo_card_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:width="@dimen/oculo_card_border" android:color="@color/oculo_card_border" />
+            <corners android:radius="@dimen/oculo_card_radius" />
+        </shape>
+    </item>
+</layer-list>

@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Oculo (0.11.0, design.md M1): focused row of a settings list or menu = white pill, as in the expanded rail and the
-     top bar. #F1F1F1, 8dp corners, 12dp in from each side of the panel. -->
+<!-- Oculo (0.11.0, design.md M1; 0.12.0 Oculo panel): focused row of a panel list = white pill, as in the Settings
+     card, the expanded rail and the top bar. #F1F1F1, Settings card corners, 7dp in from each side of the card
+     (oculo_card_rows_inset), 1dp between rows. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
-        <inset android:insetLeft="12dp" android:insetRight="12dp" android:insetTop="2dp" android:insetBottom="2dp">
+        <inset android:insetLeft="@dimen/oculo_card_rows_inset" android:insetRight="@dimen/oculo_card_rows_inset" android:insetTop="0dp" android:insetBottom="@dimen/oculo_card_row_gap">
             <shape android:shape="rectangle">
                 <solid android:color="@color/oculo_white_focus" />
-                <corners android:radius="8dp" />
+                <corners android:radius="@dimen/oculo_card_pill_radius" />
             </shape>
         </inset>
     </item>
     <item android:state_pressed="true">
-        <inset android:insetLeft="12dp" android:insetRight="12dp" android:insetTop="2dp" android:insetBottom="2dp">
+        <inset android:insetLeft="@dimen/oculo_card_rows_inset" android:insetRight="@dimen/oculo_card_rows_inset" android:insetTop="0dp" android:insetBottom="@dimen/oculo_card_row_gap">
             <shape android:shape="rectangle">
                 <solid android:color="@color/oculo_white_focus" />
-                <corners android:radius="8dp" />
+                <corners android:radius="@dimen/oculo_card_pill_radius" />
             </shape>
         </inset>
     </item>

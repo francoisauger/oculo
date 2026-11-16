@@ -90,4 +90,7 @@
     <bool name="oculo_settings_tiles">true</bool>
     <!-- Settings (0.11.0): list at left, detail at right (OculoSettingsFragment) -->
     <bool name="oculo_settings_screen">true</bool>
+
+    <!-- Oculo panel (0.12.0): every drawer is the Settings card floating at the right (OculoPanel) -->
+    <bool name="oculo_panel">true</bool>
 </resources>

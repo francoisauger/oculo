@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.12.0): the one set of tokens shared by the Settings detail card (0.11.0, values/oculo_settings_screen.xml
+     aliases them) and the Oculo panel (every drawer: menus, player settings, comments, video info, confirmations…,
+     values/oculo_panel.xml). Change a size or a color here and both follow, so they cannot drift.
+     Measured on docs/mockups/drawers/drawers-redesign.html and the 0.11.0 TV capture
+     (docs/mockups/settings/tv/current-menu.png, 1920 x 1080, 2 px = 1dp). -->
+<resources>
+    <!-- Card -->
+    <dimen name="oculo_card_radius">15dp</dimen>
+    <dimen name="oculo_card_border">0.5dp</dimen>
+    <color name="oculo_card_border">#12FFFFFF</color>
+    <dimen name="oculo_card_padding_h">20dp</dimen>
+    <dimen name="oculo_card_padding_top">20dp</dimen>
+    <dimen name="oculo_card_header_bottom">10dp</dimen>
+
+    <!-- Header: grey context label, Roboto Condensed title, one line of Roboto description -->
+    <dimen name="oculo_card_label">10.5sp</dimen>
+    <dimen name="oculo_card_title">19sp</dimen>
+    <dimen name="oculo_card_desc">10.5sp</dimen>
+    <color name="oculo_card_secondary">#9A9A9A</color>
+    <color name="oculo_card_title_text">#F1F1F1</color>
+
+    <!-- Rows -->
+    <dimen name="oculo_card_row_min_height">40dp</dimen>
+    <dimen name="oculo_card_row_gap">1dp</dimen>
+    <dimen name="oculo_card_row_padding_h">13dp</dimen>
+    <!-- Space between the card edge and the focus pill -->
+    <dimen name="oculo_card_rows_inset">7dp</dimen>
+    <dimen name="oculo_card_row_title">14.5sp</dimen>
+    <dimen name="oculo_card_row_desc">10.5sp</dimen>
+    <dimen name="oculo_card_row_value">12.5sp</dimen>
+    <dimen name="oculo_card_heading">11sp</dimen>
+    <dimen name="oculo_card_pill_radius">10dp</dimen>
+    <color name="oculo_card_value_rest">#B9B9B9</color>
+    <color name="oculo_card_heading_text">#8F8F8F</color>
+    <color name="oculo_card_teal">#22D3C8</color>
+    <color name="oculo_card_teal_mid">#0B7F7D</color>
+
+    <!-- Fades at the top and bottom of rows that scroll -->
+    <dimen name="oculo_card_fade">22dp</dimen>
+    <dimen name="oculo_card_fade_bottom">44dp</dimen>
+</resources>

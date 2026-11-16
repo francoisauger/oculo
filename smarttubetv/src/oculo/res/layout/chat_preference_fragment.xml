@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): flavor copy of upstream's comments and live chat layout. Same card and header as every
+     panel (OculoPanel: « Comments » / « Replies », the video title below); the comment bubbles of 32.74-17
+     (OculoComments) are unchanged inside. Re-sync if upstream changes it. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:transitionGroup="false">
+
+    <include layout="@layout/oculo_panel_header" />
+
+    <com.stfalcon.chatkit.messages.MessagesList
+        android:id="@+id/messagesList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/oculo_panel_rows_bottom"
+        app:incomingAvatarHeight="30dp"
+        app:incomingAvatarWidth="30dp"
+        app:incomingBubblePaddingBottom="0sp"
+        app:incomingBubblePaddingLeft="10sp"
+        app:incomingBubblePaddingRight="10sp"
+        app:incomingBubblePaddingTop="0sp"
+        app:incomingDefaultBubbleColor="@color/comments_bg"
+        app:incomingDefaultBubblePressedColor="@color/comments_bg_pressed"
+        app:incomingDefaultBubbleSelectedColor="@color/comments_bg_pressed"
+        app:incomingTextColor="@color/white"
+        app:isMessageFocusable="true"
+        app:showIncomingTime="false"
+        app:textAutoLink="web" />
+
+</LinearLayout>

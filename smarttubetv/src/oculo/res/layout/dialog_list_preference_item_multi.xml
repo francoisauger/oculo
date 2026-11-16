@@ -1,46 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Oculo (0.11.0, design.md M1): flavor copy of the upstream layout with the white focus pill
-     (drawable/oculo_list_focus), dark ink when focused (color/oculo_list_*). Re-sync if upstream changes it. -->
-
+<!-- Oculo (0.11.0, M1; 0.12.0 Oculo panel): flavor copy of the upstream layout, a button of a list (menus,
+     confirmations) at the Settings card's sizes: white focus pill, Roboto Condensed title. Same ids as upstream
+     (the check box stays hidden). Re-sync if upstream changes it. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/oculo_list_focus"
     android:clickable="true"
-    android:focusable="true"
     android:descendantFocusability="blocksDescendants"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/oculo_panel_row_height"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/lb_preference_item_padding_start"
-    android:paddingEnd="@dimen/lb_preference_item_padding_end" >
+    android:paddingStart="@dimen/oculo_panel_row_padding"
+    android:paddingTop="5dp"
+    android:paddingEnd="@dimen/oculo_panel_row_padding"
+    android:paddingBottom="6dp">
 
     <CheckBox
         android:id="@+id/button"
-        android:duplicateParentState="true"
-        android:buttonTint="@color/oculo_list_control"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:focusable="false"
-        android:clickable="false"
-        android:layout_marginEnd="@dimen/lb_preference_item_icon_margin_end"
-        android:visibility="gone"
-        android:layout_gravity="center_vertical" />
-
-    <LinearLayout android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:duplicateParentState="true"
-        android:orientation="vertical">
-        <Space android:layout_width="0dp" android:layout_height="@dimen/lb_preference_item_text_space_top" />
-        <TextView
-            android:id="@android:id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/lb_preference_item_primary_text_margin_bottom"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/oculo_list_title"
-            android:duplicateParentState="true"
-            android:textSize="@dimen/lb_preference_item_primary_text_size"/>
-        <Space android:layout_width="0dp" android:layout_height="@dimen/lb_preference_item_text_space_bottom" />
-    </LinearLayout>
+        android:focusable="false"
+        android:visibility="gone" />
 
+    <TextView
+        android:id="@android:id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:duplicateParentState="true"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="@color/oculo_list_title"
+        android:textSize="@dimen/oculo_card_row_title" />
 </LinearLayout>

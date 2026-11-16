@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): flavor copy of upstream's layout (smarttubetv/src/main/res/layout, itself leanback's).
+     The card is drawn by the container (OculoPanel), so no background here; header = layout/oculo_panel_header.
+     The library adds the rows (VerticalGridView) at the end of main_frame. Re-sync if upstream changes it. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:transitionGroup="false">
+
+    <include layout="@layout/oculo_panel_header" />
+
+</LinearLayout>

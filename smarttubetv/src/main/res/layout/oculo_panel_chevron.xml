@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): chevron at the right of a row that opens another level (preference widget) -->
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="14dp"
+    android:layout_height="14dp"
+    android:layout_gravity="center_vertical"
+    android:duplicateParentState="true"
+    android:importantForAccessibility="no"
+    android:src="@drawable/oculo_settings_ic_chevron"
+    android:tint="@color/oculo_settings_chevron" />

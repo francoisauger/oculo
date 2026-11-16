@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): flavor copy of leanback's category row, as the Settings card's heading (grey Roboto 11sp,
+     aligned with the row titles). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="34dp"
+    android:paddingStart="@dimen/oculo_panel_row_padding"
+    android:paddingEnd="@dimen/oculo_panel_row_padding">
+
+    <TextView
+        android:id="@android:id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:layout_marginBottom="6dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/oculo_card_heading_text"
+        android:textSize="@dimen/oculo_card_heading" />
+</FrameLayout>

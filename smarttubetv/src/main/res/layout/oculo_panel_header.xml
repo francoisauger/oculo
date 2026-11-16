@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): header of every drawer, the Settings card's: grey context label (or the path to a nested
+     level), Roboto Condensed title (two lines at most), one line of Roboto description. Filled by OculoPanel.
+     Keeps upstream's ids: decor_title_container (a FrameLayout, hidden by ViewUtil.enableTransparentDialog) and
+     decor_title (set by the drawers). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/decor_title_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/oculo_card_padding_h"
+    android:paddingTop="@dimen/oculo_card_padding_top"
+    android:paddingEnd="@dimen/oculo_card_padding_h"
+    android:paddingBottom="@dimen/oculo_card_header_bottom"
+    android:transitionGroup="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/oculo_panel_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:ellipsize="start"
+            android:fontFamily="sans-serif"
+            android:singleLine="true"
+            android:textColor="@color/oculo_card_secondary"
+            android:textSize="@dimen/oculo_card_label"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/decor_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-condensed"
+            android:maxLines="2"
+            android:textColor="@color/oculo_card_title_text"
+            android:textSize="@dimen/oculo_card_title" />
+
+        <TextView
+            android:id="@+id/oculo_panel_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:singleLine="true"
+            android:textColor="@color/oculo_card_secondary"
+            android:textSize="@dimen/oculo_card_desc"
+            android:visibility="gone" />
+    </LinearLayout>
+</FrameLayout>

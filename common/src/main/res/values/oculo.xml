@@ -82,4 +82,13 @@
     <string name="oculo_audio_label_auto_dubbed">Auto-dubbed</string>
     <string name="oculo_audio_label_descriptive">Audio description</string>
     <string name="oculo_audio_label_secondary">Secondary</string>
+
+    <!-- Oculo panel (0.12.0, docs/mockups/drawers/drawers-redesign.html): every drawer becomes the Settings card
+         floating at the right (OculoPanel). Upstream look when false; the oculo flavor sets it true. -->
+    <bool name="oculo_panel">false</bool>
+    <string name="oculo_panel_playback">Playback</string>
+    <string name="oculo_panel_comments">Comments</string>
+    <string name="oculo_panel_replies">Replies</string>
+    <string name="oculo_panel_about_video">About this video</string>
+    <string name="oculo_panel_skip_in">in %d s</string>
 </resources>

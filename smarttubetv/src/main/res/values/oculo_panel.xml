@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0, docs/mockups/drawers/drawers-redesign.html « La proposition »): every drawer of the app
+     (AppDialogFragment) is the Settings detail card, floating in the right band SmartTube already reserves for its
+     drawer (lb_settings_pane_width, 360dp = 37.5 % of a 960dp screen; the player shrinks the video to the left of it,
+     BasePlayerController). 328 + 24 (right margin) + 8 = 360dp, so the card never covers the shrunk video.
+     Type sizes, row sizes and colors: values/oculo_card.xml (shared with the Settings card). -->
+<resources>
+    <dimen name="oculo_panel_width">328dp</dimen>
+    <!-- Outer margins (top, bottom, screen edge) and the inner one (towards the video / Home) -->
+    <dimen name="oculo_panel_margin">24dp</dimen>
+    <dimen name="oculo_panel_margin_inner">8dp</dimen>
+    <!-- Rows: the Settings card's 40dp + 1dp gap; text 20dp from the card edge (7dp pill inset + 13dp) -->
+    <dimen name="oculo_panel_row_height">41dp</dimen>
+    <dimen name="oculo_panel_row_padding">20dp</dimen>
+    <dimen name="oculo_panel_fading_edge">28dp</dimen>
+    <dimen name="oculo_panel_rows_bottom">16dp</dimen>
+    <integer name="oculo_panel_fade_ms">150</integer>
+
+    <!-- Card: opaque dark with the Settings glow at the top right (a little less on the video) -->
+    <color name="oculo_panel_background">#0C1112</color>
+    <color name="oculo_panel_glow">#2132E6DC</color>
+    <color name="oculo_panel_background_player">#0E1011</color>
+    <color name="oculo_panel_glow_player">#1A32E6DC</color>
+    <!-- Home, search, channels: black at 58 % behind the card -->
+    <color name="oculo_panel_scrim">#94000000</color>
+    <!-- Player with « Don't resize the video »: gradient on the card's side only, up to 62 % -->
+    <color name="oculo_panel_scrim_side">#9E000000</color>
+
+    <!-- Small card at the bottom right of the player (SponsorBlock « ask », chapter notice) -->
+    <dimen name="oculo_notice_width">300dp</dimen>
+    <color name="oculo_notice_background">#E6101314</color>
+    <item name="oculo_panel_fades" type="id" />
+</resources>

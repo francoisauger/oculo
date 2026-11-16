@@ -24,6 +24,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.views.AppDialogView;
 import com.liskovsoft.smartyoutubetv2.common.misc.MotherActivity;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoPanel;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.ChatPreference;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.ChatPreferenceDialogFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.CommentsPreference;
@@ -133,6 +134,7 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
         mIsTransparent = stackIsEmpty ? isTransparent : mIsTransparent;
         mIsOverlay = isOverlay;
         mId = id;
+        OculoPanel.applyFrame(this, mIsTransparent, mIsOverlay); // Oculo: the Settings card, floating at the right
 
         if (isExpandable && categories != null && categories.size() == 1) {
             OptionCategory category = categories.get(0);
@@ -224,6 +226,7 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
         final FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         final Fragment prevFragment =
                 getChildFragmentManager().findFragmentByTag(PREFERENCE_FRAGMENT_TAG);
+        OculoPanel.onStartFragment(prevFragment, fragment); // Oculo: path label, levels fade in place
         if (prevFragment != null) {
             transaction
                     .addToBackStack(null)
@@ -326,6 +329,12 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
             }
 
             return view;
+        }
+
+        @Override
+        public void onViewCreated(View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            OculoPanel.bindHeader(this, view); // Oculo: panel header
         }
 
         private void initPrefs() {

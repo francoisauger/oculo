@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Oculo: comments panel item (OculoComments.holders(), flag oculo_comments_airy), from chatkit's
      item_incoming_text_message.xml (same ids, same holder). Google TV / YouTube TV style, calm and airy:
-     24dp side margins (the panel title's), 14dp between comments, 30dp avatar aligned with the meta line,
+     20dp side margins (the panel header's, oculo_card_padding_h; 24dp before 0.12.0), 14dp between comments, 30dp avatar aligned with the meta line,
      12dp / 16dp inside the bubble (chatkit applies the list's 10sp bubble padding, the text adds the rest),
      regular sans-serif body (upstream: condensed, 0.9 line spacing) with 1.28 line spacing, focus ring. -->
 <com.stfalcon.chatkit.commons.widgets.FocusFixRelativeLayout
@@ -10,10 +10,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="14dp"
-    android:layout_marginLeft="24dp"
-    android:layout_marginStart="24dp"
-    android:layout_marginRight="24dp"
-    android:layout_marginEnd="24dp"
+    android:layout_marginLeft="@dimen/oculo_card_padding_h"
+    android:layout_marginStart="@dimen/oculo_card_padding_h"
+    android:layout_marginRight="@dimen/oculo_card_padding_h"
+    android:layout_marginEnd="@dimen/oculo_card_padding_h"
     android:layout_marginTop="0dp"
     android:focusable="false">
 

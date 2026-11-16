@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.12.0): small card at the bottom right of the player (SponsorBlock « ask », chapter notice) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/oculo_notice_background" />
+    <stroke android:width="@dimen/oculo_card_border" android:color="@color/oculo_card_border" />
+    <corners android:radius="@dimen/oculo_card_radius" />
+</shape>

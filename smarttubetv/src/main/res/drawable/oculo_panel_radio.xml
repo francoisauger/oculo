@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): radio of the value lists, the Settings card's (16dp ring, turquoise when chosen,
+     darker on the white focus pill) -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:drawable="@drawable/oculo_settings_radio_on" />
+    <item android:drawable="@drawable/oculo_settings_radio_off" />
+</selector>

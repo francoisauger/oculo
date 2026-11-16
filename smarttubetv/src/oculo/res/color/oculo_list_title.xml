@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Oculo (0.11.0, M1): row title, dark ink on the white focus pill -->
+<!-- Oculo (0.11.0, M1; 0.12.0 the Settings card's #F1F1F1): row title, dark ink on the white focus pill -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true" android:color="@color/oculo_white_focus_ink" />
     <item android:state_enabled="false" android:color="#4DEEEEEE" />
-    <item android:color="#EEEEEE" />
+    <item android:color="@color/oculo_card_title_text" />
 </selector>

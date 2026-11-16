@@ -18,8 +18,11 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.preference;
 
 import android.app.Fragment;
 import android.os.Build;
+import android.os.Bundle;
+import android.view.View;
 import androidx.preference.DialogPreference;
 import androidx.preference.Preference;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoPanel;
 
 public class LeanbackPreferenceDialogFragment extends Fragment {
     private Preference mPref;
@@ -32,6 +35,12 @@ public class LeanbackPreferenceDialogFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= 21) {
             LeanbackPreferenceFragmentTransitionHelperApi21.addTransitions(this);
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        OculoPanel.bindHeader(this, view); // Oculo: panel header
     }
 
     // MOD: Fix Android 9 error by allowing null fragments

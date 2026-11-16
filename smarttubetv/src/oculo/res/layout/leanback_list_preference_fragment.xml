@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo panel (0.12.0): flavor copy of upstream's layout (value lists, confirmations, long texts such as the video
+     description). Card drawn by the container (OculoPanel), header = layout/oculo_panel_header, rows inset like the
+     Settings card with fades when they scroll (OculoPanel). The message keeps upstream's id and behaviour (focusable, links
+     and time codes, scrolls by itself), as Roboto prose 16sp 1.28 (OculoParagraphText). Re-sync if upstream changes it. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:transitionGroup="false">
+
+    <include layout="@layout/oculo_panel_header" />
+
+    <TextView
+        android:id="@android:id/message"
+        style="@style/OculoParagraphText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/oculo_card_padding_h"
+        android:paddingTop="4dp"
+        android:paddingEnd="@dimen/oculo_card_padding_h"
+        android:paddingBottom="@dimen/oculo_card_padding_h"
+        android:requiresFadingEdge="vertical"
+        android:fadingEdgeLength="@dimen/oculo_panel_fading_edge"
+        android:scrollbars="none"
+        android:textColor="#D8D8D8"
+        android:visibility="gone" />
+
+    <androidx.leanback.widget.VerticalGridView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/oculo_panel_rows_bottom"
+        android:transitionGroup="true" />
+
+</LinearLayout>
