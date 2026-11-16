@@ -1,5 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu;
 
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoPanelInfo;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatching;
 import android.content.Context;
 import com.liskovsoft.mediaserviceinterfaces.MediaItemService;
@@ -194,6 +195,7 @@ public class VideoMenuPresenter extends BaseMenuPresenter {
 
         if (!mDialogPresenter.isEmpty()) {
             String title = mVideo != null ? mVideo.getTitle() : null;
+            OculoPanelInfo.forVideo(title, mVideo); // Oculo: panel header (channel, views · date)
             // No need to add author because: 1) This could be a channel card. 2) This info isn't so important.
             mDialogPresenter.showDialog(title);
         }
@@ -216,6 +218,7 @@ public class VideoMenuPresenter extends BaseMenuPresenter {
 
         if (!mDialogPresenter.isEmpty()) {
             String title = mVideo != null ? mVideo.getTitle() : null;
+            OculoPanelInfo.forVideo(title, mVideo); // Oculo: panel header (channel, views · date)
             mDialogPresenter.showDialog(title);
         }
     }

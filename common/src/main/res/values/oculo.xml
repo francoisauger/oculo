@@ -91,4 +91,8 @@
     <string name="oculo_panel_replies">Replies</string>
     <string name="oculo_panel_about_video">About this video</string>
     <string name="oculo_panel_skip_in">in %d s</string>
+    <string name="oculo_panel_account">Account</string>
+    <string name="oculo_panel_accounts">Accounts on this TV: %d</string>
+    <string name="oculo_panel_search">Search</string>
+    <string name="oculo_panel_channel">Channel</string>
 </resources>

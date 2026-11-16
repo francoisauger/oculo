@@ -1,5 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu;
 
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoPanelInfo;
 import android.content.Context;
 import com.liskovsoft.mediaserviceinterfaces.MediaItemService;
 import com.liskovsoft.mediaserviceinterfaces.ServiceManager;
@@ -80,6 +81,7 @@ public class ChannelUploadsMenuPresenter extends BaseMenuPresenter {
         appendMarkAsWatched();
         appendTogglePinVideoToSidebarButton();
 
+        OculoPanelInfo.forChannel(getContext(), mVideo.getTitle(), mVideo); // Oculo: panel header
         mDialogPresenter.showDialog(mVideo.getTitle());
     }
 

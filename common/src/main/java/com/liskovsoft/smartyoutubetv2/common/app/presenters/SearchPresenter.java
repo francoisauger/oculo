@@ -1,5 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.common.app.presenters;
 
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoPanelInfo;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import com.liskovsoft.mediaserviceinterfaces.ContentService;
@@ -127,6 +128,7 @@ public class SearchPresenter extends BasePresenter<SearchView> implements VideoG
         appendRemoveSearchTagButton(settingsPresenter, item);
         appendClearSearchHistoryButton(settingsPresenter);
 
+        OculoPanelInfo.forLabel(getContext(), getContext().getString(R.string.settings_search), R.string.oculo_panel_search); // Oculo
         settingsPresenter.showDialog(getContext().getString(R.string.settings_search));
     }
 
@@ -328,6 +330,7 @@ public class SearchPresenter extends BasePresenter<SearchView> implements VideoG
         appendSortByCategory(settingsPresenter);
         OculoSettingsTiles.appendMoreSettings(getContext(), settingsPresenter, false); // Oculo: the Settings section
 
+        OculoPanelInfo.forLabel(getContext(), getContext().getString(R.string.settings_search), R.string.oculo_panel_search); // Oculo
         settingsPresenter.showDialog(getContext().getString(R.string.settings_search));
     }
 

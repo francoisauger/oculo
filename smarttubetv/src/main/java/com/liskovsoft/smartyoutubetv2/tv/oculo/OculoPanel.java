@@ -416,8 +416,16 @@ public final class OculoPanel {
         }
 
         if (preference instanceof ListPreference) {
-            // ListPreference formats the summary with its current entry (androidx.preference), so it follows changes
-            preference.setSummary("%s");
+            ListPreference list = (ListPreference) preference;
+            setValueSummary(list, list.getValue());
+            Preference.OnPreferenceChangeListener upstream = list.getOnPreferenceChangeListener();
+            list.setOnPreferenceChangeListener((pref, newValue) -> {
+                boolean accepted = upstream == null || upstream.onPreferenceChange(pref, newValue);
+                if (accepted) {
+                    setValueSummary(list, newValue != null ? newValue.toString() : null);
+                }
+                return accepted;
+            });
         } else if (preference instanceof MultiSelectListPreference) {
             preference.setWidgetLayoutResource(R.layout.oculo_panel_chevron);
         } else if (!(preference instanceof CheckBoxPreference) && preference.getClass() != Preference.class) {
@@ -425,6 +433,21 @@ public final class OculoPanel {
         }
 
         return preference;
+    }
+
+    /**
+     * The chosen value's title, first line only (upstream appends an item's description to its title after a line
+     * break). ListPreference formats its summary with String.format(), hence the escaped percent signs.
+     */
+    private static void setValueSummary(ListPreference list, String value) {
+        int index = value != null ? list.findIndexOfValue(value) : -1;
+        CharSequence[] entries = list.getEntries();
+        String text = index >= 0 && entries != null && index < entries.length && entries[index] != null ? entries[index].toString() : "";
+        int lineBreak = text.indexOf('\n');
+        if (lineBreak >= 0) {
+            text = text.substring(0, lineBreak);
+        }
+        list.setSummary(text.trim().replace("%", "%%"));
     }
 
     // -------------------------------------------------------------------------------------------------------------

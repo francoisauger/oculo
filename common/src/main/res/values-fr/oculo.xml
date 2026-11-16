@@ -26,4 +26,8 @@
     <string name="oculo_panel_replies">Réponses</string>
     <string name="oculo_panel_about_video">À propos de la vidéo</string>
     <string name="oculo_panel_skip_in">dans %d s</string>
+    <string name="oculo_panel_account">Compte</string>
+    <string name="oculo_panel_accounts">Comptes sur ce téléviseur : %d</string>
+    <string name="oculo_panel_search">Recherche</string>
+    <string name="oculo_panel_channel">Chaîne</string>
 </resources>

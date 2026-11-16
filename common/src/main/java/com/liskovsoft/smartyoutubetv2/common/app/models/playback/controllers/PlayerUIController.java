@@ -1,5 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.common.app.models.playback.controllers;
 
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoPanelInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.KeyEvent;
@@ -509,6 +510,7 @@ public class PlayerUIController extends BasePlayerController {
         String title = String.format("%s - %s", video.getTitleFull(), video.getAuthor());
 
         dialogPresenter.appendLongTextCategory(title, UiOptionItem.from(description));
+        OculoPanelInfo.forVideoInfo(getContext(), title, video); // Oculo: panel header (title, channel · views · date)
 
         dialogPresenter.showDialog(title);
     }

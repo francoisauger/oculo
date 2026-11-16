@@ -350,7 +350,7 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
             if (mCategories != null) {
                 for (OptionCategory category : mCategories) {
                     if (category.options != null) {
-                        screen.addPreference(mManager.createPreference(category));
+                        screen.addPreference(OculoPanel.decorate(mManager.createPreference(category))); // Oculo: value at the right
                     }
                 }
             }

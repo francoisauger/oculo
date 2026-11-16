@@ -1,5 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.common.app.presenters.settings;
 
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoPanelInfo;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -75,8 +76,10 @@ public class AccountSettingsPresenter extends BasePresenter<Void> {
         Account account = getSignInService().getSelectedAccount();
         int accountIndex = accounts != null ? accounts.indexOf(account) : -1;
         CharSequence accountIcon = accountIndex != -1 ? Utils.icon(icons.get(accountIndex)) : null;
-        settingsPresenter.showDialog(account != null ? TextUtils.concat(accountIcon, " ", account.getName())
-                : getContext().getString(R.string.settings_accounts), this::unhold);
+        CharSequence dialogTitle = account != null ? TextUtils.concat(accountIcon, " ", account.getName())
+                : getContext().getString(R.string.settings_accounts);
+        OculoPanelInfo.forAccount(getContext(), dialogTitle, accounts != null ? accounts.size() : 0); // Oculo: panel header
+        settingsPresenter.showDialog(dialogTitle, this::unhold);
     }
 
     private void appendSelectAccountSection(List<Account> accounts, List<Drawable> icons, AppDialogPresenter settingsPresenter) {
