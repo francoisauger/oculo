@@ -10,4 +10,13 @@
     <string name="oculo_voice_search">Recherche vocale</string>
     <!-- In-player SponsorBlock notice (OculoSkipNotice); %s = segment category -->
     <string name="oculo_segment_skipped">Segment passé : %s</string>
+    <!-- « Formats audio » (OculoAudioTracks) -->
+    <string name="oculo_audio_bitrate">%1$s Mb/s</string>
+    <string name="oculo_audio_label_original">Original</string>
+    <string name="oculo_audio_label_voice_boost">Voix renforcée</string>
+    <string name="oculo_audio_label_stable_volume">Volume stable</string>
+    <string name="oculo_audio_label_dubbed">Doublé</string>
+    <string name="oculo_audio_label_auto_dubbed">Doublage auto</string>
+    <string name="oculo_audio_label_descriptive">Audiodescription</string>
+    <string name="oculo_audio_label_secondary">Secondaire</string>
 </resources>

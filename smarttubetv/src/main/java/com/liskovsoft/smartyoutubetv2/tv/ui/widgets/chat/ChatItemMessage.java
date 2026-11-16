@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoComments;
 
 public class ChatItemMessage implements IMessage {
     private static final int MAX_LENGTH = 700;
@@ -49,7 +50,11 @@ public class ChatItemMessage implements IMessage {
                     commentItem.getPublishedDate(),
                     commentItem.getReplyCount(),
                     commentItem.isLiked() ? String.format("(%s)", context.getString(R.string.you_liked)) : null);
-            message.mText = TextUtils.concat(Utils.bold(header), "\n", Utils.createSmallNewLine(), commentItem.getMessage());
+            message.mText = OculoComments.isEnabled(context) ? OculoComments.formatComment(commentItem.getAuthorName(), commentItem.getMessage(), // Oculo: lighter meta line
+                    commentItem.getLikeCount() != null ? String.format("%s %s", commentItem.getLikeCount(), Helpers.THUMB_UP) : null,
+                    commentItem.getPublishedDate(), commentItem.getReplyCount(),
+                    commentItem.isLiked() ? String.format("(%s)", context.getString(R.string.you_liked)) : null) :
+                    TextUtils.concat(Utils.bold(header), "\n", Utils.createSmallNewLine(), commentItem.getMessage());
         }
         message.mAuthor = ChatItemAuthor.from(commentItem);
         message.mCreatedAt = new Date();

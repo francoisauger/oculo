@@ -49,4 +49,9 @@
     <color name="dark_red">@color/oculo_abricot</color>
     <!-- Keep the "Red" color scheme red (it pointed at dark_red) -->
     <color name="scheme_red_background_dark">#B31217</color>
+    <!-- Comments panel bubbles (upstream #303030 and a light-blue focus overlay #27C2DCF2): subtler bubble on the
+         #202124 panel, focus = white 8 % overlay + the white ring (drawable/oculo_comment_focus_ring.xml). Also the
+         live chat dialog, which shares chat_preference_fragment.xml. -->
+    <color name="comments_bg">#2A2B2E</color>
+    <color name="comments_bg_pressed">#14FFFFFF</color>
 </resources>

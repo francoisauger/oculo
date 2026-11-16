@@ -276,7 +276,7 @@ public class OculoContinueWatching {
             }
         }
         if (!changed.isEmpty()) {
-            view.updateSection(createGroupOf(changed, VideoGroup.ACTION_SYNC));
+            view.updateSection(createRefGroup(changed, VideoGroup.ACTION_SYNC));
         }
     }
 
@@ -353,7 +353,7 @@ public class OculoContinueWatching {
         if (mShown.isEmpty() && dropEmptyRow) {
             view.updateSection(createGroup(Collections.emptyList(), VideoGroup.ACTION_REPLACE)); // removes the row
         } else {
-            view.updateSection(createGroupOf(removed, VideoGroup.ACTION_REMOVE));
+            view.updateSection(createRefGroup(removed, VideoGroup.ACTION_REMOVE));
         }
     }
 
@@ -619,7 +619,10 @@ public class OculoContinueWatching {
         return group;
     }
 
-    /** Same row, already shown videos (keeps their group). */
+    /**
+     * Same row, new cards (ACTION_PREPEND / ACTION_APPEND): {@code group.add()} makes this group theirs.
+     * Never use it for cards already on the row: see {@link #createRefGroup}.
+     */
     private VideoGroup createGroupOf(List<Video> videos, int action) {
         VideoGroup group = VideoGroup.from(mSection, ROW_POSITION);
         group.setId(GROUP_ID);
@@ -627,6 +630,26 @@ public class OculoContinueWatching {
         group.setPosition(ROW_POSITION); // ACTION_PREPEND resets it to 0; the cards keep the row's position
         for (Video video : videos) {
             group.add(video);
+        }
+        return group;
+    }
+
+    /**
+     * Same row, cards already shown (ACTION_REMOVE / ACTION_SYNC): a group that only refers to them, on its own
+     * copy of the list, and is never their group. 32.74-16 crash: these groups were built with
+     * {@code group.add()}, which makes the new group the cards' group; {@code VideoGroupObjectAdapter.remove()}
+     * iterates the group's videos and removes each one from its own group, i.e. from the very list it iterates
+     * (ConcurrentModificationException in Continue watching's in-place update).
+     */
+    static VideoGroup createRefGroup(List<Video> videos, int action) {
+        VideoGroup group = VideoGroup.from(new ArrayList<>(videos), null, ROW_POSITION); // keeps the cards' group
+        group.setId(GROUP_ID);
+        group.setAction(action);
+        group.setPosition(ROW_POSITION);
+        for (Video video : videos) {
+            if (video.getGroup() == group) { // a card without a group was adopted by from(): undo
+                video.setGroup(null);
+            }
         }
         return group;
     }

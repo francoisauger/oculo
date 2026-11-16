@@ -17,6 +17,8 @@
     <bool name="oculo_row_edge_clip">true</bool>
     <!-- About: no "Install bridge" button (it installs a third-party APK) -->
     <bool name="oculo_show_install_bridge">false</bool>
+    <!-- Audio: default track = the original (no voice boost, no stable volume), clearer « Audio formats » names (OculoAudioTracks) -->
+    <bool name="oculo_audio_original">true</bool>
 
     <!-- SponsorBlock segments, secondary color « Abricot » (docs/mockups/couleur-secondaire.html, option A):
          sponsor = main, intro and outro = light, self-promo = dark; the rare categories in greys so that
@@ -69,4 +71,6 @@
     <bool name="oculo_left_rail">true</bool>
     <!-- Rail items are not dimmed when unfocused: colors come from color/oculo_rail_icon and oculo_rail_label -->
     <item name="oculo_header_unselect_alpha" type="fraction">100%</item>
+    <!-- Comments panel: lighter, easier to read (OculoComments, docs/mockups/comments/) -->
+    <bool name="oculo_comments_airy">true</bool>
 </resources>

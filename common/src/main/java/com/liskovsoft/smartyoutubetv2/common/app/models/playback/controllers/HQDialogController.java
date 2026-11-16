@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoAudioTracks;
 
 public class HQDialogController extends BasePlayerController {
     private static final String TAG = HQDialogController.class.getSimpleName();
@@ -71,7 +72,7 @@ public class HQDialogController extends BasePlayerController {
         List<FormatItem> videoFormats = getPlayer().getVideoFormats();
         String videoFormatsTitle = getContext().getString(R.string.title_video_formats);
 
-        List<FormatItem> audioFormats = getPlayer().getAudioFormats();
+        List<FormatItem> audioFormats = OculoAudioTracks.forList(getContext(), getPlayer().getAudioFormats()); // Oculo: clearer names, originals first
         String audioFormatsTitle = getContext().getString(R.string.title_audio_formats);
 
         addCategoryInt(OptionCategory.from(

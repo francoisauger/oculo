@@ -18,6 +18,7 @@ import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.smartyoutubetv2.common.exoplayer.selector.track.AudioTrack;
 import com.liskovsoft.smartyoutubetv2.common.exoplayer.selector.track.MediaTrack;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoAudioTracks;
 import com.liskovsoft.smartyoutubetv2.common.exoplayer.selector.track.VideoTrack;
 import com.liskovsoft.smartyoutubetv2.common.exoplayer.versions.selector.RestoreTrackSelector;
 import com.liskovsoft.smartyoutubetv2.common.exoplayer.versions.selector.RestoreTrackSelector.TrackSelectorCallback;
@@ -475,6 +476,7 @@ public class TrackSelectorManager implements TrackSelectorCallback {
             MediaTrack tmpResult = null;
 
             MediaTrack[][] mediaTracks = filterByLanguage(renderer.mediaTracks, originTrack);
+            mediaTracks = OculoAudioTracks.filterForSelection(mContext, mediaTracks, originTrack); // Oculo: original audio first
 
             outerloop:
             for (int groupIndex = 0; groupIndex < mediaTracks.length; groupIndex++) {

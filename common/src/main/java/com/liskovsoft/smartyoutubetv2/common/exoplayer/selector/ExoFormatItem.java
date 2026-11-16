@@ -9,6 +9,7 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.smartyoutubetv2.common.exoplayer.selector.track.MediaTrack;
 import com.liskovsoft.smartyoutubetv2.common.exoplayer.selector.track.SubtitleTrack;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoAudioTracks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class ExoFormatItem implements FormatItem {
     private String mFormatId;
     private boolean mIsPreset;
     private boolean mIsDrc;
+    private boolean mIsVoiceBoost; // Oculo: same itag as the original, told apart by xtags
 
     public static List<FormatItem> from(Set<MediaTrack> mediaTracks) {
         if (mediaTracks == null) {
@@ -93,6 +95,7 @@ public class ExoFormatItem implements FormatItem {
                 formatItem.mId = format.id.hashCode();
                 formatItem.mFormatId = format.id;
                 formatItem.mIsDrc = format.isDrc;
+                formatItem.mIsVoiceBoost = OculoAudioTracks.isVoiceBoost(format);
             }
         } else {
             formatItem.mIsDefault = true; // fake auto track
@@ -152,6 +155,7 @@ public class ExoFormatItem implements FormatItem {
                     if (mFormatId != null && formatItem.mFormatId != null) {
                         return mType == formatItem.mType
                                 && mIsDrc == formatItem.mIsDrc                      // drc audio
+                                && mIsVoiceBoost == formatItem.mIsVoiceBoost        // Oculo: voice boost audio
                                 && Helpers.contains(SubtitleTrack.trim(mLanguage),  // dubbed audio
                                     SubtitleTrack.trim(formatItem.mLanguage))
                                 && Helpers.equals(mFormatId, formatItem.mFormatId); // instead of compare by bitrate
@@ -388,6 +392,11 @@ public class ExoFormatItem implements FormatItem {
     @Override
     public CharSequence getTitle() {
         return mTitle;
+    }
+
+    /** Oculo: clearer audio list names (OculoAudioTracks.forList) */
+    public void setTitle(CharSequence title) {
+        mTitle = title;
     }
 
     @Override

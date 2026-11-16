@@ -46,4 +46,16 @@
     <string name="oculo_voice_search">Search by voice</string>
     <!-- In-player SponsorBlock notice (OculoSkipNotice); %s = segment category -->
     <string name="oculo_segment_skipped">Skipped: %s</string>
+    <!-- Audio (OculoAudioTracks): default track = the original (no voice boost, no stable volume, original
+         language), clearer names and originals first in the « Audio formats » list. Off upstream. -->
+    <bool name="oculo_audio_original">false</bool>
+    <!-- « Audio formats » list names; %1$s = bitrate in Mb/s, already localized (0.16 / 0,16) -->
+    <string name="oculo_audio_bitrate">%1$s Mb/s</string>
+    <string name="oculo_audio_label_original">Original</string>
+    <string name="oculo_audio_label_voice_boost">Voice boost</string>
+    <string name="oculo_audio_label_stable_volume">Stable volume</string>
+    <string name="oculo_audio_label_dubbed">Dubbed</string>
+    <string name="oculo_audio_label_auto_dubbed">Auto-dubbed</string>
+    <string name="oculo_audio_label_descriptive">Audio description</string>
+    <string name="oculo_audio_label_secondary">Secondary</string>
 </resources>

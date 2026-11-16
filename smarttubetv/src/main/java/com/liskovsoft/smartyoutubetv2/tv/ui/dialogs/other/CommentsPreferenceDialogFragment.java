@@ -25,6 +25,7 @@ import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import java.util.List;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoComments;
 
 public class CommentsPreferenceDialogFragment extends LeanbackPreferenceDialogFragment {
     private static final String SENDER_ID = CommentsPreferenceDialogFragment.class.getSimpleName();
@@ -86,7 +87,7 @@ public class CommentsPreferenceDialogFragment extends LeanbackPreferenceDialogFr
         }
 
         MessagesList messagesList = (MessagesList) view.findViewById(R.id.messagesList);
-        MessagesListAdapter<ChatItemMessage> adapter = new MessagesListAdapter<>(SENDER_ID, (imageView, url, payload) ->
+        MessagesListAdapter<ChatItemMessage> adapter = new MessagesListAdapter<>(SENDER_ID, OculoComments.holders(view.getContext()), (imageView, url, payload) -> // Oculo: airy item
                 Glide.with(view.getContext())
                     .load(url)
                     .apply(ViewUtil.glideOptions())

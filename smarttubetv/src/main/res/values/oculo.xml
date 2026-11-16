@@ -122,4 +122,7 @@
          Transparent = unchanged (upstream); the oculo flavor sets Abricot in oculo_config.xml. -->
     <color name="oculo_card_live_viewers">#00000000</color>
     <color name="oculo_card_recent_time">#00000000</color>
+    <!-- Comments panel (OculoComments): airy layout `layout/oculo_comment_item.xml`, smaller grey meta line,
+         regular body font. Off upstream (chatkit's default item and upstream's bold header). -->
+    <bool name="oculo_comments_airy">false</bool>
 </resources>

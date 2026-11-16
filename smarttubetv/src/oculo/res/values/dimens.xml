@@ -42,4 +42,6 @@
     <dimen name="settings_image_size">30dp</dimen>
     <dimen name="settings_image_padding">20dp</dimen>
     <dimen name="oculo_settings_title_size">14sp</dimen>
+    <!-- chatkit bubbles (comments, live chat): 12dp corners like the cards (chatkit 15dp) -->
+    <dimen name="message_bubble_corners_radius">12dp</dimen>
 </resources>
