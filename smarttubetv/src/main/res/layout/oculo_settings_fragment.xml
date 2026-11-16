@@ -106,16 +106,30 @@
                     android:textSize="@dimen/oculo_settings_pane_text"
                     android:visibility="gone" />
 
-                <androidx.leanback.widget.VerticalGridView
-                    android:id="@+id/oculo_settings_rows"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:layout_marginTop="6dp"
-                    android:clipToPadding="false"
-                    android:paddingStart="7dp"
-                    android:paddingEnd="7dp"
-                    android:paddingBottom="24dp" />
+                    android:layout_marginTop="6dp">
+
+                    <androidx.leanback.widget.VerticalGridView
+                        android:id="@+id/oculo_settings_rows"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:paddingStart="7dp"
+                        android:paddingEnd="7dp"
+                        android:paddingBottom="24dp" />
+
+                    <!-- Rows scrolled under the title fade out -->
+                    <View
+                        android:id="@+id/oculo_settings_fade_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="22dp"
+                        android:layout_gravity="top"
+                        android:background="@drawable/oculo_settings_fade_top"
+                        android:visibility="gone" />
+                </FrameLayout>
             </LinearLayout>
 
             <View

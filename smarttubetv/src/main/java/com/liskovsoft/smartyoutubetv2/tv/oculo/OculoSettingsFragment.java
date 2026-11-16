@@ -117,6 +117,7 @@ public class OculoSettingsFragment extends Fragment implements BrowseSupportFrag
     private TextView mPaneDesc;
     private VerticalGridView mRows;
     private View mFade;
+    private View mFadeTop;
     private TextView mLocked;
     private RowsAdapter mAdapter;
 
@@ -156,6 +157,7 @@ public class OculoSettingsFragment extends Fragment implements BrowseSupportFrag
         mPaneDesc = root.findViewById(R.id.oculo_settings_pane_desc);
         mRows = root.findViewById(R.id.oculo_settings_rows);
         mFade = root.findViewById(R.id.oculo_settings_fade);
+        mFadeTop = root.findViewById(R.id.oculo_settings_fade_top);
         mLocked = root.findViewById(R.id.oculo_settings_locked);
 
         // Entering the section (from the rail, the top bar, the gear): focus on the category, not the Recent chips
@@ -785,7 +787,9 @@ public class OculoSettingsFragment extends Fragment implements BrowseSupportFrag
             return;
         }
 
-        mFade.setVisibility(mRows.getVisibility() == View.VISIBLE && mRows.canScrollVertically(1) ? View.VISIBLE : View.GONE);
+        boolean shown = mRows.getVisibility() == View.VISIBLE;
+        mFade.setVisibility(shown && mRows.canScrollVertically(1) ? View.VISIBLE : View.GONE);
+        mFadeTop.setVisibility(shown && mRows.canScrollVertically(-1) ? View.VISIBLE : View.GONE);
     }
 
     private int firstFocusable() {

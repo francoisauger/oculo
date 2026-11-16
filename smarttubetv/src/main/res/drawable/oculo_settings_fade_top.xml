@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.11.0): fade at the top of the detail pane's rows (rows scrolled under the title) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient android:angle="270" android:startColor="#F00C1010" android:endColor="#000C1010" />
+</shape>
