@@ -14,7 +14,6 @@ public class OculoData extends DataSaverBase {
     private static final int INDEX_HOME_HIDE_WATCHED = 1;
     private static final int INDEX_HOME_CONTINUE_WATCHING = 2;
     private static final int INDEX_THUMBNAIL_GLOW = 3;
-    private static final int INDEX_DEAD_SECTIONS_HIDDEN = 4;
     private static OculoData sInstance;
     private final Context mContext;
 
@@ -80,16 +79,5 @@ public class OculoData extends DataSaverBase {
 
     public void setThumbnailGlowEnabled(boolean enabled) {
         setBoolean(INDEX_THUMBNAIL_GLOW, enabled);
-    }
-
-    /**
-     * Kids and My videos were removed from the rail once (OculoSections, 32.74-18); later choices are the user's.
-     */
-    public boolean isDeadSectionsHidden() {
-        return getBoolean(INDEX_DEAD_SECTIONS_HIDDEN, false);
-    }
-
-    public void setDeadSectionsHidden(boolean hidden) {
-        setBoolean(INDEX_DEAD_SECTIONS_HIDDEN, hidden);
     }
 }

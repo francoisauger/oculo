@@ -163,6 +163,7 @@
     <dimen name="oculo_state_gap_button">28dp</dimen>
     <item name="oculo_error_title" type="id" />
     <item name="oculo_error_detail" type="id" />
+    <item name="oculo_error_content" type="id" />
     <color name="oculo_state_icon">#5E5E5E</color>
     <color name="oculo_state_text">#AAAAAA</color>
     <string name="oculo_state_empty_title">Nothing to show here</string>

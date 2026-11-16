@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -102,7 +103,69 @@ public final class OculoErrorState {
         // ErrorSupportFragment set baseline-based margins in onCreateView: back to the layout's spacing
         setTopMargin(root.findViewById(R.id.message), titleView.getVisibility() == View.VISIBLE ? R.dimen.oculo_state_gap_small : R.dimen.oculo_state_gap_large);
         setTopMargin(root.findViewById(R.id.button), R.dimen.oculo_state_gap_button);
+        CenterRightOfRail.install(root);
         return true;
+    }
+
+    /**
+     * 32.74-20: the state is centered in the part of the screen right of the rail, not on the whole window (it sat
+     * partly under the expanded rail). The visible area runs from the content's start line, read from the top bar's
+     * mic and pill group (it follows the rail, animated, see OculoTopBar.setStart()), to the rows' right padding.
+     * Checked before each frame while the state is shown, so it follows the rail as it opens and closes.
+     */
+    private static final class CenterRightOfRail implements ViewTreeObserver.OnPreDrawListener,
+            View.OnAttachStateChangeListener {
+        private final View mFrame;
+        private final View mContent;
+        private final int[] mLocation = new int[2];
+
+        private CenterRightOfRail(View frame, View content) {
+            mFrame = frame;
+            mContent = content;
+        }
+
+        static void install(View root) {
+            View content = root.findViewById(R.id.oculo_error_content);
+            if (content == null || root.getTag(R.id.oculo_error_content) != null) {
+                return;
+            }
+            CenterRightOfRail centering = new CenterRightOfRail(root, content);
+            root.setTag(R.id.oculo_error_content, centering);
+            root.addOnAttachStateChangeListener(centering);
+            if (root.isAttachedToWindow()) {
+                centering.onViewAttachedToWindow(root);
+            }
+        }
+
+        @Override
+        public void onViewAttachedToWindow(View v) {
+            v.getViewTreeObserver().addOnPreDrawListener(this);
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(View v) {
+            v.getViewTreeObserver().removeOnPreDrawListener(this);
+        }
+
+        @Override
+        public boolean onPreDraw() {
+            View root = mFrame.getRootView();
+            View orb = root != null ? root.findViewById(R.id.title_orb) : null;
+            View bar = orb != null && orb.getParent() instanceof View ? (View) orb.getParent() : null;
+            if (bar == null || !bar.isShown() || mFrame.getWidth() == 0) {
+                return true;
+            }
+            bar.getLocationOnScreen(mLocation);
+            int start = mLocation[0];
+            mFrame.getLocationOnScreen(mLocation);
+            int end = root.getWidth() - mFrame.getResources().getDimensionPixelSize(R.dimen.lb_browse_padding_start);
+            float naturalCenter = mLocation[0] + mFrame.getWidth() / 2f;
+            float target = start < end ? (start + end) / 2f - naturalCenter : 0;
+            if (Math.abs(mContent.getTranslationX() - target) >= 1) {
+                mContent.setTranslationX(target);
+            }
+            return true;
+        }
     }
 
     private static String describe(Throwable error) {

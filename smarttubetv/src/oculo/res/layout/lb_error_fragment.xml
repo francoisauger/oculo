@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Oculo (32.74-18, design.md M9): copy of leanback-1.0.0's lb_error_fragment.xml (same ids: error_frame, image,
      message, button) laid out as Oculo's empty / error state: the logo's TV outline, a title (oculo_error_title),
-     the explanation, a detail line (oculo_error_detail) and a pill button, centered. OculoErrorState fills it.
+     the explanation, a detail line (oculo_error_detail) and a pill button, centered. OculoErrorState fills it and keeps oculo_error_content centered right of the rail.
      Re-sync if upstream changes that layout. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/error_frame"
@@ -16,6 +16,7 @@
     android:nextFocusDown="@id/error_frame">
 
     <LinearLayout
+        android:id="@+id/oculo_error_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
