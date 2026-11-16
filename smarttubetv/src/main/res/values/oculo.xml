@@ -136,11 +136,14 @@
 
     <!-- Search screen (M3, OculoSearchBar): the bar sits where Home's top bar is. Content start = collapsed rail
          (oculo_rail_collapsed_width 38dp) + the rows' 56dp padding; the search rows start 56dp from the edge
-         (leanback's padding), so the results are shifted by the difference. Field wider than Home's pill (it
-         "opens"), same start, same height. Clock and wordmark 56dp from the right edge, as on Home. -->
+         (leanback's padding), so the results are shifted by the difference. Field a little wider than Home's
+         315dp pill, same start, same height (32.74-18 had 600dp: it ran under the clock); OculoSearchBar shortens it
+         if needed so the gear after it ends at least oculo_search_branding_gap before the clock and wordmark
+         (measured on screen). Clock and wordmark 56dp from the right edge, as on Home. -->
     <dimen name="oculo_search_content_start">94dp</dimen>
     <dimen name="oculo_search_rows_padding_start">56dp</dimen>
-    <dimen name="oculo_search_field_width">600dp</dimen>
+    <dimen name="oculo_search_field_width">360dp</dimen>
+    <dimen name="oculo_search_branding_gap">32dp</dimen>
     <dimen name="oculo_search_branding_end">56dp</dimen>
     <!-- Mic while listening: turquoise disc, dark mic (no red) -->
     <color name="oculo_search_listening">#22D3C8</color>

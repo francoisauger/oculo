@@ -113,7 +113,50 @@ public final class OculoSearchBar {
             }
         }
 
-        addBranding(frame, center);
+        View branding = addBranding(frame, center);
+        if (items != null) {
+            // The field never reaches the clock and logo: clamp it to the space left of them (32.74-19)
+            View gear = settingsOrb;
+            View.OnLayoutChangeListener clamp = (v, l, t, r, b, ol, ot, or, ob) -> fitField(items, gear, branding);
+            branding.addOnLayoutChangeListener(clamp);
+            searchBar.addOnLayoutChangeListener(clamp);
+        }
+    }
+
+    /**
+     * Field width = {@code oculo_search_field_width} (about Home's pill), reduced when needed so that the gear after it
+     * ends at least {@code oculo_search_branding_gap} before the clock and logo, measured on screen.
+     */
+    private static void fitField(View items, @Nullable View gear, View branding) {
+        if (branding.getWidth() == 0 || items.getWidth() == 0) {
+            return;
+        }
+        Resources res = items.getResources();
+        int[] itemsLoc = new int[2];
+        int[] brandingLoc = new int[2];
+        items.getLocationOnScreen(itemsLoc);
+        branding.getLocationOnScreen(brandingLoc);
+        int brandingStart = brandingLoc[0];
+        View clock = branding.findViewById(R.id.global_time);
+        View logoRow = clock != null && clock.getParent() instanceof View ? (View) clock.getParent() : null;
+        if (logoRow != null && logoRow.getParent() instanceof View) {
+            // lb_title_view_logo's root is wrap_content inside the holder: its left edge is the visible start
+            int[] rowLoc = new int[2];
+            ((View) logoRow.getParent()).getLocationOnScreen(rowLoc);
+            brandingStart = Math.max(brandingStart, rowLoc[0]);
+        }
+        int gearWidth = 0;
+        if (gear != null && gear.getVisibility() != View.GONE) {
+            gearWidth = res.getDimensionPixelSize(R.dimen.oculo_top_bar_height) + res.getDimensionPixelSize(R.dimen.oculo_top_bar_gap);
+        }
+        int available = brandingStart - res.getDimensionPixelSize(R.dimen.oculo_search_branding_gap) - gearWidth - itemsLoc[0];
+        int width = Math.min(res.getDimensionPixelSize(R.dimen.oculo_search_field_width), available);
+        width = Math.max(width, res.getDimensionPixelSize(R.dimen.oculo_top_bar_height) * 4);
+        ViewGroup.LayoutParams lp = items.getLayoutParams();
+        if (lp != null && lp.width != width) {
+            lp.width = width;
+            items.post(() -> items.setLayoutParams(lp));
+        }
     }
 
     /**
@@ -226,7 +269,7 @@ public final class OculoSearchBar {
     /**
      * Clock, date and wordmark at the top right, as on Home ({@code lb_title_view_logo}, sized by OculoTopBar's values).
      */
-    private static void addBranding(ViewGroup frame, int center) {
+    private static View addBranding(ViewGroup frame, int center) {
         Context context = frame.getContext();
         Resources res = context.getResources();
         FrameLayout holder = new FrameLayout(context);
@@ -270,5 +313,6 @@ public final class OculoSearchBar {
             }
             badge.setLayoutParams(lp);
         }
+        return holder;
     }
 }
