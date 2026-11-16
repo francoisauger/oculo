@@ -15,6 +15,7 @@ public class OculoData extends DataSaverBase {
     private static final int INDEX_HOME_CONTINUE_WATCHING = 2;
     private static final int INDEX_THUMBNAIL_GLOW = 3;
     private static final int INDEX_DEAD_SECTIONS_HIDDEN = 4;
+    private static final int INDEX_SETTINGS_ADVANCED = 5;
     private static OculoData sInstance;
     private final Context mContext;
 
@@ -91,5 +92,18 @@ public class OculoData extends DataSaverBase {
 
     public void setDeadSectionsHidden(boolean hidden) {
         setBoolean(INDEX_DEAD_SECTIONS_HIDDEN, hidden);
+    }
+
+    /**
+     * Settings (0.11.0): advanced mode shows every setting and the Advanced category (OculoSettingsModel). App-wide,
+     * not per account.
+     */
+    public boolean isSettingsAdvancedEnabled() {
+        return getBoolean(INDEX_SETTINGS_ADVANCED, false);
+    }
+
+    public void setSettingsAdvancedEnabled(boolean enabled) {
+        setBoolean(INDEX_SETTINGS_ADVANCED, enabled);
+        persistNow();
     }
 }

@@ -19,6 +19,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.presenters.settings.RemoteContr
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.settings.SearchSettingsPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.settings.SubtitleSettingsPresenter;
 import com.liskovsoft.smartyoutubetv2.common.exoplayer.selector.FormatItem.VideoPreset;
+import com.liskovsoft.smartyoutubetv2.common.oculo.settings.OculoSettingsTiles;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 
 import java.util.ArrayList;
@@ -39,6 +40,17 @@ public class AppDataSourceManager {
     }
 
     public List<SettingsItem> getSettingItems(Context context) {
+        if (OculoSettingsTiles.isEnabled(context)) { // Oculo: 7 categories by intention (+ Advanced), same preferences
+            return OculoSettingsTiles.getSettingItems(context);
+        }
+
+        return getClassicSettingItems(context);
+    }
+
+    /**
+     * Oculo: upstream's 13 tiles (also Oculo's Advanced › « Classic settings »).
+     */
+    public List<SettingsItem> getClassicSettingItems(Context context) {
         List<SettingsItem> settingItems = new ArrayList<>();
 
         settingItems.add(new SettingsItem(

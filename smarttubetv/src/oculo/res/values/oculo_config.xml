@@ -86,4 +86,6 @@
     <bool name="oculo_comments_airy">true</bool>
     <!-- Settings (0.11.0): no dead or duplicated settings, two themes (OculoSettingsCleanup) -->
     <bool name="oculo_settings_cleanup">true</bool>
+    <!-- Settings (0.11.0): 7 categories + Advanced, simple mode by default (OculoSettingsTiles) -->
+    <bool name="oculo_settings_tiles">true</bool>
 </resources>
