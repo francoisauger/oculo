@@ -74,7 +74,7 @@
     <string name="oculo_sum_video_quality">Qualité de départ de chaque vidéo.</string>
     <string name="oculo_sum_speed">Vitesse de lecture par défaut.</string>
     <string name="oculo_sum_skip_step">Saut d\'un appui sur gauche ou droite.</string>
-    <string name="oculo_sum_sleep_timer">Arrête la lecture après un moment.</string>
+    <string name="oculo_sum_sleep_timer">Met en pause si la télécommande ne sert pas un moment.</string>
     <string name="oculo_sum_audio_language">Piste audio à préférer.</string>
     <string name="oculo_sum_subtitle_style">Couleurs des sous-titres.</string>
     <string name="oculo_sum_subtitle_size">Taille des sous-titres à l\'écran.</string>
@@ -292,7 +292,7 @@
     <string name="oculo_set_skip_codec_check">Ignorer la vérification des codecs</string>
     <string name="oculo_set_skip_each_segment_only_once">Sauter chaque segment une seule fois</string>
     <string name="oculo_set_skip_step">Pas d\'avance</string>
-    <string name="oculo_set_sleep_timer">Minuterie de mise en veille</string>
+    <string name="oculo_set_sleep_timer">Pause si inactif</string>
     <string name="oculo_set_software_decoder">Décodeur logiciel</string>
     <string name="oculo_set_sort_channels_by">Trier les chaînes par</string>
     <string name="oculo_set_source_code">Code source</string>

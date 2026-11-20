@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoAudioTracks;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoSleepTimer;
 import com.liskovsoft.smartyoutubetv2.common.oculo.settings.OculoSettingsTiles;
 
 public class HQDialogController extends BasePlayerController {
@@ -146,7 +147,8 @@ public class HQDialogController extends BasePlayerController {
     }
 
     private void addSleepTimerCategory() {
-        addCategoryInt(AppDialogUtil.createSleepTimerCategory(getContext()));
+        addCategoryInt(OculoSleepTimer.isEnabled(getContext()) ? OculoSleepTimer.createCategory(getContext()) // Oculo: durations
+                : AppDialogUtil.createSleepTimerCategory(getContext()));
     }
 
     private void addAudioLanguage() {

@@ -446,6 +446,11 @@ public final class OculoPanel {
      * break). ListPreference formats its summary with String.format(), hence the escaped percent signs.
      */
     private static void setValueSummary(ListPreference list, String value) {
+        CharSequence own = OculoPanelInfo.rowValue(list.getTitle()); // 0.13.0: sleep timer « 23 min left »
+        if (own != null) {
+            list.setSummary(own.toString().replace("%", "%%"));
+            return;
+        }
         int index = value != null ? list.findIndexOfValue(value) : -1;
         CharSequence[] entries = list.getEntries();
         String text = index >= 0 && entries != null && index < entries.length && entries[index] != null ? entries[index].toString() : "";

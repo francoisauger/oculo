@@ -34,4 +34,15 @@
 
     <string name="oculo_subs_hide_watched">Masquer les vidéos vues</string>
     <string name="oculo_subs_show_watched">Afficher les vidéos vues</string>
+    <string name="oculo_sleep_timer">Minuterie de sommeil</string>
+    <string name="oculo_sleep_timer_off">Désactivée</string>
+    <string name="oculo_sleep_timer_minutes">%d min</string>
+    <string name="oculo_sleep_timer_end_of_video">Fin de la vidéo</string>
+    <plurals name="oculo_sleep_timer_left">
+        <item quantity="one">%d min restante</item>
+        <item quantity="other">%d min restantes</item>
+    </plurals>
+    <string name="oculo_sleep_timer_warning">Toujours là ? Pause dans %d s</string>
+    <string name="oculo_sleep_timer_keep_watching">Je regarde encore</string>
+    <string name="oculo_sleep_timer_turn_off">Désactiver la minuterie</string>
 </resources>

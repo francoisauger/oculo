@@ -12,6 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.leanback.widget.VerticalGridView;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.view.ViewCompat;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoSleepTimer;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 
 /**
@@ -81,6 +83,9 @@ public final class OculoNotice {
                 desc.setVisibility(View.GONE);
             }
         }
+        if (label != null && hasTitle && OculoSleepTimer.isWarningShown()) {
+            startCountdown(label); // 0.13.0: « Still watching? Pausing in 23 s »
+        }
 
         View list = view.findViewById(R.id.list);
         if (list == null) {
@@ -104,6 +109,25 @@ public final class OculoNotice {
             view.setLayoutParams(lp);
         }
         view.setPadding(view.getPaddingLeft(), hasTitle ? 0 : dp(res, 6), view.getPaddingRight(), dp(res, 6));
+    }
+
+    /**
+     * The sleep timer's card: its label counts down once a second while it is on screen (stops when the card is
+     * detached or the warning is over).
+     */
+    private static void startCountdown(TextView label) {
+        Runnable tick = new Runnable() {
+            @Override
+            public void run() {
+                String text = OculoSleepTimer.isWarningShown() ? OculoSleepTimer.warningLabel(label.getContext()) : null;
+                if (text == null || !ViewCompat.isAttachedToWindow(label)) {
+                    return;
+                }
+                label.setText(text);
+                label.postDelayed(this, 1_000);
+            }
+        };
+        label.postDelayed(tick, 1_000);
     }
 
     private static int dp(Resources res, int dp) {

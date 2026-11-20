@@ -50,6 +50,29 @@ public final class OculoPanelInfo {
     private OculoPanelInfo() {
     }
 
+    /** 0.13.0: a row's value computed when the panel shows it (OculoSleepTimer: « 23 min left »). */
+    public interface RowValue {
+        CharSequence get();
+    }
+
+    private static final Map<String, RowValue> sRowValues = new LinkedHashMap<>();
+
+    /**
+     * The value at the right of the row titled {@code rowTitle} comes from {@code value} instead of the chosen
+     * entry's title (OculoPanel.decorate(), also after a new value is picked).
+     */
+    public static synchronized void putRowValue(CharSequence rowTitle, RowValue value) {
+        if (rowTitle != null && rowTitle.length() > 0 && value != null) {
+            sRowValues.put(rowTitle.toString(), value);
+        }
+    }
+
+    /** Null when the row has no such value. */
+    public static synchronized CharSequence rowValue(CharSequence rowTitle) {
+        RowValue value = rowTitle != null ? sRowValues.get(rowTitle.toString()) : null;
+        return value != null ? value.get() : null;
+    }
+
     /**
      * @param key the title the drawer (or one of its categories) is shown with
      */

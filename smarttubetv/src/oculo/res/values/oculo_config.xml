@@ -98,4 +98,6 @@
     <bool name="oculo_subs_new_video_dot">true</bool>
     <!-- 0.13.0: « Hide / Show watched videos » first in the long-press menu of Subscriptions cards -->
     <bool name="oculo_subs_hide_watched_menu">true</bool>
+    <!-- 0.13.0: sleep timer with durations in the player's panel (OculoSleepTimer) -->
+    <bool name="oculo_sleep_timer">true</bool>
 </resources>

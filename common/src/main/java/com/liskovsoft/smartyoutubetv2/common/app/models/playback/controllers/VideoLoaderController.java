@@ -11,6 +11,7 @@ import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.sharedutils.helpers.MessageHelpers;
 import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.sharedutils.rx.RxHelper;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoSleepTimer;
 import com.liskovsoft.smartyoutubetv2.common.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Playlist;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.SimpleMediaItem;
@@ -171,6 +172,11 @@ public class VideoLoaderController extends BasePlayerController {
     @Override
     public void onPlayEnd() {
         if (getPlayer() == null) {
+            return;
+        }
+
+        if (OculoSleepTimer.onPlayEnd()) { // Oculo: sleep timer « End of video »
+            stopPlayback();
             return;
         }
 

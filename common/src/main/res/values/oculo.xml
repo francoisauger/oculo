@@ -20,6 +20,9 @@
     <!-- Long press on a Subscriptions card: « Hide / Show watched videos » first (0.13.0, OculoHideWatched; upstream
          setting « Hide watched videos from Subscriptions »). Off upstream. -->
     <bool name="oculo_subs_hide_watched_menu">false</bool>
+    <!-- Player: Oculo sleep timer (0.13.0, OculoSleepTimer) instead of upstream's idle timer in the player's
+         settings panel. Off upstream. -->
+    <bool name="oculo_sleep_timer">false</bool>
     <!-- About: "Install bridge" button (ATV/Amazon voice-search bridge) -->
     <bool name="oculo_show_install_bridge">true</bool>
     <!-- Rail: remove Kids and My videos once (OculoSections: they can't show anything for a regular account) -->
@@ -106,4 +109,16 @@
     <!-- 0.13.0: long-press menu of a Subscriptions card (OculoHideWatched) -->
     <string name="oculo_subs_hide_watched">Hide watched videos</string>
     <string name="oculo_subs_show_watched">Show watched videos</string>
+    <!-- 0.13.0: player sleep timer (OculoSleepTimer) -->
+    <string name="oculo_sleep_timer">Sleep timer</string>
+    <string name="oculo_sleep_timer_off">Off</string>
+    <string name="oculo_sleep_timer_minutes">%d min</string>
+    <string name="oculo_sleep_timer_end_of_video">End of video</string>
+    <plurals name="oculo_sleep_timer_left">
+        <item quantity="one">%d min left</item>
+        <item quantity="other">%d min left</item>
+    </plurals>
+    <string name="oculo_sleep_timer_warning">Still watching? Pausing in %d s</string>
+    <string name="oculo_sleep_timer_keep_watching">Keep watching</string>
+    <string name="oculo_sleep_timer_turn_off">Turn off the sleep timer</string>
 </resources>
