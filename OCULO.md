@@ -18,6 +18,7 @@ Kept untouched: `MediaServiceCore`, `SharedModules` (submodules), `exoplayer-amz
 
 | File | Change |
 |---|---|
+| `CHANGELOG.md`, `scripts/publish-release.sh` | Release notes shown by the in-app updater and the script that publishes a version as a GitHub Release (see « Releases »). |
 | `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, Oculo's own version (`oculoVersion`, see « Version numbers »: versionName `0.13.0`, versionCode computed from it, the upstream version only in About), libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
 | `smarttubetv/build.gradle` | One line at the end: `apply from: "oculo.gradle"`. |
 | `smarttubetv/src/oculo/res/` | Name "Oculo", launcher icon (see « Launcher icon »), Android TV banner, browse logo, global search label and authority (`xml/searchable.xml`, `search_authority`), update manifest URL (`update_urls`), About links and upstream credit (`feedback`, `releases_url`, `sources_url`). |
@@ -344,7 +345,51 @@ The manifest uses the SmartTube format (`SharedModules/appupdatechecker2/.../App
 
 Version keys are versionNames (« 0.9.0 »; the updater never parses them, it only displays the newest one); it
 takes the entry with the highest `versionCode`, compares it with the installed one and picks
-`downloadUrlList_<primary ABI>`, then `downloadUrlList`, then `downloadUrl`.
+`downloadUrlList_<primary ABI>`, then `downloadUrlList`, then `downloadUrl`. The primary ABI is
+`Build.SUPPORTED_ABIS[0]` (`DeviceHelpers.getPrimaryAbi()`): `armeabi-v7a` on the TCL (32-bit userland), so it gets
+`downloadUrlList_armeabi-v7a`. The changelog shown is the concatenation of the `changelog_<language>` (else
+`changelog`) arrays of every entry newer than the installed version, newest first.
+
+How it runs (checked on 20 Nov. 2026, upstream code, nothing Oculo-specific needed):
+
+- **When**: once per app start (`SplashPresenter.runPerViewTasks()` -> `BootDialogPresenter` ->
+  `AppUpdatePresenter.start(false)`, a few seconds after launch), skipped if the last « no update » answer is less
+  than 60 s old (`SettingsManager.CHECK_INTERVAL_DEFAULT_MS`); no periodic job. Settings › System › Check for updates
+  (About) forces a check and always opens the dialog.
+- **Notice**: Settings › System › About › « Check for updates automatically »: Disabled, Sidebar notification
+  (upstream default: a « New update » section pinned at the top of the rail, opening the notes and an Install button)
+  or Dialog notification (the « Update available » Oculo panel: title « Oculo <version> », Install update, then the
+  Changelog list).
+- **Download**: OkHttp from `SharedModules/sharedutils` (`OkHttpManager`, redirects followed, OkHttp's default), so
+  `github.com/.../releases/latest/download/...` -> `github.com/.../releases/download/<tag>/...` ->
+  `release-assets.githubusercontent.com` works. The APK goes to the app's internal cache (`update.apk`); a download
+  that takes more than 60 s is dropped (`DownloadManager.MAX_DOWN_TIME_MS`, about 4 Mbit/s for a 28 MB APK) and is
+  retried at the next start. The downloaded file must be over 1 MB, carry the package `com.francoisauger.oculo` and is
+  reused for 15 min.
+- **Install**: `Helpers.installPackage()` -> `ACTION_VIEW` on a `FileProvider` URI, authority
+  `${applicationId}.update_provider` = `com.francoisauger.oculo.update_provider` (library manifest, merged), with
+  `REQUEST_INSTALL_PACKAGES` (library manifest, merged). Android asks once to allow Oculo to install unknown apps,
+  then shows its install prompt. The new APK must be signed with the same key (« Signing »).
+- **Hosts the TV must reach** (DNS allowlist): `github.com` (manifest and APK URLs, both redirect) and
+  `release-assets.githubusercontent.com` (the files). `objects.githubusercontent.com` was GitHub's previous asset
+  host: allow it too.
+
+## Releases
+
+Each Oculo version is a GitHub Release `v<version>` on `francoisauger/oculo` (public, approved by François on
+20 Nov. 2026), with `Oculo_<version>_{armeabi-v7a,arm64-v8a,x86}.apk`, `oculo_stable.json` and `SHA256SUMS.txt`,
+marked latest (that is what `releases/latest/download/oculo_stable.json` follows).
+
+1. Bump `oculoVersion` in `smarttubetv/oculo.gradle` and add a `## <version>` section to `CHANGELOG.md` (short French
+   bullets, user-facing: the updater shows them on the TV). Commit, push `oculo`.
+2. `scripts/publish-release.sh` (`--dry-run` builds and writes the manifest only). It refuses unless on `oculo`, no
+   tracked change, HEAD pushed, submodules at their pins, tag and release absent. It builds `assembleOculoRelease`
+   (JDK 17), checks each APK's signer against the keystore's certificate (read in place, never copied) and its
+   package / versionCode / versionName, writes the manifest (every CHANGELOG section up to this version, so a TV that
+   skipped versions sees all the notes; `downloadUrlList` = armeabi-v7a, `downloadUrlList_x86_64` = x86), creates the
+   annotated tag, pushes it, `gh release create --latest`, then downloads `releases/latest/download/oculo_stable.json`
+   and every APK it lists (redirects followed, HTTP 200, sha256 equal to the local build) and prints the hosts of
+   the redirect chain. Files stay in `smarttubetv/build/oculo-release/v<version>/`.
 
 ## Sync with upstream
 
