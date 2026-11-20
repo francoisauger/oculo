@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oculo (0.14.0): the pause screen (tv/oculo/OculoPauseScreen). Shown only when the « Pause screen » setting is on
+     (common's oculo_pause_screen_default: off upstream, on in the oculo flavor). -->
+<resources>
+    <!-- Darkening over the frozen frame: strongest at the bottom left, where the texts are -->
+    <color name="oculo_pause_veil">#1F000000</color>
+    <color name="oculo_pause_bottom_start">#E6000000</color>
+    <color name="oculo_pause_bottom_center">#59000000</color>
+    <color name="oculo_pause_left_start">#99000000</color>
+    <color name="oculo_pause_left_center">#33000000</color>
+    <color name="oculo_pause_corner">#73000000</color>
+
+    <color name="oculo_pause_title">#F1F1F1</color>
+    <color name="oculo_pause_channel">#AAAAAA</color>
+    <color name="oculo_pause_info">#E6E6E6</color>
+    <color name="oculo_pause_time">#BDBDBD</color>
+    <color name="oculo_pause_label">#E6FFFFFF</color>
+    <!-- Played part: the seek bar's teal (oculo flavor « Sarcelle profonde »), remaining white 25 % -->
+    <color name="oculo_pause_played">#0FA3A0</color>
+    <color name="oculo_pause_track">#40FFFFFF</color>
+    <!-- Live: the Abricot signal color -->
+    <color name="oculo_pause_live">#FFA25C</color>
+
+    <dimen name="oculo_pause_margin_start">56dp</dimen>
+    <dimen name="oculo_pause_margin_bottom">44dp</dimen>
+    <dimen name="oculo_pause_block_width">540dp</dimen>
+    <dimen name="oculo_pause_title_size">30sp</dimen>
+    <dimen name="oculo_pause_channel_size">13sp</dimen>
+    <dimen name="oculo_pause_info_size">14sp</dimen>
+    <dimen name="oculo_pause_label_size">11sp</dimen>
+    <dimen name="oculo_pause_time_size">12sp</dimen>
+    <dimen name="oculo_pause_avatar">20dp</dimen>
+    <dimen name="oculo_pause_bar_height">4dp</dimen>
+    <dimen name="oculo_pause_clock_margin_end">48dp</dimen>
+</resources>

@@ -90,6 +90,20 @@ public final class OculoScreensaverView extends FrameLayout {
     private final List<TextView> mPausedMarquees = new ArrayList<>();
     private final List<Boolean> mPausedByParent = new ArrayList<>();
 
+    @Nullable
+    private static Runnable sDimListener;
+
+    /** 0.14.0 (smarttubetv's OculoPauseScreen): told each time the dim container is shown or hidden. */
+    public static void setDimListener(@Nullable Runnable listener) {
+        sDimListener = listener;
+    }
+
+    /** 0.14.0: the dim container shows the screensaver (not the « screen off » veil). */
+    public static boolean isShowing(@Nullable View dimContainer) {
+        return dimContainer instanceof ViewGroup && dimContainer.getVisibility() == View.VISIBLE
+                && dimContainer.findViewWithTag(TAG_VIEW) != null;
+    }
+
     public static boolean isEnabled(Context context) {
         return context != null && context.getResources().getBoolean(R.bool.oculo_screensaver_look);
     }
@@ -99,6 +113,9 @@ public final class OculoScreensaverView extends FrameLayout {
      * screensaver mode (not the player's « screen off » mode, which stays a black veil).
      */
     public static void update(@Nullable View dimContainer, boolean screensaver) {
+        if (sDimListener != null && dimContainer != null) {
+            sDimListener.run(); // 0.14.0: the pause screen gives way to the player's « screen off » veil
+        }
         if (!(dimContainer instanceof ViewGroup) || !isEnabled(dimContainer.getContext())) {
             return;
         }

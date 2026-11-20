@@ -20,6 +20,7 @@ import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerData;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoPauseScreen;
 import com.liskovsoft.smartyoutubetv2.tv.ui.common.LeanbackActivity;
 
 /**
@@ -57,6 +58,10 @@ public class PlaybackActivity extends LeanbackActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if (OculoPauseScreen.dispatchKeyEvent(this, mPlaybackFragment, event)) { // Oculo: the key that wakes the screensaver over the pause screen
+            return true;
+        }
+
         if (mPlaybackFragment != null) {
             mPlaybackFragment.onDispatchKeyEvent(event);
         }

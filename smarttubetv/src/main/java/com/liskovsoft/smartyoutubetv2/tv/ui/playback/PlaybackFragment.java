@@ -67,6 +67,7 @@ import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerTweaksData;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoPauseScreen;
 import com.liskovsoft.smartyoutubetv2.tv.adapter.VideoGroupObjectAdapter;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.CustomListRowPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.ShortsCardPresenter;
@@ -171,6 +172,7 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
         // We should use internal progress manager because it's used in many places like Exo engine etc.
         // ProgressBar.setRootView already called at this moment.
         ProgressBarManager.setup(getProgressBarManager(), (ViewGroup) root);
+        OculoPauseScreen.attach(this, root); // Oculo: pause screen
 
         return root;
     }
@@ -235,6 +237,7 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
 
         showHideWidgets(true); // PIP mode fix
         blockEngine(false); // reset bg mode
+        OculoPauseScreen.onResume(this); // Oculo
         //ExoPlayerInitializer.enableAudioFocus(mPlayer, true); // Restore focus after PIP
     }
 
@@ -251,6 +254,7 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
 
         showHideWidgets(false); // PIP mode fix
         //ExoPlayerInitializer.enableAudioFocus(mPlayer, false); // Disable focus in PIP
+        OculoPauseScreen.onPause(this); // Oculo
     }
 
     public void onDispatchKeyEvent(KeyEvent event) {
@@ -484,6 +488,7 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
 
         DefaultRenderersFactory renderersFactory = new CustomOverridesRenderersFactory(getContext());
         mPlayer = mPlayerInitializer.createPlayer(getContext(), renderersFactory, trackSelector);
+        OculoPauseScreen.onPlayerCreated(this, mPlayer); // Oculo
 
         mExoPlayerController.setPlayer(mPlayer);
     }
@@ -1220,6 +1225,7 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
     @Override
     public void showControlsOverlay(boolean runAnimation) {
         super.showControlsOverlay(mIsUIAnimationsEnabled);
+        OculoPauseScreen.onControlsShown(this); // Oculo
 
         // Do throttle. Called so many times. Rely on boxing because initial state is unknown.
         if (mIsControlsShownPreviously != null && mIsControlsShownPreviously) {
@@ -1320,6 +1326,8 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
 
     @Override
     public void setChannelIcon(String iconUrl) {
+        OculoPauseScreen.setChannelIcon(this, iconUrl); // Oculo
+
         if (mPlayerGlue != null) {
             mPlayerGlue.setChannelIcon(iconUrl);
         }
