@@ -64,6 +64,7 @@
     <string name="oculo_sum_watch_history">Keeps the videos you watch in your history.</string>
     <string name="oculo_sum_search_history">Keeps what you search for.</string>
     <string name="oculo_sum_hide_shorts_everywhere">No Shorts in rows, grids or the rail.</string>
+    <string name="oculo_sum_hide_watched_in_subscriptions">Watched videos leave the Subscriptions list.</string>
     <string name="oculo_sum_sponsorblock">Skips sponsors and other segments.</string>
     <string name="oculo_sum_segments">What happens with each kind of segment.</string>
     <string name="oculo_sum_phone_remote">Use a phone to search and play on the TV.</string>
@@ -156,7 +157,7 @@
     <string name="oculo_set_hide_shorts_in">Hide Shorts in…</string>
     <string name="oculo_set_hide_upcoming_in">Hide upcoming in…</string>
     <string name="oculo_set_hide_watched_in_notifications">Hide watched in Notifications</string>
-    <string name="oculo_set_hide_watched_in_subscriptions">Hide watched in Subscriptions</string>
+    <string name="oculo_set_hide_watched_in_subscriptions">Hide watched videos in Subscriptions</string>
     <string name="oculo_set_hide_watched_in_the_first_row">Hide watched in the first row</string>
     <string name="oculo_set_hide_watched_on_home">Hide watched on Home</string>
     <string name="oculo_set_high_bitrate_1080p">High-bitrate 1080p</string>

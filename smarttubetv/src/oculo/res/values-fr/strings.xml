@@ -90,6 +90,7 @@
     <string name="oculo_sum_watch_history">Garde les vidéos regardées dans ton historique.</string>
     <string name="oculo_sum_search_history">Garde ce que tu cherches.</string>
     <string name="oculo_sum_hide_shorts_everywhere">Aucun Short dans les rangées, les grilles ni le rail.</string>
+    <string name="oculo_sum_hide_watched_in_subscriptions">Les vidéos déjà vues quittent la liste Abonnements.</string>
     <string name="oculo_sum_sponsorblock">Saute les commandites et d\'autres segments.</string>
     <string name="oculo_sum_segments">Ce qui arrive à chaque type de segment.</string>
     <string name="oculo_sum_phone_remote">Un téléphone pour chercher et lancer sur la télé.</string>
@@ -181,7 +182,7 @@
     <string name="oculo_set_hide_shorts_in">Masquer les Shorts dans…</string>
     <string name="oculo_set_hide_upcoming_in">Masquer les vidéos à venir dans…</string>
     <string name="oculo_set_hide_watched_in_notifications">Masquer les vues dans Notifications</string>
-    <string name="oculo_set_hide_watched_in_subscriptions">Masquer les vues dans Abonnements</string>
+    <string name="oculo_set_hide_watched_in_subscriptions">Masquer les vidéos vues dans Abonnements</string>
     <string name="oculo_set_hide_watched_in_the_first_row">Masquer les vues dans la 1re rangée</string>
     <string name="oculo_set_hide_watched_on_home">Masquer les vues sur l\'Accueil</string>
     <string name="oculo_set_high_bitrate_1080p">1080p à haut débit</string>

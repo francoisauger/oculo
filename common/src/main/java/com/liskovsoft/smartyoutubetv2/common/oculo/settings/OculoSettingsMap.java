@@ -370,6 +370,7 @@ public final class OculoSettingsMap {
 
         // SponsorBlock & Filters
         add(T_FILT, 0, R.string.oculo_set_hide_shorts_everywhere, S, GENERAL).cat(res(R.string.hide_unwanted_content)).item(res(R.string.hide_shorts_everywhere));
+        add(T_FILT, 0, R.string.oculo_set_hide_watched_in_subscriptions, S, GENERAL).cat(res(R.string.hide_unwanted_content)).item(res(R.string.hide_watched_from_subscriptions)); // 0.13.0: simple mode
         add(T_FILT, 0, R.string.oculo_set_sponsorblock, S, SB).item(concat(R.string.enable, " SponsorBlock"));
         add(T_FILT, 0, R.string.oculo_set_segments, S, SB).cat(res(R.string.content_block_action_type));
         add(T_FILT, 0, R.string.oculo_set_show_on_progress_bar, A, SB).cat(res(R.string.sponsor_color_markers));
@@ -384,7 +385,6 @@ public final class OculoSettingsMap {
         add(T_FILT, 0, R.string.oculo_set_hide_live_streams_in_subscriptions, A, GENERAL).cat(res(R.string.hide_unwanted_content)).item(res(R.string.hide_streams));
         add(T_FILT, 0, R.string.oculo_set_remove_watched_from_watch_later, A, GENERAL).cat(res(R.string.hide_unwanted_content)).item(res(R.string.hide_watched_from_watch_later));
         add(T_FILT, 0, R.string.oculo_set_hide_watched_on_home, A, GENERAL).cat(res(R.string.hide_unwanted_content)).item(res(R.string.hide_watched_from_home));
-        add(T_FILT, 0, R.string.oculo_set_hide_watched_in_subscriptions, A, GENERAL).cat(res(R.string.hide_unwanted_content)).item(res(R.string.hide_watched_from_subscriptions));
         add(T_FILT, 0, R.string.oculo_set_hide_watched_in_notifications, A, GENERAL).cat(res(R.string.hide_unwanted_content)).item(res(R.string.hide_watched_from_notifications));
         add(T_FILT, R.string.oculo_set_hide_shorts_in, R.string.oculo_set_subscriptions, A, GENERAL).cat(res(R.string.hide_unwanted_content)).item(res(R.string.hide_shorts));
         add(T_FILT, R.string.oculo_set_hide_shorts_in, R.string.oculo_set_search_results, A, GENERAL).cat(res(R.string.hide_unwanted_content)).item(res(R.string.hide_shorts_from_search));

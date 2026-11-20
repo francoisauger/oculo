@@ -17,6 +17,9 @@
     <!-- Subscriptions: Abricot « new » dot on the thumbnail of each video published since the previous visit and
          not watched yet (0.13.0, OculoNewVideos). Off upstream. -->
     <bool name="oculo_subs_new_video_dot">false</bool>
+    <!-- Long press on a Subscriptions card: « Hide / Show watched videos » first (0.13.0, OculoHideWatched; upstream
+         setting « Hide watched videos from Subscriptions »). Off upstream. -->
+    <bool name="oculo_subs_hide_watched_menu">false</bool>
     <!-- About: "Install bridge" button (ATV/Amazon voice-search bridge) -->
     <bool name="oculo_show_install_bridge">true</bool>
     <!-- Rail: remove Kids and My videos once (OculoSections: they can't show anything for a regular account) -->
@@ -100,4 +103,7 @@
     <string name="oculo_panel_channel">Channel</string>
     <string name="oculo_panel_update">Update available</string>
 
+    <!-- 0.13.0: long-press menu of a Subscriptions card (OculoHideWatched) -->
+    <string name="oculo_subs_hide_watched">Hide watched videos</string>
+    <string name="oculo_subs_show_watched">Show watched videos</string>
 </resources>

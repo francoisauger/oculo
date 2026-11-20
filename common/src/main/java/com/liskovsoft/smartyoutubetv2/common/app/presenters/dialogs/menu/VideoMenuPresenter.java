@@ -2,6 +2,7 @@ package com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu;
 
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoPanelInfo;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatching;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoHideWatched;
 import android.content.Context;
 import com.liskovsoft.mediaserviceinterfaces.MediaItemService;
 import com.liskovsoft.mediaserviceinterfaces.ServiceManager;
@@ -185,6 +186,7 @@ public class VideoMenuPresenter extends BaseMenuPresenter {
 
         appendReturnToBackgroundVideoButton();
         OculoContinueWatching.instance(getContext()).appendMenuItem(mDialogPresenter, mVideo); // Oculo
+        OculoHideWatched.appendMenuItem(getContext(), mDialogPresenter, mVideo); // Oculo: hide / show watched
 
         for (Long menuItem : MainUIData.instance(getContext()).getMenuItemsOrdered()) {
             MenuAction menuAction = mMenuMapping.get(menuItem);
@@ -208,6 +210,7 @@ public class VideoMenuPresenter extends BaseMenuPresenter {
 
         appendReturnToBackgroundVideoButton();
         OculoContinueWatching.instance(getContext()).appendMenuItem(mDialogPresenter, mVideo); // Oculo
+        OculoHideWatched.appendMenuItem(getContext(), mDialogPresenter, mVideo); // Oculo: hide / show watched
 
         for (Long menuItem : MainUIData.instance(getContext()).getMenuItemsOrdered()) {
             MenuAction menuAction = mMenuMapping.get(menuItem);

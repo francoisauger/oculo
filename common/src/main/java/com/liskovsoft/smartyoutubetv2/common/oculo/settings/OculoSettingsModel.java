@@ -97,6 +97,7 @@ public final class OculoSettingsModel {
             {R.string.oculo_set_watch_history, R.string.oculo_sum_watch_history},
             {R.string.oculo_set_search_history, R.string.oculo_sum_search_history},
             {R.string.oculo_set_hide_shorts_everywhere, R.string.oculo_sum_hide_shorts_everywhere},
+            {R.string.oculo_set_hide_watched_in_subscriptions, R.string.oculo_sum_hide_watched_in_subscriptions},
             {R.string.oculo_set_sponsorblock, R.string.oculo_sum_sponsorblock},
             {R.string.oculo_set_segments, R.string.oculo_sum_segments},
             {R.string.oculo_set_phone_remote, R.string.oculo_sum_phone_remote},

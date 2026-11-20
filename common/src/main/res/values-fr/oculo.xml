@@ -31,4 +31,7 @@
     <string name="oculo_panel_search">Recherche</string>
     <string name="oculo_panel_channel">Chaîne</string>
     <string name="oculo_panel_update">Mise à jour disponible</string>
+
+    <string name="oculo_subs_hide_watched">Masquer les vidéos vues</string>
+    <string name="oculo_subs_show_watched">Afficher les vidéos vues</string>
 </resources>
