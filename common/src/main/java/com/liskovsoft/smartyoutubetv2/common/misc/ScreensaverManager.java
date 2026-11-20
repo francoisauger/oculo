@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.smartyoutubetv2.common.R;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoScreensaverView;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.AddDevicePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.AppDialogPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.PlaybackPresenter;
@@ -259,6 +260,7 @@ public class ScreensaverManager {
         dimContainer.setBackgroundColor(mMode == MODE_SCREENSAVER ? screensaverColor : screenOffColor);
         //dimContainer.setBackgroundResource(mMode == MODE_SCREENSAVER ? screensaverColorResId : screenOffColorResId);
         dimContainer.setVisibility(show ? View.VISIBLE : View.GONE);
+        OculoScreensaverView.update(dimContainer, show && mMode == MODE_SCREENSAVER); // Oculo: clock and thumbnails
 
         mIsScreenOff = mMode == MODE_SCREEN_OFF && getTweaksData().getScreenOffDimmingPercents() == 100 && show;
 
@@ -351,6 +353,7 @@ public class ScreensaverManager {
 
         if (dimContainer != null) {
             dimContainer.setVisibility(View.GONE);
+            OculoScreensaverView.update(dimContainer, false); // Oculo
         }
 
         mIsScreenOff = false;

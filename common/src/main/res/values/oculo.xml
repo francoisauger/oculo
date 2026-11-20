@@ -14,6 +14,23 @@
     <!-- Rail: Abricot dot on the Subscriptions icon when subscribed channels have new content (OculoNewContent:
          one request with Home's refresh, never in the background). Off upstream. -->
     <bool name="oculo_rail_new_content_dot">false</bool>
+    <!-- Screensaver look (0.13.0, OculoScreensaverView): on black, a large clock, the date, the wordmark and the
+         thumbnails of cards already shown (Glide caches only), crossfading and zooming slowly, drifting every
+         minute. Off upstream (black veil). Same delay, settings and rules as upstream either way. -->
+    <bool name="oculo_screensaver_look">false</bool>
+    <item name="oculo_screensaver_logo" type="drawable">@android:color/transparent</item>
+    <color name="oculo_screensaver_clock">#EBFFFFFF</color>
+    <color name="oculo_screensaver_date">#AAAAAA</color>
+    <color name="oculo_screensaver_picture_background">#0E0E0E</color>
+    <dimen name="oculo_screensaver_clock_size">104sp</dimen>
+    <dimen name="oculo_screensaver_date_size">20sp</dimen>
+    <dimen name="oculo_screensaver_logo_height">22dp</dimen>
+    <dimen name="oculo_screensaver_picture_width">448dp</dimen>
+    <dimen name="oculo_screensaver_picture_height">252dp</dimen>
+    <dimen name="oculo_screensaver_picture_corner">14dp</dimen>
+    <dimen name="oculo_screensaver_gap">64dp</dimen>
+    <item name="oculo_screensaver_logo_alpha" type="fraction">70%</item>
+    <item name="oculo_screensaver_picture_alpha" type="fraction">88%</item>
     <!-- Subscriptions: Abricot « new » dot on the thumbnail of each video published since the previous visit and
          not watched yet (0.13.0, OculoNewVideos). Off upstream. -->
     <bool name="oculo_subs_new_video_dot">false</bool>

@@ -41,6 +41,7 @@ import com.liskovsoft.smartyoutubetv2.common.oculo.OculoCardMeta;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatching;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoNewVideos;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoScreensaverArt;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 
 import java.util.List;
@@ -227,7 +228,7 @@ public final class OculoUi {
 
     /**
      * 0.13.0, VideoCardPresenter.onBindViewHolder(): the « new » dot on Subscriptions thumbnails
-     * ({@link OculoNewVideos}).
+     * ({@link OculoNewVideos}) and the card's thumbnail offered to the screensaver ({@link OculoScreensaverArt}).
      */
     public static void onVideoCardBound(@Nullable View cardView, @Nullable Video video, @Nullable String thumbUrl) {
         if (cardView == null || video == null) {
@@ -238,6 +239,7 @@ public final class OculoUi {
             wrapper.setTag(R.id.oculo_card_video, video);
             setNewVideoDot(wrapper, OculoNewVideos.instance(cardView.getContext()).isNew(video));
         }
+        OculoScreensaverArt.offer(video, thumbUrl, video.cardImageUrl);
     }
 
     /**
