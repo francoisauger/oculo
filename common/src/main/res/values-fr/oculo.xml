@@ -45,4 +45,12 @@
     <string name="oculo_sleep_timer_warning">Toujours là ? Pause dans %d s</string>
     <string name="oculo_sleep_timer_keep_watching">Je regarde encore</string>
     <string name="oculo_sleep_timer_turn_off">Désactiver la minuterie</string>
+    <string name="oculo_pause_screen">Écran de pause</string>
+    <string name="oculo_pause_paused">En pause</string>
+    <string name="oculo_pause_live">En direct</string>
+    <string name="oculo_pause_left_one">%1$d min restante</string>
+    <string name="oculo_pause_left_other">%1$d min restantes</string>
+    <string name="oculo_pause_left_hours">%1$d h %2$02d min restantes</string>
+    <string name="oculo_pause_left_less">Moins d\'une minute restante</string>
+    <string name="oculo_pause_ends_at">fin à %1$s</string>
 </resources>

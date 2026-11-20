@@ -49,6 +49,7 @@
     <string name="oculo_sum_speed">Default playback speed.</string>
     <string name="oculo_sum_skip_step">How far one press of left or right jumps.</string>
     <string name="oculo_sum_sleep_timer">Pauses when the remote is not used for a while.</string>
+    <string name="oculo_sum_pause_screen">Title and time left over the paused video.</string>
     <string name="oculo_sum_audio_language">Audio track to prefer.</string>
     <string name="oculo_sum_subtitle_style">Colors of the subtitles.</string>
     <string name="oculo_sum_subtitle_size">Size of the subtitles on screen.</string>
@@ -268,6 +269,7 @@
     <string name="oculo_set_skip_each_segment_only_once">Skip each segment only once</string>
     <string name="oculo_set_skip_step">Skip step</string>
     <string name="oculo_set_sleep_timer">Pause when idle</string>
+    <string name="oculo_set_pause_screen">Pause screen</string>
     <string name="oculo_set_software_decoder">Software decoder</string>
     <string name="oculo_set_sort_channels_by">Sort channels by</string>
     <string name="oculo_set_source_code">Source code</string>

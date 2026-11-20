@@ -83,6 +83,7 @@ public final class OculoSettingsModel {
             {R.string.oculo_set_speed, R.string.oculo_sum_speed},
             {R.string.oculo_set_skip_step, R.string.oculo_sum_skip_step},
             {R.string.oculo_set_sleep_timer, R.string.oculo_sum_sleep_timer},
+            {R.string.oculo_set_pause_screen, R.string.oculo_sum_pause_screen},
             {R.string.oculo_set_audio_language, R.string.oculo_sum_audio_language},
             {R.string.oculo_set_subtitle_style, R.string.oculo_sum_subtitle_style},
             {R.string.oculo_set_subtitle_size, R.string.oculo_sum_subtitle_size},

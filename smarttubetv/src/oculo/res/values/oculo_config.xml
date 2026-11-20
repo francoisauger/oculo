@@ -103,4 +103,6 @@
     <bool name="oculo_subs_hide_watched_menu">true</bool>
     <!-- 0.13.0: sleep timer with durations in the player's panel (OculoSleepTimer) -->
     <bool name="oculo_sleep_timer">true</bool>
+    <!-- 0.14.0: pause screen (OculoPauseScreen): on -->
+    <bool name="oculo_pause_screen_default">true</bool>
 </resources>

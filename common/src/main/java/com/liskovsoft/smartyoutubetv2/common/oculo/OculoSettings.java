@@ -44,5 +44,10 @@ public class OculoSettings {
                 data.isThumbnailGlowEnabled()));
 
         settingsPresenter.appendCheckedCategory(context.getString(R.string.header_home), options);
+
+        // 0.14.0: placed in Playback by OculoSettingsMap
+        settingsPresenter.appendSingleSwitch(UiOptionItem.from(context.getString(R.string.oculo_pause_screen),
+                option -> data.setPauseScreenEnabled(option.isSelected()),
+                data.isPauseScreenEnabled()));
     }
 }
