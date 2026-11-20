@@ -38,7 +38,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoCardMeta;
+import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatching;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoNewVideos;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 
 import java.util.List;
@@ -203,6 +205,11 @@ public final class OculoUi {
         if (focused) {
             // Continue watching may be waiting for the focus to leave its row (32.74-18: no timer for that)
             OculoContinueWatching.onAnyCardFocused();
+            Object video = wrapper.getTag(R.id.oculo_card_video);
+            if (video instanceof Video) {
+                // 0.13.0: a focused Subscriptions card = the list was looked at (next visit's « new » mark)
+                OculoNewVideos.instance(wrapper.getContext()).onCardFocused((Video) video);
+            }
         }
 
         if (!hasCardFocusRing(wrapper.getContext())) {
@@ -216,6 +223,61 @@ public final class OculoUi {
             wrapper.setTag(R.id.oculo_card_frame, frame);
         }
         frame.setFocused(focused);
+    }
+
+    /**
+     * 0.13.0, VideoCardPresenter.onBindViewHolder(): the « new » dot on Subscriptions thumbnails
+     * ({@link OculoNewVideos}).
+     */
+    public static void onVideoCardBound(@Nullable View cardView, @Nullable Video video, @Nullable String thumbUrl) {
+        if (cardView == null || video == null) {
+            return;
+        }
+        View wrapper = cardView.findViewById(R.id.main_image_wrapper);
+        if (wrapper != null) {
+            wrapper.setTag(R.id.oculo_card_video, video);
+            setNewVideoDot(wrapper, OculoNewVideos.instance(cardView.getContext()).isNew(video));
+        }
+    }
+
+    /**
+     * The rail's Abricot dot ({@link OculoDot}, same size and outline) at the thumbnail's top right, in the
+     * thumbnail's overlay (above the picture, inside its rounded clip). Recycled cards lose it when unflagged.
+     */
+    private static void setNewVideoDot(View wrapper, boolean show) {
+        Object tag = wrapper.getTag(R.id.oculo_rail_dot);
+        if (!show) {
+            if (tag instanceof Drawable) {
+                wrapper.getOverlay().remove((Drawable) tag);
+                wrapper.setTag(R.id.oculo_rail_dot, null);
+            }
+            return;
+        }
+        if (tag instanceof Drawable) {
+            return;
+        }
+        Resources res = wrapper.getResources();
+        int size = res.getDimensionPixelSize(R.dimen.oculo_rail_dot_size);
+        int inset = res.getDimensionPixelSize(R.dimen.oculo_card_new_dot_inset);
+        Drawable dot = OculoDot.create(wrapper.getContext(), size);
+        placeDot(dot, wrapper.getWidth(), size, inset);
+        wrapper.getOverlay().add(dot);
+        wrapper.setTag(R.id.oculo_rail_dot, dot);
+        if (wrapper.getTag(R.id.oculo_card_new_dot_listener) == null) {
+            View.OnLayoutChangeListener listener = (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                Object current = v.getTag(R.id.oculo_rail_dot);
+                if (current instanceof Drawable) {
+                    placeDot((Drawable) current, right - left, size, inset);
+                }
+            };
+            wrapper.addOnLayoutChangeListener(listener);
+            wrapper.setTag(R.id.oculo_card_new_dot_listener, listener);
+        }
+    }
+
+    private static void placeDot(Drawable dot, int width, int size, int inset) {
+        int right = Math.max(size + inset, width - inset);
+        dot.setBounds(right - size, inset, right, inset + size);
     }
 
     /**

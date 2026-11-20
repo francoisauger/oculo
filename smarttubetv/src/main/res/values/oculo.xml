@@ -129,6 +129,11 @@
     <!-- 32.74-18. Channels list (M5): channels with new content get a small Abricot dot after their name instead of
          a colored background (OculoDot, same dot as the rail's Subscriptions icon). Off upstream. -->
     <bool name="oculo_channel_new_content_dot">false</bool>
+    <!-- 0.13.0: « new » dot on Subscriptions thumbnails (OculoNewVideos): the rail dot, this far from the
+         thumbnail's top and right edges -->
+    <item name="oculo_card_video" type="id" />
+    <item name="oculo_card_new_dot_listener" type="id" />
+    <dimen name="oculo_card_new_dot_inset">9dp</dimen>
     <dimen name="oculo_channel_dot_size">8dp</dimen>
     <dimen name="oculo_channel_dot_gap">10dp</dimen>
     <!-- Channels list filter field: a white 15 % pill, like the top bar's -->

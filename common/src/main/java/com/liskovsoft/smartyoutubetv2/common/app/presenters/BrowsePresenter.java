@@ -29,6 +29,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoSt
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatching;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoData;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoNewVideos;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.VideoActionPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu.ChannelUploadsMenuPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu.SectionMenuPresenter;
@@ -496,6 +497,7 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
     @Override
     public void onSectionFocused(int sectionId) {
         saveSelectedItems(); // save previous state
+        OculoNewVideos.instance(getContext()).onSectionFocused(sectionId); // Oculo: Subscriptions visit (new dots)
         mCurrentSection = findSectionById(sectionId);
         mCurrentVideo = null; // fast scroll through the sections (fix empty selected item)
         updateCurrentSection();

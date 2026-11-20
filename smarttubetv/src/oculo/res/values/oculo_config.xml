@@ -93,4 +93,7 @@
 
     <!-- Oculo panel (0.12.0): every drawer is the Settings card floating at the right (OculoPanel) -->
     <bool name="oculo_panel">true</bool>
+
+    <!-- 0.13.0: « new » dot on Subscriptions videos since the previous visit (OculoNewVideos) -->
+    <bool name="oculo_subs_new_video_dot">true</bool>
 </resources>

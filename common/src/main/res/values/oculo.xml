@@ -14,6 +14,9 @@
     <!-- Rail: Abricot dot on the Subscriptions icon when subscribed channels have new content (OculoNewContent:
          one request with Home's refresh, never in the background). Off upstream. -->
     <bool name="oculo_rail_new_content_dot">false</bool>
+    <!-- Subscriptions: Abricot « new » dot on the thumbnail of each video published since the previous visit and
+         not watched yet (0.13.0, OculoNewVideos). Off upstream. -->
+    <bool name="oculo_subs_new_video_dot">false</bool>
     <!-- About: "Install bridge" button (ATV/Amazon voice-search bridge) -->
     <bool name="oculo_show_install_bridge">true</bool>
     <!-- Rail: remove Kids and My videos once (OculoSections: they can't show anything for a regular account) -->
@@ -96,4 +99,5 @@
     <string name="oculo_panel_search">Search</string>
     <string name="oculo_panel_channel">Channel</string>
     <string name="oculo_panel_update">Update available</string>
+
 </resources>
