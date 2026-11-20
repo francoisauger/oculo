@@ -350,16 +350,18 @@ takes the entry with the highest `versionCode`, compares it with the installed o
 `downloadUrlList_armeabi-v7a`. The changelog shown is the concatenation of the `changelog_<language>` (else
 `changelog`) arrays of every entry newer than the installed version, newest first.
 
-How it runs (checked on 20 Nov. 2026, upstream code, nothing Oculo-specific needed):
+How it runs (checked on 20 Nov. 2026 on the headless emulator, 0.12.99 test build -> published 0.13.0: check,
+download, notice, changelog, Android's install prompt and the update itself; upstream code, nothing Oculo-specific
+needed):
 
 - **When**: once per app start (`SplashPresenter.runPerViewTasks()` -> `BootDialogPresenter` ->
-  `AppUpdatePresenter.start(false)`, a few seconds after launch), skipped if the last « no update » answer is less
-  than 60 s old (`SettingsManager.CHECK_INTERVAL_DEFAULT_MS`); no periodic job. Settings › System › Check for updates
-  (About) forces a check and always opens the dialog.
-- **Notice**: Settings › System › About › « Check for updates automatically »: Disabled, Sidebar notification
-  (upstream default: a « New update » section pinned at the top of the rail, opening the notes and an Install button)
-  or Dialog notification (the « Update available » Oculo panel: title « Oculo <version> », Install update, then the
-  Changelog list).
+  `AppUpdatePresenter.start(false)`, about 10 s after launch), skipped if the last « no update » answer is less
+  than 60 s old (`SettingsManager.CHECK_INTERVAL_DEFAULT_MS`); no periodic job.
+- **Notice**: Settings › System › About Oculo › « Check for updates automatically »: Disabled, Sidebar notification
+  (upstream default, kept: an « Update » section with the info icon pinned at the top of the rail, above Home, showing
+  « Oculo <version> Changelog: » and the bullets, with an Install update button) or Dialog notification (the « Update
+  available » Oculo panel at start: title « Oculo <version> », Install update, then a Changelog row opening the
+  bullets). Settings › System › Check for updates forces a check and always opens that panel.
 - **Download**: OkHttp from `SharedModules/sharedutils` (`OkHttpManager`, redirects followed, OkHttp's default), so
   `github.com/.../releases/latest/download/...` -> `github.com/.../releases/download/<tag>/...` ->
   `release-assets.githubusercontent.com` works. The APK goes to the app's internal cache (`update.apk`); a download

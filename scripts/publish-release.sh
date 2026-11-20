@@ -191,8 +191,7 @@ done
 echo
 echo "Hosts in the redirect chain (what a TV must be able to reach):"
 { curl -sSIL "$LATEST"; curl -sSIL "$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['package']['downloadUrlList'][0])" "$VERIFY/$MANIFEST_NAME")"; } \
-    | sed -n 's/^[Ll]ocation: *https\{0,1\}:\/\/\([^/]*\).*/\1/p' | sort -u | sed 's/^/  /'
-echo "  github.com"
+    | sed -n 's/^[Ll]ocation: *https\{0,1\}:\/\/\([^/]*\).*/\1/p' | { cat; echo github.com; } | sort -u | sed 's/^/  /'
 rm -rf "$VERIFY"
 echo
 echo "Published: https://github.com/$REPO/releases/tag/$TAG"
