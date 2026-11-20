@@ -590,12 +590,15 @@ public final class OculoPauseScreen implements Player.EventListener {
         return GlobalPreferences.sInstance != null ? GlobalPreferences.sInstance.is24HourLocaleEnabled() : DateHelper.is24HourLocale();
     }
 
-    /** Only what Glide already has (the player's channel button loaded it): no request. */
+    /**
+     * The avatar the player's channel button shows: same request as VideoPlayerGlue.setChannelIcon() (options, circle
+     * crop, the button icon's size), so Glide normally serves it from its memory cache; otherwise one small request.
+     */
     private void bindAvatar() {
         final String url = mChannelIconUrl;
         if (url == null) {
             mBoundIconUrl = null;
-            Glide.with(mAvatar.getContext().getApplicationContext()).clear(mAvatar);
+            Glide.with(mAvatar.getContext()).clear(mAvatar);
             mAvatar.setVisibility(View.GONE);
             return;
         }
@@ -603,9 +606,6 @@ public final class OculoPauseScreen implements Player.EventListener {
             return;
         }
         mBoundIconUrl = url;
-        mAvatar.setVisibility(View.GONE);
-        // Same request as VideoPlayerGlue.setChannelIcon() (options, circle crop, the button icon's size), so the
-        // picture comes from Glide's memory cache (those options keep nothing on disk)
         Drawable button = ContextCompat.getDrawable(mAvatar.getContext(), R.drawable.action_channel);
         int width = button != null ? button.getIntrinsicWidth() : Target.SIZE_ORIGINAL;
         int height = button != null ? button.getIntrinsicHeight() : Target.SIZE_ORIGINAL;
@@ -614,7 +614,6 @@ public final class OculoPauseScreen implements Player.EventListener {
                 .apply(ViewUtil.glideOptions())
                 .circleCrop()
                 .override(width, height)
-                .onlyRetrieveFromCache(true) // no dontAnimate(): it is an option, so part of the cache key
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
