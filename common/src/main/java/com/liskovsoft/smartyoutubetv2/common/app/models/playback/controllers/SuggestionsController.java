@@ -2,6 +2,7 @@ package com.liskovsoft.smartyoutubetv2.common.app.models.playback.controllers;
 
 import android.text.TextUtils;
 import android.util.Pair;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoSeekBarChapters;
 
 import androidx.core.content.ContextCompat;
 
@@ -512,7 +513,7 @@ public class SuggestionsController extends BasePlayerController {
             return;
         }
 
-        getPlayer().setSeekBarSegments(toSeekBarSegments(mChapters));
+        getPlayer().setSeekBarSegments(OculoSeekBarChapters.from(toSeekBarSegments(mChapters), mChapters)); // Oculo: chapters layer
     }
 
     private void appendChapterSuggestionsIfNeeded() {

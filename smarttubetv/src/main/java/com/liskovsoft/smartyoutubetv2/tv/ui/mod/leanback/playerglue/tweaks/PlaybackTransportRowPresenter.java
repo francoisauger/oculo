@@ -43,6 +43,7 @@ import com.liskovsoft.sharedutils.helpers.DateHelper;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.SeekBarSegment;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerTweaksData;
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoChapterLabel;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.misc.SeekBar;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.tooltips.ControlButtonPresenterSelector;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.tweaks.ControlBarPresenter.OnControlClickedListener;
@@ -125,6 +126,7 @@ public class PlaybackTransportRowPresenter extends PlaybackRowPresenter {
         long mSeekIncrementMs = -1;
         long mSeekStartTimeMs;
         final PlayerData mPlayerData;
+        final OculoChapterLabel mOculoChapterLabel; // Oculo: current chapter's name by the time
 
         // MOD: update quality info
         private WeakReference<TopEdgeFocusListener> mTopEdgeFocusListener = null;
@@ -442,6 +444,7 @@ public class PlaybackTransportRowPresenter extends PlaybackRowPresenter {
             mRemainingTimeFormat = rootView.getContext().getString(com.liskovsoft.smartyoutubetv2.tv.R.string.player_remaining_time);
             mAdditionalInfo = (ViewGroup) rootView.findViewById(com.liskovsoft.smartyoutubetv2.tv.R.id.additional_info);
             mTimeInfo = (ViewGroup) rootView.findViewById(com.liskovsoft.smartyoutubetv2.tv.R.id.time_info);
+            mOculoChapterLabel = OculoChapterLabel.attach(mTimeInfo, mCurrentTime); // Oculo
             mTopEdge = (ViewGroup) rootView.findViewById(com.liskovsoft.smartyoutubetv2.tv.R.id.top_edge);
             mTopEdge.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
@@ -734,6 +737,9 @@ public class PlaybackTransportRowPresenter extends PlaybackRowPresenter {
             if (currentTimeMs != mCurrentTimeInMs) {
                 mCurrentTimeInMs = currentTimeMs;
                 onSetCurrentPositionLabel(currentTimeMs);
+                if (mOculoChapterLabel != null) { // Oculo
+                    mOculoChapterLabel.onPosition(currentTimeMs);
+                }
             }
             if (!mInSeek) {
                 int progressRatio = 0;
@@ -811,6 +817,10 @@ public class PlaybackTransportRowPresenter extends PlaybackRowPresenter {
 
         void setSeekBarSegments(List<SeekBarSegment> segments) {
             mProgressBar.setSegments(segments);
+            if (mOculoChapterLabel != null) { // Oculo
+                mOculoChapterLabel.onSegments(segments);
+                mOculoChapterLabel.onPosition(mCurrentTimeInMs);
+            }
         }
 
         void setPlay(boolean play) {

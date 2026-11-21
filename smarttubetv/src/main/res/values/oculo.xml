@@ -207,4 +207,10 @@
     <style name="OculoSummaryText">
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
+    <!-- 0.14.0: player seek bar split into chapters by transparent gaps (SeekBar, flag oculo_seek_bar_chapters) and
+         the current chapter's name left of the time (OculoChapterLabel) -->
+    <dimen name="oculo_seek_bar_chapter_gap">3dp</dimen>
+    <color name="oculo_chapter_label">#FFAAAAAA</color>
+    <dimen name="oculo_chapter_label_max_width">240dp</dimen>
+    <string name="oculo_chapter_label" translatable="false">"%1$s  ·"</string>
 </resources>

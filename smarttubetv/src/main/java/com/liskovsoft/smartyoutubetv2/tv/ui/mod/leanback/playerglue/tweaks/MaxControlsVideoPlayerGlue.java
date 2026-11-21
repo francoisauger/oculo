@@ -1,5 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.tweaks;
 
+import com.liskovsoft.smartyoutubetv2.tv.oculo.OculoChapterLabel;
 import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -176,7 +177,7 @@ public abstract class MaxControlsVideoPlayerGlue<T extends PlayerAdapter>
         if (getTransportViewHolder() != null) { // the chapter title when show seeking ui
             getTransportViewHolder().setSeekPreviewTitle(title);
         }
-        if (getDescriptionViewHolder() != null) { // the chapter title when show full ui
+        if (getDescriptionViewHolder() != null && !OculoChapterLabel.isEnabled(getContext())) { // the chapter title when show full ui (Oculo: shown by the time instead)
             getDescriptionViewHolder().getBody().setText(title);
             getDescriptionViewHolder().getBody().setVisibility(title != null ? View.VISIBLE: View.GONE);
         }

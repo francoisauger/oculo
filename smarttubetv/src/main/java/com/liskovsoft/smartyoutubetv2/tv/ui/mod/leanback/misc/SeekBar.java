@@ -32,6 +32,7 @@ import androidx.annotation.RestrictTo;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.leanback.R;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.SeekBarSegment;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoSeekBarLayers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,14 @@ public final class SeekBar extends View {
     private int mBarHeight;
     private int mActiveBarHeight;
     private final List<SeekBarRectangle> mSeekBarRectangles = new ArrayList<>();
+    // Oculo (0.14.0): chapters and SponsorBlock kept apart and laid out from fractions (OculoSeekBarLayers)
+    private final OculoSeekBarLayers mOculoLayers = new OculoSeekBarLayers();
+    private final List<SeekBarRectangle> mOculoChapterTicks = new ArrayList<>();
+    private final boolean mOculoChapterGaps;
+    private final int mOculoGapWidth;
+    private float[] mOculoGaps = new float[0];
+    private float[] mOculoPieces = new float[0]; // left, right pixel pairs between chapter gaps
+    private long mOculoLayoutKey = Long.MIN_VALUE; // relayout only when size, focus or segments change
 
     private AccessibilitySeekListener mAccessibilitySeekListener;
 
@@ -102,6 +111,8 @@ public final class SeekBar extends View {
                 R.dimen.lb_playback_transport_progressbar_active_bar_height);
         mActiveRadius = context.getResources().getDimensionPixelSize(
                 R.dimen.lb_playback_transport_progressbar_active_radius);
+        mOculoChapterGaps = context.getResources().getBoolean(com.liskovsoft.smartyoutubetv2.tv.R.bool.oculo_seek_bar_chapters);
+        mOculoGapWidth = context.getResources().getDimensionPixelSize(com.liskovsoft.smartyoutubetv2.tv.R.dimen.oculo_seek_bar_chapter_gap);
     }
 
     /**
@@ -146,17 +157,35 @@ public final class SeekBar extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         final int radius = isFocused() ? mActiveRadius : mBarHeight / 2;
+        if (mOculoPieces.length > 0) {
+            // Oculo: one piece of track per chapter, transparent gaps between them (YouTube style)
+            for (int i = 0; i + 1 < mOculoPieces.length; i += 2) {
+                canvas.save();
+                canvas.clipRect(mOculoPieces[i], 0, mOculoPieces[i + 1], getHeight());
+                drawTrack(canvas, radius);
+                canvas.restore();
+            }
+        } else {
+            drawTrack(canvas, radius);
+        }
+
+        canvas.drawCircle(mKnobx, getHeight() / 2, radius, mKnobPaint);
+    }
+
+    private void drawTrack(Canvas canvas, int radius) {
         canvas.drawRoundRect(mBackgroundRect, radius, radius, mBackgroundPaint);
         if (mSecondProgressRect.right > mSecondProgressRect.left) {
             canvas.drawRoundRect(mSecondProgressRect, radius, radius, mSecondProgressPaint);
         }
         canvas.drawRoundRect(mProgressRect, radius, radius, mProgressPaint);
 
-        for (SeekBarRectangle rectangle : mSeekBarRectangles) {
+        for (SeekBarRectangle rectangle : mOculoChapterTicks) { // Oculo: upstream's chapter ticks when gaps are off
             canvas.drawRoundRect(rectangle.rect, radius, radius, rectangle.paint);
         }
 
-        canvas.drawCircle(mKnobx, getHeight() / 2, radius, mKnobPaint);
+        for (SeekBarRectangle rectangle : mSeekBarRectangles) {
+            canvas.drawRoundRect(rectangle.rect, radius, radius, rectangle.paint);
+        }
     }
 
     /**
@@ -257,11 +286,77 @@ public final class SeekBar extends View {
 
         mKnobx = radius + (int) progressPixels;
 
-        for (SeekBarRectangle seekBarRectangle : mSeekBarRectangles) {
-            seekBarRectangle.rect.set(seekBarRectangle.rect.left, verticalPadding, seekBarRectangle.rect.right, height - verticalPadding);
-        }
+        oculoLayoutSegments(verticalPadding, height - verticalPadding, progressWidth); // Oculo: was a vertical update only
 
         invalidate();
+    }
+
+    /**
+     * Oculo: segments and chapter gaps laid out from their fractions with the current size, on the same scale as the
+     * played part (so the played part ends on a gap at a chapter's start).
+     */
+    private void oculoLayoutSegments(int top, int bottom, int progressWidth) {
+        long key = ((long) getWidth() << 40) ^ ((long) top << 20) ^ ((long) bottom << 8) ^ progressWidth;
+        if (key == mOculoLayoutKey) {
+            return; // setProgress() calls calculate() on every position update: nothing to redo
+        }
+        mOculoLayoutKey = key;
+
+        final float start = mBarHeight / 2f;
+        layoutRectangles(mSeekBarRectangles, mOculoLayers.getSponsor(), top, bottom, start, progressWidth);
+
+        if (mOculoChapterGaps) {
+            mOculoChapterTicks.clear();
+            float[] gaps = mOculoGaps;
+            if (gaps.length == 0 || getWidth() <= 0) {
+                mOculoPieces = new float[0];
+                return;
+            }
+            float[] pieces = new float[(gaps.length + 1) * 2];
+            float half = mOculoGapWidth / 2f;
+            float left = 0;
+            int count = 0;
+            for (float gap : gaps) {
+                float x = start + gap * progressWidth;
+                if (x - half > left) {
+                    pieces[count++] = left;
+                    pieces[count++] = x - half;
+                }
+                left = x + half;
+            }
+            pieces[count++] = left;
+            pieces[count++] = getWidth();
+            mOculoPieces = java.util.Arrays.copyOf(pieces, count);
+        } else {
+            mOculoPieces = new float[0];
+            layoutRectangles(mOculoChapterTicks, mOculoLayers.getChapterTicks(), top, bottom, start, progressWidth);
+        }
+    }
+
+    private void layoutRectangles(List<SeekBarRectangle> rectangles, List<SeekBarSegment> segments, int top, int bottom,
+                                  float start, int progressWidth) {
+        rectangles.clear();
+
+        for (SeekBarSegment segment : segments) {
+            if (segment.endProgress < 0 || segment.startProgress < 0 || segment.startProgress >= 1) {
+                continue;
+            }
+
+            float endProgress = Math.min(segment.endProgress, 1);
+            float leftPixels = start + segment.startProgress * progressWidth;
+            float rightPixels = start + endProgress * progressWidth;
+
+            // Bookmark segment (1px width) fix
+            float bookmarkWidth = mBarHeight / 2f;
+            if (rightPixels - leftPixels < bookmarkWidth) {
+                rightPixels += bookmarkWidth;
+            }
+
+            SeekBarRectangle rect = new SeekBarRectangle();
+            rect.rect.set(leftPixels, top, rightPixels, bottom);
+            rect.paint.setColor(segment.color);
+            rectangles.add(rect);
+        }
     }
 
     @Override
@@ -287,50 +382,11 @@ public final class SeekBar extends View {
     }
 
     public void setSegments(List<SeekBarSegment> segments) {
-        calculateSegments(segments);
-    }
-
-    private void calculateSegments(List<SeekBarSegment> segments) {
-        if (segments == null) {
-            mSeekBarRectangles.clear();
-            //invalidate();
-            return;
-        }
-
-        final int barHeight = isFocused() ? mActiveBarHeight : mBarHeight;
-
-        final int width = getWidth();
-        final int height = getHeight();
-        final int verticalPadding = (height - barHeight) / 2;
-
-        //final int radius = isFocused() ? mActiveRadius : mBarHeight / 2;
-        //final int progressWidth = width - radius * 2;
-
-        for (SeekBarSegment segment : segments) {
-            if (segment.endProgress < 0 || segment.startProgress < 0 || segment.startProgress >= 1) {
-                continue;
-            }
-
-            if (segment.endProgress > 1) {
-                segment.endProgress = 1;
-            }
-
-            float rightPixels = segment.endProgress * width;
-            float leftPixels = segment.startProgress * width;
-
-            // Bookmark segment (1px width) fix
-            float bookmarkWidth = mBarHeight / 2f;
-            if (rightPixels - leftPixels < bookmarkWidth) {
-                rightPixels += bookmarkWidth;
-            }
-
-            SeekBarRectangle rect = new SeekBarRectangle();
-            rect.rect.set(leftPixels, verticalPadding, rightPixels, height - verticalPadding);
-            rect.paint.setColor(segment.color);
-            mSeekBarRectangles.add(rect);
-        }
-
-        //invalidate();
+        // Oculo: two layers (chapters, SponsorBlock) instead of one list appended to (upstream: calculateSegments)
+        mOculoLayers.set(segments);
+        mOculoGaps = mOculoLayers.getGapFractions();
+        mOculoLayoutKey = Long.MIN_VALUE;
+        calculate();
     }
 
     // Touch interceptor

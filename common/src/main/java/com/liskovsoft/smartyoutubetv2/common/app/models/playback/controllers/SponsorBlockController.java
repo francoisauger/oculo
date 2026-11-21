@@ -101,6 +101,8 @@ public class SponsorBlockController extends BasePlayerController {
             return;
         }
 
+        getPlayer().setSeekBarSegments(new ArrayList<>()); // Oculo: clear the SponsorBlock layer only (chapters stay); refilled below
+
         boolean enabled = getSponsorBlockData().isSponsorBlockEnabled() && checkVideo(item) && !isChannelExcluded(item.channelId);
         getPlayer().setButtonState(R.id.action_content_block, enabled ? PlayerUI.BUTTON_ON : PlayerUI.BUTTON_OFF);
 
