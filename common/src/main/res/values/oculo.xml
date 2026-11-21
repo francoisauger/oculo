@@ -138,4 +138,16 @@
     <string name="oculo_sleep_timer_warning">Still watching? Pausing in %d s</string>
     <string name="oculo_sleep_timer_keep_watching">Keep watching</string>
     <string name="oculo_sleep_timer_turn_off">Turn off the sleep timer</string>
+    <!-- 0.14.0: pause screen (smarttubetv's OculoPauseScreen): after 4 s in pause, title, channel and time left over
+         the darkened frame. Off upstream, on in the oculo flavor (oculo_config.xml). -->
+    <bool name="oculo_pause_screen_default">false</bool>
+    <string name="oculo_pause_screen">Pause screen</string>
+    <string name="oculo_pause_paused">Paused</string>
+    <string name="oculo_pause_live">Live</string>
+    <string name="oculo_pause_left_one">%1$d min left</string>
+    <string name="oculo_pause_left_other">%1$d min left</string>
+    <string name="oculo_pause_left_hours">%1$d h %2$02d min left</string>
+    <string name="oculo_pause_left_less">Less than 1 min left</string>
+    <string name="oculo_pause_ends_at">ends at %1$s</string>
+    <string name="oculo_pause_separator" translatable="false">" · "</string>
 </resources>

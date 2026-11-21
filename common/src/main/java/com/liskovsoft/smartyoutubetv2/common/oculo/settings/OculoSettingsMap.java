@@ -267,6 +267,7 @@ public final class OculoSettingsMap {
         add(T_PLAY, 0, R.string.oculo_set_speed, S, PLAYER).sub(res(R.string.video_speed)).cat(res(R.string.video_speed));
         add(T_PLAY, 0, R.string.oculo_set_skip_step, S, PLAYER).cat(res(R.string.seek_interval));
         add(T_PLAY, 0, R.string.oculo_set_sleep_timer, S, PLAYER).cat(res(R.string.player_sleep_timer));
+        add(T_PLAY, 0, R.string.oculo_set_pause_screen, S, MAINUI).item(res(R.string.oculo_pause_screen)); // 0.14.0, OculoSettings
         add(T_PLAY, 0, R.string.oculo_set_keep_playing_in_the_background, A, GENERAL).cat(res(R.string.category_background_playback));
         add(T_PLAY, 0, R.string.oculo_set_remember_speed, A, PLAYER).sub(res(R.string.video_speed)).cat(res(R.string.player_remember_speed));
         add(T_PLAY, 0, R.string.oculo_set_more_speeds, A, PLAYER).sub(res(R.string.video_speed)).cat(res(R.string.player_other)).item(res(R.string.player_long_speed_list)).flags(SPEEDS);

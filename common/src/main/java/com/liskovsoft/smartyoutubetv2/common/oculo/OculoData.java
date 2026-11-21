@@ -16,6 +16,7 @@ public class OculoData extends DataSaverBase {
     private static final int INDEX_THUMBNAIL_GLOW = 3;
     private static final int INDEX_DEAD_SECTIONS_HIDDEN = 4;
     private static final int INDEX_SETTINGS_ADVANCED = 5;
+    private static final int INDEX_PAUSE_SCREEN = 6;
     private static OculoData sInstance;
     private final Context mContext;
 
@@ -105,5 +106,16 @@ public class OculoData extends DataSaverBase {
     public void setSettingsAdvancedEnabled(boolean enabled) {
         setBoolean(INDEX_SETTINGS_ADVANCED, enabled);
         persistNow();
+    }
+
+    /**
+     * Pause screen (0.14.0, smarttubetv's OculoPauseScreen): title, channel and time left over the paused video.
+     */
+    public boolean isPauseScreenEnabled() {
+        return getBoolean(INDEX_PAUSE_SCREEN, mContext.getResources().getBoolean(R.bool.oculo_pause_screen_default));
+    }
+
+    public void setPauseScreenEnabled(boolean enabled) {
+        setBoolean(INDEX_PAUSE_SCREEN, enabled);
     }
 }
