@@ -1,6 +1,7 @@
 package com.liskovsoft.smartyoutubetv2.common.prefs;
 
 import com.liskovsoft.smartyoutubetv2.common.oculo.settings.OculoSettingsCleanup;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoMenuOrder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
@@ -447,6 +448,7 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
         mThumbQuality = Helpers.parseInt(split, 15, ClickbaitRemover.THUMB_QUALITY_DEFAULT);
         mIsCardMultilineSubtitleEnabled = Helpers.parseBoolean(split, 16, true);
         mMenuItemsOrdered = Helpers.parseLongList(split, 17);
+        boolean oculoHadOrder = !mMenuItemsOrdered.isEmpty(); // Oculo: OculoMenuOrder below
         mIsChannelsFilterEnabled = Helpers.parseBoolean(split, 18, true);
         mIsChannelSearchBarEnabled = Helpers.parseBoolean(split, 19, true);
         mIsPinnedChannelRowsEnabled = Helpers.parseBoolean(split, 20, true);
@@ -475,6 +477,11 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
             if (!mMenuItemsOrdered.contains(provider.getId())) {
                 mMenuItemsOrdered.add(provider.getId());
             }
+        }
+
+        if (OculoMenuOrder.applyOnce(mContext, mMenuItemsOrdered, oculoHadOrder)) { // Oculo: Watch later first, once
+            mMenuItems |= MENU_ITEM_ADD_TO_WATCH_LATER;
+            persistStateInt();
         }
 
         if (mColorSchemes.size() <= mColorSchemeIndex) {

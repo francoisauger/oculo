@@ -17,6 +17,7 @@ public class OculoData extends DataSaverBase {
     private static final int INDEX_DEAD_SECTIONS_HIDDEN = 4;
     private static final int INDEX_SETTINGS_ADVANCED = 5;
     private static final int INDEX_PAUSE_SCREEN = 6;
+    private static final int INDEX_WATCH_LATER_FIRST = 7;
     private static OculoData sInstance;
     private final Context mContext;
 
@@ -117,5 +118,17 @@ public class OculoData extends DataSaverBase {
 
     public void setPauseScreenEnabled(boolean enabled) {
         setBoolean(INDEX_PAUSE_SCREEN, enabled);
+    }
+
+    /**
+     * 0.14.0 (OculoMenuOrder): « Add to Watch later » was put first and enabled in the long-press menu once.
+     */
+    public boolean isWatchLaterFirstApplied() {
+        return getBoolean(INDEX_WATCH_LATER_FIRST, false);
+    }
+
+    public void setWatchLaterFirstApplied(boolean applied) {
+        setBoolean(INDEX_WATCH_LATER_FIRST, applied);
+        persistNow();
     }
 }

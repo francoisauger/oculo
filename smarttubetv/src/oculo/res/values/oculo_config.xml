@@ -105,4 +105,8 @@
     <bool name="oculo_sleep_timer">true</bool>
     <!-- 0.14.0: pause screen (OculoPauseScreen): on -->
     <bool name="oculo_pause_screen_default">true</bool>
+    <!-- 0.14.0: « Add to Watch later » first in the long-press menu, with a confirmation (OculoMenuOrder) -->
+    <bool name="oculo_watch_later_first">true</bool>
+    <!-- 0.14.0: chapters as gaps in the seek bar, current chapter's name by the time (OculoChapters) -->
+    <bool name="oculo_seek_bar_chapters">true</bool>
 </resources>

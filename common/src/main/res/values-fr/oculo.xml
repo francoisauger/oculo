@@ -53,4 +53,6 @@
     <string name="oculo_pause_left_hours">%1$d h %2$02d min restantes</string>
     <string name="oculo_pause_left_less">Moins d\'une minute restante</string>
     <string name="oculo_pause_ends_at">fin à %1$s</string>
+    <string name="oculo_watch_later_added">Ajoutée à Regarder plus tard</string>
+    <string name="oculo_watch_later_failed">Impossible d\'ajouter à Regarder plus tard</string>
 </resources>

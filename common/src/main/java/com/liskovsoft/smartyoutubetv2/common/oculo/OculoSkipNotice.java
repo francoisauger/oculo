@@ -29,6 +29,7 @@ import com.liskovsoft.smartyoutubetv2.common.R;
  */
 public final class OculoSkipNotice {
     private static final String TAG = "oculo_skip_notice";
+    private static final String TAG_BOTTOM = "oculo_skip_notice_bottom";
     private static final long SHOW_MS = 3000;
     private static final long FADE_MS = 200;
 
@@ -39,6 +40,20 @@ public final class OculoSkipNotice {
      * @return true when the notice was shown (the caller then skips its toast)
      */
     public static boolean show(Activity activity, String text) {
+        return show(activity, text, false);
+    }
+
+    /**
+     * Same pill at the bottom right (48dp from the edges), for confirmations outside the player (0.14.0: « Added to
+     * Watch later », OculoWatchLater), where the top right holds the clock and the wordmark.
+     *
+     * @return true when the notice was shown (the caller then skips its toast)
+     */
+    public static boolean showAtBottom(Activity activity, String text) {
+        return show(activity, text, true);
+    }
+
+    private static boolean show(Activity activity, String text, boolean bottom) {
         if (activity == null || TextUtils.isEmpty(text) || activity.isFinishing()
                 || !activity.getResources().getBoolean(R.bool.oculo_skip_notice)) {
             return false;
@@ -56,9 +71,9 @@ public final class OculoSkipNotice {
         }
 
         FrameLayout root = (FrameLayout) content;
-        LinearLayout notice = root.findViewWithTag(TAG);
+        LinearLayout notice = root.findViewWithTag(bottom ? TAG_BOTTOM : TAG);
         if (notice == null) {
-            notice = create(root);
+            notice = create(root, bottom);
         } else {
             // Keep it on top of anything added since
             notice.bringToFront();
@@ -84,11 +99,11 @@ public final class OculoSkipNotice {
         return true;
     }
 
-    private static LinearLayout create(FrameLayout root) {
+    private static LinearLayout create(FrameLayout root, boolean bottom) {
         Resources res = root.getResources();
 
         LinearLayout notice = new LinearLayout(root.getContext());
-        notice.setTag(TAG);
+        notice.setTag(bottom ? TAG_BOTTOM : TAG);
         notice.setOrientation(LinearLayout.HORIZONTAL);
         notice.setGravity(Gravity.CENTER_VERTICAL);
         notice.setFocusable(false);
@@ -120,8 +135,12 @@ public final class OculoSkipNotice {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | Gravity.END);
-        lp.topMargin = dp(res, 27);
+                ViewGroup.LayoutParams.WRAP_CONTENT, (bottom ? Gravity.BOTTOM : Gravity.TOP) | Gravity.END);
+        if (bottom) {
+            lp.bottomMargin = dp(res, 48);
+        } else {
+            lp.topMargin = dp(res, 27);
+        }
         lp.setMarginEnd(dp(res, 48));
         root.addView(notice, lp);
         if (VERSION.SDK_INT >= 21) {

@@ -3,6 +3,7 @@ package com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoPanelInfo;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoContinueWatching;
 import com.liskovsoft.smartyoutubetv2.common.oculo.OculoHideWatched;
+import com.liskovsoft.smartyoutubetv2.common.oculo.OculoWatchLater;
 import android.content.Context;
 import com.liskovsoft.mediaserviceinterfaces.MediaItemService;
 import com.liskovsoft.mediaserviceinterfaces.ServiceManager;
@@ -239,7 +240,7 @@ public class VideoMenuPresenter extends BaseMenuPresenter {
                 UiOptionItem.from(
                         getContext().getString(R.string.add_video_to_watch_later),
                         optionItem -> {
-                            MediaServiceManager.instance().addToWatchLaterPlaylist(mVideo);
+                            OculoWatchLater.add(getContext(), mVideo); // Oculo: with a confirmation (upstream: addToWatchLaterPlaylist)
                             mDialogPresenter.closeDialog();
                         }
                 ));

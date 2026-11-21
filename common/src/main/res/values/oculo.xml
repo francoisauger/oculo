@@ -150,4 +150,12 @@
     <string name="oculo_pause_left_less">Less than 1 min left</string>
     <string name="oculo_pause_ends_at">ends at %1$s</string>
     <string name="oculo_pause_separator" translatable="false">" · "</string>
+    <!-- 0.14.0: « Add to Watch later » enabled and first in the video long-press menu, once (OculoMenuOrder), with a
+         confirmation notice (OculoWatchLater). Off upstream, on in the oculo flavor (oculo_config.xml). -->
+    <bool name="oculo_watch_later_first">false</bool>
+    <string name="oculo_watch_later_added">Added to Watch later</string>
+    <string name="oculo_watch_later_failed">Couldn\'t add to Watch later</string>
+    <!-- 0.14.0: chapters as gaps in the player's seek bar and the current chapter's name by the time
+         (smarttubetv's OculoChapters). Off upstream (black chapter ticks, no name), on in the flavor. -->
+    <bool name="oculo_seek_bar_chapters">false</bool>
 </resources>
