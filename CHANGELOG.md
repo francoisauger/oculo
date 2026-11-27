@@ -4,6 +4,11 @@ Shown by the in-app updater (« Update available » panel) and used as the GitHu
 `scripts/publish-release.sh`. One section per version, `## MAJOR.MINOR.PATCH`, then short user-facing bullets
 (`- `), in French. Newest first. Everything outside the bullets (this paragraph, sub-headings) is ignored.
 
+## 0.14.1
+
+- Basé sur SmartTube 32.85 : corrections du lecteur (reprise après erreur, vidéo qui recommençait à zéro, directs…).
+- Nouveau raccourci : la flèche du haut passe au chapitre suivant pendant une vidéo (Réglages › Télécommande et appareils › Raccourcis des boutons, mode avancé).
+
 ## 0.14.0
 
 - Écran de pause : après quelques secondes en pause, le titre, la chaîne, le temps restant et l'heure de fin sur l'image figée.

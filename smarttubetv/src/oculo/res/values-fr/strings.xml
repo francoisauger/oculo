@@ -321,6 +321,7 @@
     <string name="oculo_set_unlock_all_formats">Débloquer tous les formats</string>
     <string name="oculo_set_up_down_skips_shorts">Haut/bas passe au Short suivant</string>
     <string name="oculo_set_up_down_skips_videos">Haut/bas passe à la vidéo suivante</string>
+    <string name="oculo_set_up_goes_to_the_next_chapter">Haut passe au chapitre suivant</string>
     <string name="oculo_set_up_down_speed">Haut/bas = vitesse</string>
     <string name="oculo_set_up_down_volume">Haut/bas = volume</string>
     <string name="oculo_set_update_notices">Avis de mise à jour</string>

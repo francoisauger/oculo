@@ -7,19 +7,19 @@ Oculo is not affiliated with YouTube or Google.
 ## Branches and remotes
 
 - `upstream` = https://github.com/yuliskov/SmartTube (its default branch is `master`).
-- `main` tracks `upstream/master` and is never edited.
+- `main` tracks `upstream/master` and is never edited (SmartTube 32.85 since Oculo 0.14.1).
 - `oculo` = `main` + the Oculo changes below. Build from here.
 
 ## What the fork changes
 
 Kept untouched: `MediaServiceCore`, `SharedModules` (submodules), `exoplayer-amzn-2.10.6` and `chatkit`.
 
-**MediaServiceCore pin (32.74-10).** Oculo pins `MediaServiceCore` to upstream commit `767a6685` instead of 32.74's `b3d561f5` (both upstream, no Oculo edit). From `66b5a1bc` on (SmartTube 32.73 and 32.74), `FormatInfoWrapper.CLIENT_LIST` starts with the WEB client (Innertube); its WebView poToken is not accepted by the SABR server (`StreamProtectionStatus` stays `ATTESTATION_PENDING`), so YouTube serves about 60 s and then no more media: every video stalls at 0:59 (upstream issues #6370, #6461, #6463, #6439). `767a6685` is the same code with the TV client first, as in 32.71. It lacks two small upstream changes: the "fallback to error result" for unplayable videos and the per-client nonce reset (`b3d561f5`, only matters when a client falls through to the next). After a merge with upstream, move the pin back to upstream's only once upstream fixes the WEB attestation or puts TV first again.
+**MediaServiceCore pin (32.74-10 to 0.14.0, lifted in 0.14.1).** From 32.74-10 to 0.14.0 Oculo pinned `MediaServiceCore` to upstream commit `767a6685` instead of 32.74's `b3d561f5` (both upstream, no Oculo edit). From `66b5a1bc` on (SmartTube 32.73 and 32.74), `FormatInfoWrapper.CLIENT_LIST` started with the WEB client (Innertube); its WebView poToken is not accepted by the SABR server (`StreamProtectionStatus` stays `ATTESTATION_PENDING`), so YouTube serves about 60 s and then no more media: every video stalled at 0:59 (upstream issues #6370, #6461, #6463, #6439). Upstream `63a7d61c` (« make TV client default one again », 13 Nov. 2026) put TV first again; SmartTube 32.85 ships `MediaServiceCore` `3e82ef20` with `CLIENT_LIST` = TV, TV_SAMSUNG (new, `1087a014`), WEB, VISIONOS…, plus `b3d561f5`'s per-fetch nonce reset and the error-result fallback. So 0.14.1 follows upstream's `MediaServiceCore` and `SharedModules` again (no pin; the persisted client type is written, never read back at start, so a TV that had fallen back to WEB starts on TV). If videos stop at about 1 minute again after a merge: `adb logcat | grep 'StreamProtectionStatus status:'` (`ATTESTATION_PENDING` = the cause above), check `CLIENT_LIST`'s first entry, and pin `MediaServiceCore` to the last upstream commit with TV first. Never reorder the clients in Oculo.
 
 | File | Change |
 |---|---|
 | `CHANGELOG.md`, `scripts/publish-release.sh` | Release notes shown by the in-app updater and the script that publishes a version as a GitHub Release (see « Releases »). |
-| `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, Oculo's own version (`oculoVersion`, see « Version numbers »: versionName `0.14.0`, versionCode computed from it, the upstream version only in About), libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
+| `smarttubetv/oculo.gradle` | The `oculo` product flavor: applicationId `com.francoisauger.oculo`, minSdk 21, targetSdk = compileSdk, Oculo's own version (`oculoVersion`, see « Version numbers »: versionName `0.14.1`, versionCode computed from it, the upstream version only in About), libraries fall back to their `stfdroid` variant (no Firebase/Crashlytics), release signing read from outside the repo, APK names `Oculo_<version>_<abi>.apk`. |
 | `smarttubetv/build.gradle` | One line at the end: `apply from: "oculo.gradle"`. |
 | `smarttubetv/src/oculo/res/` | Name "Oculo", launcher icon (see « Launcher icon »), Android TV banner, browse logo, global search label and authority (`xml/searchable.xml`, `search_authority`), update manifest URL (`update_urls`), About links and upstream credit (`feedback`, `releases_url`, `sources_url`). |
 | `smarttubetv/src/oculo/res/values/colors.xml`, `values/styles.xml`, `drawable/progress_bar_oculo.xml` | Oculo accents (palette from the approved logo, preview in `docs/mockups/colors.html`): the default "Dark Grey" scheme's styles are restated with turquoise `#22D3C8` instead of red (toggles; until 32.74-7 also the focused card's fill, see « Card focus »), badges (`dark_red`) and search orb in teal `#0B7F7D`, "Teal" scheme re-tinted to `#0B7F7D`/`#0F4A52`. Dark backgrounds unchanged except the browse glow below; Red and Blue schemes untouched (`scheme_red_background_dark` pinned to `#B31217`). Seek bar, card progress and player buttons: see « Player » below. If upstream changes these styles, re-sync the restated copies. |
@@ -233,6 +233,7 @@ backups…) keep upstream's dialogs, with the white pill of step 3 (the Oculo pa
 **Merge net.** `OculoSettingsMapTest` (plain JVM) reads upstream's settings presenters and fails when they use a string,
 a literal title or a category builder that the map does not place and the test does not list as « not a setting ».
 Meanwhile an unplaced setting still shows under Advanced › « Other settings » and in « Classic settings ».
+SmartTube 32.85 added « Next chapter with Up button » (`player_quick_skip_chapters`, General › Key remapping): placed in Remote & Devices › « Button shortcuts » (advanced), « Up goes to the next chapter » / « Haut passe au chapitre suivant », next to the Up/Down shortcuts (it turns them off, as upstream).
 
 **Not done from the proposal:** long press « Reset to default » on a row; « Segments » and « Show on progress bar » stay
 two rows (per-segment merge not done: it would mean rebuilding SponsorBlock's per-type dialogs); the toast confirming
@@ -422,9 +423,9 @@ After merging a new upstream SmartTube, bump the PATCH of `oculoVersion` in `sma
 Since 0.9.0 (15 Nov. 2026, François's decision of 12 Nov.), Oculo has its own numbers; until then builds were
 `32.74-1` to `32.74-21` (upstream versionName + Oculo revision, versionCode = upstream 2464 × 100 + revision).
 
-- One place: `def oculoVersion = '0.14.0'` at the top of `smarttubetv/oculo.gradle`. MAJOR.MINOR.PATCH: 1.0.0 is
+- One place: `def oculoVersion = '0.14.1'` at the top of `smarttubetv/oculo.gradle`. MAJOR.MINOR.PATCH: 1.0.0 is
   reserved for the public release; MINOR = a new batch of features asked for by François (0.9.0 -> 0.10.0 ->
-  0.11.0 -> 0.12.0 -> 0.13.0 -> 0.14.0); PATCH = a rebuild picking up a new upstream SmartTube (0.10.0 -> 0.10.1). Every published build changes it.
+  0.11.0 -> 0.12.0 -> 0.13.0 -> 0.14.0); PATCH = a rebuild picking up a new upstream SmartTube (0.10.0 -> 0.10.1, 0.14.0 -> 0.14.1 on SmartTube 32.85). Every published build changes it.
 - versionName (shown everywhere) = `oculoVersion`; APK names `Oculo_0.9.0_<abi>.apk`.
 - versionCode, computed by `oculoVersionCode()` in `oculo.gradle`: 1,000,000 + MAJOR × 1,000,000 + MINOR × 1,000
   + PATCH (0.9.0 = 1009000, 0.10.1 = 1010001, 1.0.0 = 2000000). It grows with the version whatever part changes

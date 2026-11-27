@@ -226,7 +226,8 @@ P = 'Button shortcuts'
 KR = 'r:key_remapping'
 E('remote', P, None, 'M', 'GENERAL', cat=KR, item='pc:OK -> |player_toggle_speed')
 for name, label in [('player_quick_shorts_skip_alt', 'Up/Down skips Shorts'), ('player_quick_shorts_skip', 'Left/Right skips Shorts'),
-        ('player_quick_skip_videos_alt', 'Up/Down skips videos'), ('player_quick_skip_videos', 'Left/Right skips videos')]:
+        ('player_quick_skip_videos_alt', 'Up/Down skips videos'), ('player_quick_skip_videos', 'Left/Right skips videos'),
+        ('player_quick_skip_chapters', 'Up goes to the next chapter')]:  # SmartTube 32.85
     E('remote', P, label, 'A', 'GENERAL', cat=KR, item='r:' + name)
 for lit, label in [('Play/Pause -> OK', 'Play/Pause acts as OK'), ('DPAD RIGHT/LEFT -> Volume Up/Down', 'Left/Right = volume'),
         ('DPAD UP/DOWN -> Volume Up/Down', 'Up/Down = volume'), ('DPAD UP/DOWN -> Speed Up/Down', 'Up/Down = speed'),

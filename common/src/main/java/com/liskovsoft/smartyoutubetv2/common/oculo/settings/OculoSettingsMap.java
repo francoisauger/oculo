@@ -421,6 +421,7 @@ public final class OculoSettingsMap {
         add(T_REMOTE, R.string.oculo_set_button_shortcuts, R.string.oculo_set_left_right_skips_shorts, A, GENERAL).cat(res(R.string.key_remapping)).item(res(R.string.player_quick_shorts_skip));
         add(T_REMOTE, R.string.oculo_set_button_shortcuts, R.string.oculo_set_up_down_skips_videos, A, GENERAL).cat(res(R.string.key_remapping)).item(res(R.string.player_quick_skip_videos_alt));
         add(T_REMOTE, R.string.oculo_set_button_shortcuts, R.string.oculo_set_left_right_skips_videos, A, GENERAL).cat(res(R.string.key_remapping)).item(res(R.string.player_quick_skip_videos));
+        add(T_REMOTE, R.string.oculo_set_button_shortcuts, R.string.oculo_set_up_goes_to_the_next_chapter, A, GENERAL).cat(res(R.string.key_remapping)).item(res(R.string.player_quick_skip_chapters)); // SmartTube 32.85
         add(T_REMOTE, R.string.oculo_set_button_shortcuts, R.string.oculo_set_play_pause_acts_as_ok, A, GENERAL).cat(res(R.string.key_remapping)).item(lit("Play/Pause -> OK"));
         add(T_REMOTE, R.string.oculo_set_button_shortcuts, R.string.oculo_set_left_right_volume, A, GENERAL).cat(res(R.string.key_remapping)).item(lit("DPAD RIGHT/LEFT -> Volume Up/Down"));
         add(T_REMOTE, R.string.oculo_set_button_shortcuts, R.string.oculo_set_up_down_volume, A, GENERAL).cat(res(R.string.key_remapping)).item(lit("DPAD UP/DOWN -> Volume Up/Down"));

@@ -296,6 +296,7 @@
     <string name="oculo_set_unlock_all_formats">Unlock all formats</string>
     <string name="oculo_set_up_down_skips_shorts">Up/Down skips Shorts</string>
     <string name="oculo_set_up_down_skips_videos">Up/Down skips videos</string>
+    <string name="oculo_set_up_goes_to_the_next_chapter">Up goes to the next chapter</string>
     <string name="oculo_set_up_down_speed">Up/Down = speed</string>
     <string name="oculo_set_up_down_volume">Up/Down = volume</string>
     <string name="oculo_set_update_notices">Update notices</string>
