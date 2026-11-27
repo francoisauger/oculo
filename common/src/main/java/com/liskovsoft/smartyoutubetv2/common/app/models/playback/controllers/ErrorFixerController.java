@@ -3,6 +3,7 @@ package com.liskovsoft.smartyoutubetv2.common.app.models.playback.controllers;
 import android.annotation.SuppressLint;
 
 import com.google.android.exoplayer2.source.sabr.parser.exceptions.SabrBackoffError;
+import com.google.android.exoplayer2.source.sabr.parser.exceptions.SabrPoTokenError;
 import com.google.android.exoplayer2.source.sabr.parser.exceptions.SabrReloadPlayerError;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.sharedutils.helpers.MessageHelpers;
@@ -24,6 +25,7 @@ import java.util.List;
 public class ErrorFixerController extends BasePlayerController implements OnLongBuffering {
     private static final String TAG = ErrorFixerController.class.getSimpleName();
     private static final long STREAM_END_THRESHOLD_MS = 180_000;
+    private static final long VIDEO_END_THRESHOLD_MS = 3_000;
     private static final int MAX_SABR_ERROR_FIX_ATTEMPTS = 1;
     private final BufferingDetector mBufferingDetector = new BufferingDetector(this);
     private VideoLoaderController mVideoLoaderController;
@@ -44,12 +46,31 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
     }
 
     @Override
+    public void onTickle() {
+        if (getPlayer() == null) {
+            return;
+        }
+
+        Throwable error = getPlayer().getUnthrownError();
+
+        if (error != null) {
+            runEngineErrorAction(PlayerEventListener.ERROR_TYPE_UNEXPECTED, PlayerEventListener.RENDERER_INDEX_UNKNOWN, error);
+        }
+    }
+
+    @Override
     public void onLongBuffering() {
         if (getPlayer() == null) {
             return;
         }
 
-        if (isStreamEnded()) {
+        Throwable error = getPlayer().getUnthrownError();
+
+        if (error != null) {
+            runEngineErrorAction(PlayerEventListener.ERROR_TYPE_UNEXPECTED, PlayerEventListener.RENDERER_INDEX_UNKNOWN, error);
+        } else if (isStreamEnded() || isVideoNearEnd()) {
+            // SABR may never deliver the tail of the last segment, so the engine never reaches STATE_ENDED.
+            // Reloading here restarts the video from 0 (position near the end is treated as 'watched').
             getMainController().onPlayEnd();
         } else if (isOfflineVideo() && isSubtitlesEnabled()) {
             // Long loading subtitles cause hangs
@@ -86,7 +107,7 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
             //lowerVideoQuality();
             //mVideoLoaderController.restartEngine();
 
-            // SABR may hang if the server issues a high backoffTime
+            YouTubeServiceManager.instance().invalidateFormatCache();
             mVideoLoaderController.reloadVideo();
         }
     }
@@ -137,8 +158,8 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
             return;
         }
 
-        if (isStreamEnded()) {
-            // Url no longer works (e.g. live stream ended)
+        // Url no longer works (e.g. live stream ended) or error on the last segment of a regular video.
+        if (isStreamEnded() || isVideoNearEnd()) {
             getMainController().onPlayEnd();
             return;
         }
@@ -218,6 +239,7 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
         MessageHelpers.showLongMessage(getContext(), "%s. Attempt: %s", backoffError.getMessage(), mSabrErrorFixAttempts);
 
         // SABR may hang if the server issues a high backoffTime
+        YouTubeServiceManager.instance().invalidateFormatCache();
         mVideoLoaderController.reloadVideo();
 
         return true;
@@ -298,7 +320,9 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
             getPlayerData().setFormat(FormatItem.AUDIO_HQ_MP4A);
             restartEngine = false;
         } else if (type == PlayerEventListener.ERROR_TYPE_UNEXPECTED) {
-            if (error instanceof NullPointerException) {
+            if (error instanceof SabrPoTokenError) {
+                YouTubeServiceManager.instance().switchNextClient();
+            } else if (error instanceof NullPointerException) {
                 // SABR extractor throws NPE on subtitle error
                 // NOTE: the engine should be restarted
                 disableSubtitles();
@@ -457,12 +481,21 @@ public class ErrorFixerController extends BasePlayerController implements OnLong
     }
 
     private boolean isStreamEnded() {
-        if (getPlayer() == null || getVideo() == null) {
+        if (getPlayer() == null || getVideo() == null || !getVideo().isLiveEnd) {
             return false;
         }
 
-        return getVideo().isLiveEnd && getPlayer().getDurationMs() > 0
-                && getPlayer().getDurationMs() - getPlayer().getPositionMs() < STREAM_END_THRESHOLD_MS;
+        long durationMs = getPlayer().getDurationMs();
+        return durationMs > 0 && durationMs - getPlayer().getPositionMs() < STREAM_END_THRESHOLD_MS;
+    }
+
+    private boolean isVideoNearEnd() {
+        if (getPlayer() == null || !isOfflineVideo()) {
+            return false;
+        }
+
+        long durationMs = getPlayer().getDurationMs();
+        return durationMs > 0 && durationMs - getPlayer().getPositionMs() < VIDEO_END_THRESHOLD_MS;
     }
 
     private boolean isOfflineVideo() {
