@@ -2,10 +2,18 @@
 <!-- Oculo (32.74-18): no Android TV home-screen channels. leanbackassistant's UpdateChannelsReceiver (boot,
      quick boot, screen on) only schedules the « Update channels » periodic work, which the TCL's Google TV home never
      shows; the receiver is removed so nothing wakes Oculo to reschedule it (OculoBackground cancels an already
-     scheduled one at startup). -->
+     scheduled one at startup).
+     Oculo (0.14.2): literal application label. Android 14 TV's package installer builds the « App installed. » screen
+     from an ApplicationInfo still pointing at the deleted install session (/data/app/vmdl….tmp), so it cannot read any
+     resource of the APK: @string/app_name fails and PackageItemInfo.loadLabel() falls back to android:name, i.e.
+     « com.liskovsoft.smartyoutubetv2.tv.ui.main.MainApplication ». A literal label is stored as nonLocalizedLabel,
+     read without resources, so that screen says « Oculo ». The icon there stays Android's default (a resource too). -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
-    <application>
+    <application
+        android:label="Oculo"
+        tools:replace="android:label"
+        tools:ignore="HardcodedText">
         <receiver
             android:name="com.liskovsoft.leanbackassistant.channels.UpdateChannelsReceiver"
             tools:node="remove" />

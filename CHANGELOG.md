@@ -4,6 +4,10 @@ Shown by the in-app updater (« Update available » panel) and used as the GitHu
 `scripts/publish-release.sh`. One section per version, `## MAJOR.MINOR.PATCH`, then short user-facing bullets
 (`- `), in French. Newest first. Everything outside the bullets (this paragraph, sub-headings) is ignored.
 
+## 0.14.2
+
+- Mise à jour dans l'app : l'écran final « App installed. » affiche maintenant « Oculo » au lieu d'un long nom technique.
+
 ## 0.14.1
 
 - Basé sur SmartTube 32.85 : corrections du lecteur (reprise après erreur, vidéo qui recommençait à zéro, directs…).
