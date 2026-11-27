@@ -418,6 +418,49 @@ git submodule update --init --recursive
 After merging a new upstream SmartTube, bump the PATCH of `oculoVersion` in `smarttubetv/oculo.gradle`
 (0.10.0 -> 0.10.1); About picks up the new upstream version by itself.
 
+**Conflicts Oculo resolves on its own side.** `README.md` was rewritten for Oculo (c2b9621e2, with
+`docs/DEVICE-SUPPORT.md` and `images/oculo/`): any upstream change to it conflicts. Keep Oculo's version,
+`git checkout --ours -- README.md && git add README.md`, then finish the merge. Files under `images/` that Oculo no
+longer references take upstream's version (normal merge, no conflict expected). Any other conflict is a real one.
+The task `oculo-upstream` does exactly this (list `KEEP_OURS` in its script), per merge, with no `.gitattributes`
+or repo config.
+
+### Upstream stable releases (task oculo-upstream)
+
+Decision of François (27 Nov. 2026): Chuck checks upstream itself (no GitHub notifications) and Oculo follows
+**stable** SmartTube releases only (tag `<v>s`, « 32.80 Stable », marked Latest; betas are pre-releases tagged
+`<v>`). A beta that fixes something blocking the stable stays François's decision: the task's report lists the
+newer betas and their player-related changes so Chuck can flag one.
+
+- `~/code/chuck/scripts/scheduled/oculo-upstream.mjs`, every day at 6:30 (launchd, no model). It compares the
+  highest stable with Oculo's upstream base (`versionName` of `smarttubetv/build.gradle` on `origin/oculo`) **by
+  version number**, since Oculo may sit on a newer beta (0.14.1 is on the 32.85 beta, the stable is 32.80).
+- A newer stable: in its own worktree (`~/.local/share/chuck/oculo-upstream/<tag>/worktree`), branch
+  `upstream/<v>` from `origin/oculo`: merge of the stable tag's commit (README.md kept as above), submodules,
+  check that MediaServiceCore's `CLIENT_LIST` still starts with TV (« MediaServiceCore pin »), PATCH bump, a French
+  `CHANGELOG.md` section (« Basé sur SmartTube <v> (version stable) » + upstream subjects touching the player),
+  commit, Oculo unit tests (`:common:testStfdroidDebugUnitTest --tests 'com.liskovsoft.smartyoutubetv2.common.oculo.*'`,
+  `OculoSettingsMapTest` included), `:smarttubetv:assembleOculoRelease`. Never a push, a tag or a release; the main
+  checkout and `oculo` are never touched. The result is a decision in Chuck's « À approuver »: ready (« Donner le
+  go ») or blocked at a named step (log in `<tag>/logs/<step>.log`, worktree kept for a session). A failing
+  `OculoSettingsMapTest` usually means upstream added a setting: map it (« Settings ») in the worktree.
+- **On François's go**, Chuck in session:
+
+  ```bash
+  cd ~/code/oculo && git fetch origin && git checkout oculo && git pull --ff-only
+  # read the new CHANGELOG.md section on upstream/<v> and polish the bullets if needed (commit on that branch)
+  git merge --ff-only upstream/<v>     # refused if oculo moved since: rerun the task (it re-prepares), or merge by hand
+  git submodule update --init --recursive
+  git push origin oculo
+  scripts/publish-release.sh           # « Releases »
+  git worktree remove ~/.local/share/chuck/oculo-upstream/<tag>/worktree && git branch -d upstream/<v>
+  ```
+
+  Then François installs through Oculo's « Update » section. The decision becomes `faite` by itself at the task's
+  next pass, once `origin/oculo`'s base reaches that version.
+- Test without effect: `node ~/code/chuck/scripts/scheduled/oculo-upstream.mjs run --simulate-base 32.79
+  --stable-tag 32.80s --cleanup` (throw-away `sim/upstream/…` branch, decision written to a temp copy).
+
 ## Version numbers
 
 Since 0.9.0 (15 Nov. 2026, François's decision of 12 Nov.), Oculo has its own numbers; until then builds were
