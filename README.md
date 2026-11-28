@@ -2,13 +2,11 @@
 
 **Website: [francoisauger.github.io/oculo](https://francoisauger.github.io/oculo/)** (coming soon, not online yet)
 
-Oculo is a free, open-source YouTube client for Android TV and Google TV, with a calm interface made for the remote. It is a fork of [SmartTube](https://github.com/yuliskov/SmartTube) by Yuriy Liskov: the playback engine is SmartTube's, Oculo changes the interface, the settings and a few behaviours. It installs next to SmartTube (package `com.francoisauger.oculo`) and updates itself from this repository's [GitHub Releases](https://github.com/francoisauger/oculo/releases).
-
-Oculo is made in Québec: its own screens are in English and French; the rest keeps SmartTube's translations. It is a personal project by François Auger (« by Arix »), not affiliated with YouTube, Google or the SmartTube project.
+Oculo is a free, open-source YouTube client for Android TV and Google TV, with a calm interface made for the remote. Its screens are in English and French, and it updates itself from this repository's [GitHub Releases](https://github.com/francoisauger/oculo/releases).
 
 ![Oculo Home: left rail, search bar, Recommended row](images/oculo/home.jpg)
 
-[Installation](#installation) · [Updates](#updates) · [Device support](docs/DEVICE-SUPPORT.md) · [What Oculo changes](#what-oculo-changes) · [Building](#building) · [Credits](#credits) · [License](#license)
+[Installation](#installation) · [Updates](#updates) · [Device support](docs/DEVICE-SUPPORT.md) · [Features](#features) · [Building](#building) · [Credits](#credits) · [License](#license)
 
 ## Screenshots
 
@@ -18,17 +16,13 @@ Oculo is made in Québec: its own screens are in English and French; the rest ke
 | Pause screen | Chapters and SponsorBlock segments on the seek bar |
 | ![Settings, Playback category](images/oculo/settings.jpg) | ![Settings in French, Home and display category](images/oculo/settings-fr.jpg) |
 | Settings | Settings, in French |
-| ![Screensaver: clock, date and a thumbnail](images/oculo/screensaver.jpg) | |
-| Screensaver | |
 
 Screenshots taken on the Android TV emulator, signed out.
 
-## What Oculo changes
-
-Everything below is on top of SmartTube; video loading and playback are SmartTube's, unchanged.
+## Features
 
 - **Look:** new logo and colors (teal, with an apricot accent for live, new and SponsorBlock signals), a left rail and top bar in the style of Google TV, focused cards with a pulsing ring and a background glow that takes the thumbnail's color, revised typography, redesigned search, sign-in (QR code generated on the device), empty and error screens.
-- **Settings:** one screen with seven categories (Playback, Audio & Subtitles, Home & Display, Account & History, SponsorBlock & Filters, Remote & Devices, System), a simple mode by default and an advanced mode with everything else; dead and duplicated settings removed. SmartTube's original settings screens stay reachable under Advanced › Classic settings.
+- **Settings:** one screen with seven categories (Playback, Audio & Subtitles, Home & Display, Account & History, SponsorBlock & Filters, Remote & Devices, System), a simple mode by default and an advanced mode with everything else; dead and duplicated settings removed. The full original settings screens stay reachable under Advanced › Classic settings.
 - **Panels:** every menu and drawer (video menu, player settings, comments, video info, accounts…) uses the same card at the right of the screen.
 - **Continue watching:** Home's second row, unfinished videos from your account history (any device) and from Oculo.
 - **Subscriptions:** a « new » dot on videos published since your last visit, and hiding watched videos in one step.
@@ -38,7 +32,7 @@ Everything below is on top of SmartTube; video loading and playback are SmartTub
 - **Player:** the seek bar is split into chapters and shows SponsorBlock segments at the same time; the current chapter's name shows by the time; optional Up key for the next chapter (advanced mode); original audio track by default instead of « voice boost » mixes.
 - **Watch later:** first item of a video's long-press menu, with a confirmation.
 - **Less background work:** no Android TV home-screen channels service (it ran every 15 minutes even with the app closed); no Firebase or Crashlytics.
-- **Updates:** from Oculo's own GitHub Releases, signed with Oculo's key (see [Updates](#updates)). No donation prompts.
+- **Updates:** from Oculo's own GitHub Releases, signed with Oculo's key (see [Updates](#updates)).
 
 Release notes per version (in French, as shown by the updater): [CHANGELOG.md](CHANGELOG.md). Developer notes, with every file the fork touches: [OCULO.md](OCULO.md).
 
@@ -74,7 +68,7 @@ Install once; Oculo then updates itself. About 10 seconds after each start it ch
 - Settings › System › About Oculo › _Check for updates automatically_: sidebar notification (default), dialog, or disabled.
 - If you use a DNS filter, allow `github.com` and `release-assets.githubusercontent.com` (also `objects.githubusercontent.com`).
 
-Updates must be signed with the same key as the installed app. Oculo and SmartTube are separate apps: one never updates the other.
+Updates must be signed with the same key as the installed app.
 
 ## Device support
 
@@ -84,7 +78,7 @@ Android TV and Google TV devices with Android 5.0 or later. Not for phones, and 
 
 **Casting from a phone.** Oculo does not appear by itself in the phone's cast list: link the phone once. On the TV, Settings › Remote & Devices › _Link a phone_ shows a code; in the YouTube app on the phone, go to Settings › General › Watch on TV › _Link with TV code_ and enter it. Oculo must be open on the TV before you cast.
 
-**Voice search.** The microphone button next to the search bar uses the TV's own voice input. Oculo does not replace the system's global voice search (SmartTube's « bridge » app is not offered).
+**Voice search.** The microphone button next to the search bar uses the TV's own voice input. Oculo does not replace the system's global voice search.
 
 **SponsorBlock.** Optional [SponsorBlock](https://sponsor.ajay.app/) support skips segments flagged by its community (sponsors, intros, reminders…); choose categories in Settings › SponsorBlock & Filters. Oculo only reads the database, it never submits or votes. Segments are missing when nobody has submitted them yet.
 
@@ -105,14 +99,16 @@ Release builds, signing (the key is never in the repository) and publishing: see
 
 ## Credits
 
-Oculo exists thanks to **[SmartTube](https://github.com/yuliskov/SmartTube)** by **Yuriy Liskov** ([@yuliskov](https://github.com/yuliskov)), who maintains, almost single-handedly, the hard part: keeping playback working as YouTube changes. Thanks also to SmartTube's contributors, including [@pixkk](https://github.com/pixkk) (SABR streaming, TV PoToken) and [@Jupiops](https://github.com/Jupiops) (SABR CDN support), and its translators.
+Oculo is a fork of [SmartTube](https://github.com/yuliskov/SmartTube). Thank you to the SmartTube team for their hard work.
 
-If you want to support that work, see [SmartTube's donation page](https://github.com/yuliskov/SmartTube#donation). Please do not report Oculo issues to SmartTube's issue tracker or chats: Oculo's changes are not theirs. Use [this repository's issues](https://github.com/francoisauger/oculo/issues) instead.
+Oculo also relies on [SponsorBlock](https://sponsor.ajay.app/), [Return YouTube Dislike](https://returnyoutubedislike.com/), [ZXing](https://github.com/zxing/zxing) (QR codes) and other open-source libraries.
 
-Oculo also relies on [SponsorBlock](https://sponsor.ajay.app/), [Return YouTube Dislike](https://returnyoutubedislike.com/), [ZXing](https://github.com/zxing/zxing) (QR codes) and the libraries SmartTube depends on.
+Found a problem? Open an issue in [this repository](https://github.com/francoisauger/oculo/issues).
 
 ## License
 
-Oculo is released under the [MIT License](LICENSE), like SmartTube; the original copyright notice is kept. Bundled libraries and submodules keep their own licenses.
+Oculo is released under the [MIT License](LICENSE); the original copyright notice is kept. Bundled libraries and submodules keep their own licenses. The software is provided as is, without warranty of any kind.
 
-The software is provided as is, without warranty of any kind. Oculo is not affiliated with, endorsed by or sponsored by YouTube, Google or the SmartTube project. Use it in accordance with the laws and terms that apply to you.
+---
+
+<sub>Oculo is an independent project, not affiliated with YouTube or Google.</sub>

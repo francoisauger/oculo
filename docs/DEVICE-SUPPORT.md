@@ -4,11 +4,11 @@ Back to the [README](../README.md).
 
 ## Requirements
 
-- **Android 5.0 (API 21) or later** (Oculo's `minSdkVersion`; SmartTube itself goes back to older versions).
+- **Android 5.0 (API 21) or later** (Oculo's `minSdkVersion`).
 - An **Android TV or Google TV** device, or another Android device with a large screen and a remote, game controller or keyboard. Touch and mouse input are not supported.
 - A processor matching one of the APKs: `armeabi-v7a` (32-bit ARM), `arm64-v8a` (64-bit ARM) or `x86`. There is no `x86_64` build: on x86_64 devices that can run 32-bit apps, use the `x86` APK.
 
-Oculo is developed and tested on a TCL Google TV (`armeabi-v7a`) and the Android TV emulator (`x86`). It uses SmartTube's playback engine unchanged, so devices that run SmartTube should run Oculo, as long as they meet the Android version above.
+Oculo is developed and tested on a TCL Google TV (`armeabi-v7a`) and the Android TV emulator (`x86`). Other Android TV and Google TV devices that meet the Android version above should run it as well.
 
 ## Supported
 
@@ -48,11 +48,11 @@ Menu names vary slightly between devices and Android versions. Then follow the R
 
 ### Xiaomi devices with Chinese firmware
 
-Xiaomi's Chinese firmware has been reported to block installing some sideloaded apps (it blocked SmartTube's beta build); the international firmware is not affected. Oculo has not been tested on it. If installation is refused: use the international firmware for your device, or install with ADB.
+Xiaomi's Chinese firmware has been reported to block installing some sideloaded apps; the international firmware is not affected. Oculo has not been tested on it. If installation is refused: use the international firmware for your device, or install with ADB.
 
 ## Troubleshooting
 
 - **Installation fails:** check free space, download the APK again (compare it with `SHA256SUMS.txt`), and make sure you picked the APK for your processor (`armeabi-v7a` if unsure).
 - **The app crashes at launch:** install it to internal storage, not to an SD card or external storage.
-- **An update fails:** usually free space or a download cut off; try again from Settings › System › Check for updates. An update must be signed with the same key as the installed app: a build you made yourself, or SmartTube, cannot be updated by Oculo's releases (and the other way around).
+- **An update fails:** usually free space or a download cut off; try again from Settings › System › Check for updates. An update must be signed with the same key as the installed app: a build you made yourself cannot be updated by Oculo's releases.
 - **Updates never show:** if a DNS filter is in use, allow `github.com` and `release-assets.githubusercontent.com` (also `objects.githubusercontent.com`).
